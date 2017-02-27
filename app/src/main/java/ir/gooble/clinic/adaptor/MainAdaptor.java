@@ -158,6 +158,6 @@ public class MainAdaptor extends RecyclerView.Adapter<MainAdaptor.Holder> implem
 
     @Override
     public void onClick(View view) {
-        BaseActivity.run((String) view.getTag(), context);
+        context.run((String) view.getTag(), context, view);
     }
 }

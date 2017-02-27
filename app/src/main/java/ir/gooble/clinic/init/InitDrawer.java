@@ -177,6 +177,6 @@ public class InitDrawer implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        BaseActivity.run((String) view.getTag(), context);
+        context.run((String) view.getTag(), context, view);
     }
 }

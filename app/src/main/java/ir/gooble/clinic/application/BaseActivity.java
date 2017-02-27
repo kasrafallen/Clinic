@@ -1,13 +1,19 @@
 package ir.gooble.clinic.application;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.View;
 
+import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.activity.MainActivity;
+import ir.gooble.clinic.init.InitClinic;
 import ir.gooble.clinic.init.InitDrawer;
 import ir.gooble.clinic.init.InitMain;
 import ir.gooble.clinic.instance.Attributes;
@@ -43,6 +49,8 @@ public class BaseActivity extends AppCompatActivity {
         switch (simpleName) {
             case "MainActivity":
                 return new InitMain((MainActivity) object);
+            case "ClinicActivity":
+                return new InitClinic((BaseActivity) object);
         }
         return null;
     }
@@ -58,9 +66,16 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public static void run(String tag, BaseActivity context) {
+    public void run(String tag, BaseActivity context, View view) {
+        Intent intent;
         switch (tag) {
             case Attributes.FIELD_ABOUT_CLINIC:
+                if (context instanceof ClinicActivity) {
+                    drawer.closeDrawer(Gravity.RIGHT);
+                    return;
+                }
+                intent = new Intent(context, ClinicActivity.class);
+                start(intent, context, view);
                 break;
             case Attributes.FIELD_ABOUT_DOCTORS:
                 break;
@@ -75,5 +90,12 @@ public class BaseActivity extends AppCompatActivity {
             case InitDrawer.LOGOUT:
                 break;
         }
+    }
+
+    private void start(Intent intent, Activity context, View view) {
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        ActivityOptionsCompat options = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(context, view, "data");
+        ActivityCompat.startActivity(context, intent, options.toBundle());
     }
 }

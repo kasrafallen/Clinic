@@ -6,4 +6,10 @@
         <item name="colorAccent">@color/theme</item>
     </style>
 
+    <style name="AppThemeTransparent" parent="Theme.Design.Light.NoActionBar">
+        <item name="colorPrimary">@color/toolbar</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
+        <item name="colorAccent">@color/theme</item>
+    </style>
+
 </resources>

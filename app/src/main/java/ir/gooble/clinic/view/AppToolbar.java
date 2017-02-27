@@ -16,6 +16,7 @@ import ir.gooble.clinic.util.Util;
 public class AppToolbar extends Toolbar {
 
     private final int toolbar_size;
+    private boolean maximize;
 
     public AppToolbar(Context context, boolean withNavigation, String title, boolean withBack) {
         super(context);
@@ -43,7 +44,7 @@ public class AppToolbar extends Toolbar {
     private View backButton(final Context context) {
         AppButton appButton = new AppButton(context);
         Toolbar.LayoutParams params = new LayoutParams(toolbar_size, toolbar_size);
-        params.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
+        params.gravity = Gravity.LEFT | Gravity.TOP;
         appButton.setLayoutParams(params);
         appButton.setBackgroundResource(R.drawable.ic_arrow_back_white_48dp);
         appButton.setOnClickListener(new OnClickListener() {
@@ -70,7 +71,7 @@ public class AppToolbar extends Toolbar {
     private View navigationButton(final Context context) {
         AppButton appButton = new AppButton(context);
         Toolbar.LayoutParams params = new LayoutParams(toolbar_size, toolbar_size);
-        params.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
+        params.gravity = Gravity.RIGHT | Gravity.TOP;
         appButton.setLayoutParams(params);
         appButton.setBackgroundResource(R.drawable.ic_menu_white_48dp);
         appButton.setOnClickListener(new OnClickListener() {
@@ -84,5 +85,21 @@ public class AppToolbar extends Toolbar {
 
     public int getSize() {
         return toolbar_size;
+    }
+
+
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        if (maximize) {
+            params.height = toolbar_size * 3;
+        } else {
+            params.height = toolbar_size;
+        }
+        params.width = -1;
+        super.setLayoutParams(params);
+    }
+
+    public void setMaximize() {
+        maximize = true;
     }
 }
