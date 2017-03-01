@@ -5,11 +5,8 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.View;
@@ -19,7 +16,7 @@ import android.widget.RelativeLayout;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
-import ir.gooble.clinic.activity.ClinicActivity;
+import ir.gooble.clinic.activity.DetailActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.instance.Attributes;
@@ -27,7 +24,7 @@ import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 import ir.gooble.clinic.view.AppToolbar;
 
-public class InitClinic extends BaseInit {
+public class InitDetail extends BaseInit {
     private static final int TOOLBAR_ID = +8248484;
     private static final int CONTACT = +4874747;
     private static final int ADDRESS = +4874748;
@@ -44,8 +41,7 @@ public class InitClinic extends BaseInit {
     private static final int INSTAGRAM_ID = +457995552;
     private static final int TELEGRAM_ID = +94285454;
 
-    private ClinicActivity context;
-    private int appBar;
+    private DetailActivity context;
     private int margin;
     private int radius;
 
@@ -54,7 +50,6 @@ public class InitClinic extends BaseInit {
     private int address;
 
     private int top_margin;
-    private int space_margin;
 
     private int logo;
     private int small_margin;
@@ -62,11 +57,10 @@ public class InitClinic extends BaseInit {
 
     private int icon;
 
-    public InitClinic(BaseActivity context) {
+    public InitDetail(BaseActivity context) {
         super(context);
-        this.context = (ClinicActivity) context;
+        this.context = (DetailActivity) context;
 
-        this.appBar = Util.toPx(250, context);
         this.margin = Util.toPx(18, context);
         this.radius = Util.toPx(5, context);
 
@@ -74,9 +68,8 @@ public class InitClinic extends BaseInit {
         this.address = Util.toPx(120, context);
         this.contact = Util.toPx(130, context);
 
-        this.top_margin = (int) (2f * appBar / 4f);
-        this.space_margin = (int) (2f * appBar / 4f);
-        this.logo = (int) (1f * detail / 2f);
+        this.top_margin = Util.toPx(20, context);
+        this.logo = (int) (2f * detail / 3f);
         this.small_margin = Util.toPx(15, context);
         this.line = Util.toPx(1, context);
 
@@ -93,66 +86,28 @@ public class InitClinic extends BaseInit {
     }
 
     private View recycler() {
-        NestedScrollView scrollView = new NestedScrollView(context);
-        CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(-1, -2);
-        params.setBehavior(new AppBarLayout.ScrollingViewBehavior());
-        params.setAnchorId(TOOLBAR_ID);
-        params.anchorGravity = Gravity.BOTTOM;
-        params.topMargin = -top_margin;
-        scrollView.setLayoutParams(params);
-        scrollView.setVerticalScrollBarEnabled(false);
-        scrollView.setHorizontalScrollBarEnabled(false);
-        scrollView.setSmoothScrollingEnabled(false);
-        scrollView.setClipToPadding(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            scrollView.setElevation(20);
-        }
-
         LinearLayout layout = new LinearLayout(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            layout.setElevation(20);
+        }
+        CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(-1, -2);
+        params.topMargin = top_margin;
+        layout.setLayoutParams(params);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(item(DETAIL));
         layout.addView(item(CONTACT));
         layout.addView(item(ADDRESS));
-
-        scrollView.addView(layout);
-        return scrollView;
+        return layout;
     }
 
     private View toolbar() {
-        AppBarLayout appBarLayout = new AppBarLayout(context);
-        appBarLayout.setId(TOOLBAR_ID);
-        appBarLayout.setOrientation(LinearLayout.VERTICAL);
-        CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(-1, appBar);
-        appBarLayout.setLayoutParams(params);
-
-        CollapsingToolbarLayout collapsingToolbarLayout = new CollapsingToolbarLayout(context);
-        AppBarLayout.LayoutParams params1 = new AppBarLayout.LayoutParams(-1, -1);
-        params1.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-                | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
-        collapsingToolbarLayout.setLayoutParams(params1);
-        collapsingToolbarLayout.setStatusBarScrimResource(R.color.toolbar);
-        collapsingToolbarLayout.setContentScrimResource(R.color.toolbar);
-        collapsingToolbarLayout.setBackgroundResource(R.color.toolbar);
-
-        ImageView imageView = new ImageView(context);
-        CollapsingToolbarLayout.LayoutParams params2 = new CollapsingToolbarLayout.LayoutParams(-1, -1);
-        params2.setCollapseMode(CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX);
-        imageView.setLayoutParams(params2);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.test_clinic_banner);
-
-        AppToolbar toolbar = new AppToolbar(context, true, null, true);
+        AppToolbar toolbar = new AppToolbar(context, true, true);
+        toolbar.setId(TOOLBAR_ID);
         toolbar.setMaximize();
-        toolbar.setBackgroundResource(R.color.transparent);
-        CollapsingToolbarLayout.LayoutParams params3 = new CollapsingToolbarLayout.LayoutParams(-1, toolbar.getSize() + space_margin);
-        params3.setCollapseMode(CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PIN);
-        toolbar.setLayoutParams(params3);
-
-        collapsingToolbarLayout.addView(imageView);
-        collapsingToolbarLayout.addView(toolbar);
-
-        appBarLayout.addView(collapsingToolbarLayout);
-        return appBarLayout;
+        CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(-2, -2);
+        params.gravity = Gravity.TOP;
+        toolbar.setLayoutParams(params);
+        return toolbar;
     }
 
     private View item(int id) {
@@ -317,23 +272,7 @@ public class InitClinic extends BaseInit {
                 text.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        switch (id) {
-                            case WEB_ID:
-                                context.openLink(Attributes.WEBSITE_INFO);
-                                break;
-                            case EMAIL_ID:
-                                context.openMail(Attributes.EMAIL_INFO);
-                                break;
-                            case TELEGRAM_ID:
-                                context.openLink("telegram.me/" + Attributes.TELEGRAM_INFO.replaceAll("@", ""));
-                                break;
-                            case INSTAGRAM_ID:
-                                context.openLink("instagram.com/" + Attributes.INSTAGRAM_INFO);
-                                break;
-                            case PHONE_ID:
-                                context.openDial(Attributes.PHONE_INFO);
-                                break;
-                        }
+
                     }
                 });
                 break;
@@ -367,7 +306,7 @@ public class InitClinic extends BaseInit {
         imageView.setLayoutParams(params);
         imageView.setBorderWidth(line);
         imageView.setBorderColor(context.getResources().getColor(R.color.circle_border));
-        imageView.setImageResource(R.mipmap.test_clinic_logo);
+        imageView.setImageResource(R.mipmap.y_def_doctor_profile);
         return imageView;
     }
 }

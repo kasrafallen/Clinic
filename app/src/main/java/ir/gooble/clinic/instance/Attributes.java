@@ -17,17 +17,17 @@ public class Attributes {
     public static int getResource(String field) {
         switch (field) {
             case Attributes.FIELD_ABOUT_CLINIC:
-                return R.mipmap.about_clinic;
+                return R.mipmap.z_about_clinic;
             case Attributes.FIELD_ABOUT_DOCTORS:
-                return R.mipmap.about_docs;
+                return R.mipmap.z_about_docs;
             case Attributes.FIELD_ADD_ACCOUNT:
-                return R.mipmap.add_account;
+                return R.mipmap.z_add_account;
             case Attributes.FIELD_RESERVE:
-                return R.mipmap.reserve;
+                return R.mipmap.z_reserve;
             case Attributes.FIELD_NEW_FACTS:
-                return R.mipmap.new_facts;
+                return R.mipmap.z_new_facts;
             case Attributes.FIELD_GALLERY:
-                return R.mipmap.gallery;
+                return R.mipmap.z_gallery;
         }
         return 0;
     }

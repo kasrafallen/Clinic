@@ -13,6 +13,7 @@ import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.activity.DoctorActivity;
 import ir.gooble.clinic.activity.GalleryActivity;
 import ir.gooble.clinic.init.InitClinic;
+import ir.gooble.clinic.init.InitDetail;
 import ir.gooble.clinic.init.InitDoctor;
 import ir.gooble.clinic.init.InitDrawer;
 import ir.gooble.clinic.init.InitGallery;
@@ -56,6 +57,8 @@ public class BaseActivity extends AppCompatActivity {
                 return new InitGallery((BaseActivity) object);
             case "DoctorActivity":
                 return new InitDoctor((BaseActivity) object);
+            case "DetailActivity":
+                return new InitDetail((BaseActivity) object);
         }
         return null;
     }
@@ -71,7 +74,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void run(String tag, BaseActivity context, View view) {
+    public void run(String tag, BaseActivity context, View view, String data) {
         Intent intent;
         switch (tag) {
             case Attributes.FIELD_ABOUT_CLINIC:
@@ -80,7 +83,7 @@ public class BaseActivity extends AppCompatActivity {
                     return;
                 }
                 intent = new Intent(context, ClinicActivity.class);
-                start(intent, context, view);
+                start(intent, context, view, data);
                 break;
             case Attributes.FIELD_GALLERY:
                 if (context instanceof GalleryActivity) {
@@ -88,7 +91,7 @@ public class BaseActivity extends AppCompatActivity {
                     return;
                 }
                 intent = new Intent(context, GalleryActivity.class);
-                start(intent, context, view);
+                start(intent, context, view, data);
                 break;
             case Attributes.FIELD_ABOUT_DOCTORS:
                 if (context instanceof DoctorActivity) {
@@ -96,7 +99,7 @@ public class BaseActivity extends AppCompatActivity {
                     return;
                 }
                 intent = new Intent(context, DoctorActivity.class);
-                start(intent, context, view);
+                start(intent, context, view, data);
                 break;
             case Attributes.FIELD_ADD_ACCOUNT:
                 break;
@@ -114,7 +117,7 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    private void start(Intent intent, Activity context, View view) {
+    private void start(Intent intent, Activity context, View view, String data) {
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         context.startActivity(intent);
 

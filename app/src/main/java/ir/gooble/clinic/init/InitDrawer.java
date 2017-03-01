@@ -103,7 +103,7 @@ public class InitDrawer implements View.OnClickListener {
         view.setLayoutParams(params);
         int resource = Attributes.getResource(mainField);
         if (resource == 0) {
-            resource = R.mipmap.exit;
+            resource = R.mipmap.z_exit;
         }
         view.setBackgroundResource(resource);
         return view;
@@ -171,12 +171,12 @@ public class InitDrawer implements View.OnClickListener {
         params.setMargins(0, 0, margin, 0);
         imageView.setLayoutParams(params);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.user_profile);
+        imageView.setImageResource(R.mipmap.y_def_user_profile);
         return imageView;
     }
 
     @Override
     public void onClick(View view) {
-        context.run((String) view.getTag(), context, view);
+        context.run((String) view.getTag(), context, view, null);
     }
 }

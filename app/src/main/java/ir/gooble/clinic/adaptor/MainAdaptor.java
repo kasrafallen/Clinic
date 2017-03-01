@@ -27,6 +27,7 @@ public class MainAdaptor extends RecyclerView.Adapter<MainAdaptor.Holder> implem
     private int height;
     private int margin;
     private int line;
+    private int shadow;
     private int padding;
     private int text;
 
@@ -35,6 +36,7 @@ public class MainAdaptor extends RecyclerView.Adapter<MainAdaptor.Holder> implem
         this.margin = Util.toPx(10, context);
         this.height = (int) (dimen[0] / 2);
         this.padding = (int) (dimen[0] / 30);
+        this.shadow = Util.toPx(1, context);
         this.line = Util.toPx(2, context);
         this.text = Util.toPx(50, context);
     }
@@ -115,6 +117,7 @@ public class MainAdaptor extends RecyclerView.Adapter<MainAdaptor.Holder> implem
         text.setSingleLine();
         text.setTextSize(1, 14);
         text.setTextColor(Color.DKGRAY);
+        text.setShadowLayer(1, shadow, shadow, Color.LTGRAY);
 
         View line = new View(context);
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(-1, this.line);
@@ -158,6 +161,6 @@ public class MainAdaptor extends RecyclerView.Adapter<MainAdaptor.Holder> implem
 
     @Override
     public void onClick(View view) {
-        context.run((String) view.getTag(), context, view);
+        context.run((String) view.getTag(), context, view, null);
     }
 }

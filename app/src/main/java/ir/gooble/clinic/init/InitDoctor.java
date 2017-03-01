@@ -5,6 +5,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 
+import ir.gooble.clinic.activity.DoctorActivity;
 import ir.gooble.clinic.activity.MainActivity;
 import ir.gooble.clinic.adaptor.DoctorAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
@@ -16,14 +17,14 @@ public class InitDoctor extends BaseInit {
     private static final int TOOLBAR_ID = +8248484;
 
     private final DoctorAdaptor adaptor;
-    private MainActivity context;
+    private DoctorActivity context;
     private AppToolbar toolbar;
 
     public AppRecyclerView recyclerView;
 
     public InitDoctor(BaseActivity context) {
         super(context);
-        this.context = (MainActivity) context;
+        this.context = (DoctorActivity) context;
         this.adaptor = new DoctorAdaptor(context, dimen);
     }
 

@@ -1,17 +1,23 @@
 package ir.gooble.clinic.adaptor;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import ir.gooble.clinic.R;
+import ir.gooble.clinic.activity.DetailActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.util.Util;
@@ -19,7 +25,7 @@ import ir.gooble.clinic.view.AppText;
 
 public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> implements View.OnClickListener {
     private static final int TEXT_ID = +124578;
-    private static final int LOGO_ID = +326598;
+    private static final int IMAGE_ID = +326598;
     private static final int CLICKABLE_ID = +42874487;
 
     private BaseActivity context;
@@ -30,24 +36,31 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
     private int padding;
     private int text;
 
+    private static final int[] DEFAULT_LIST = new int[]{
+            R.mipmap.test_doc_1
+    };
+
+    private int small_margin;
+
     public DoctorAdaptor(BaseActivity context, float[] dimen) {
         this.context = context;
         this.margin = Util.toPx(10, context);
         this.height = (int) (dimen[0] / 2);
         this.padding = (int) (dimen[0] / 30);
         this.line = Util.toPx(2, context);
-        this.text = Util.toPx(50, context);
+        this.text = Util.toPx(70, context);
+        this.small_margin = Util.toPx(8, context);
     }
 
     public static class Holder extends RecyclerView.ViewHolder {
         View clickable;
         AppText text;
-        View logo;
+        ImageView image;
 
         public Holder(View itemView) {
             super(itemView);
             this.clickable = itemView.findViewById(CLICKABLE_ID);
-            this.logo = itemView.findViewById(LOGO_ID);
+            this.image = (ImageView) itemView.findViewById(IMAGE_ID);
             this.text = (AppText) itemView.findViewById(TEXT_ID);
         }
     }
@@ -62,7 +75,7 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
         cardView.setCardElevation(3);
         cardView.setRadius(0);
         cardView.setCardBackgroundColor(Color.WHITE);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, height);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, height + text);
 
         if (viewType != 2 && viewType != 1) {
             params.bottomMargin = margin;
@@ -70,6 +83,7 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
             params.bottomMargin = margin;
             params.topMargin = margin;
         }
+
         if (viewType % 2 == 0) {
             params.leftMargin = padding / 2;
             params.rightMargin = padding;
@@ -77,44 +91,36 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
             params.leftMargin = padding;
             params.rightMargin = padding / 2;
         }
+
         cardView.setLayoutParams(params);
-        cardView.addView(logo());
+        cardView.addView(image());
         cardView.addView(text());
         cardView.addView(clickable());
         return cardView;
     }
 
-    private View logo() {
-        int size = (int) (1f * (height - text) / 3f);
-
-        FrameLayout layout = new FrameLayout(context);
-        CardView.LayoutParams params = new CardView.LayoutParams(-1, height - text);
-        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
-        layout.setLayoutParams(params);
-
-        View logo = new View(context);
-        logo.setId(LOGO_ID);
-        FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(size, size);
-        param.gravity = Gravity.CENTER;
-        logo.setLayoutParams(param);
-
-        layout.addView(logo);
+    private View image() {
+        ImageView layout = new ImageView(context);
+        layout.setId(IMAGE_ID);
+        layout.setLayoutParams(new CardView.LayoutParams(-1, height));
+        layout.setScaleType(ImageView.ScaleType.CENTER_CROP);
         return layout;
     }
 
     private View text() {
         RelativeLayout layout = new RelativeLayout(context);
-        CardView.LayoutParams params = new CardView.LayoutParams(-1, text);
-        params.gravity = Gravity.BOTTOM;
+        CardView.LayoutParams params = new CardView.LayoutParams(-1, -2);
+        params.topMargin = height;
         layout.setLayoutParams(params);
 
         AppText text = new AppText(context);
         text.setId(TEXT_ID);
         text.setLayoutParams(new RelativeLayout.LayoutParams(-1, -1));
-        text.setGravity(Gravity.CENTER);
-        text.setSingleLine();
-        text.setTextSize(1, 14);
-        text.setTextColor(Color.DKGRAY);
+        text.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        text.setTextSize(1, 10);
+        text.setTextColor(Color.GRAY);
+        text.setMaxLines(3);
+        text.setEllipsize(TextUtils.TruncateAt.END);
 
         View line = new View(context);
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(-1, this.line);
@@ -124,6 +130,8 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
         layout.addView(text);
         layout.addView(line);
+
+        text.setPadding(small_margin, 0, small_margin, 0);
         return layout;
     }
 
@@ -141,9 +149,21 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        holder.text.setText(Attributes.MAIN_FIELDS[position]);
-        holder.logo.setBackgroundResource(Attributes.getResource(Attributes.MAIN_FIELDS[position]));
+        holder.image.setImageResource(DEFAULT_LIST[position]);
         holder.clickable.setTag(Attributes.MAIN_FIELDS[position]);
+
+        SpannableString string = new SpannableString(getName(position) + "\n" + getDescription(position));
+        string.setSpan(new AbsoluteSizeSpan(13, true), 0, string.toString().indexOf("\n"), 0);
+        string.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, string.toString().indexOf("\n"), 0);
+        holder.text.setText(string);
+    }
+
+    private String getDescription(int position) {
+        return "فوق تخصص پیوند قرنیه, جراح چشم و پلک";
+    }
+
+    private String getName(int position) {
+        return "دکتر حمیدرضا حسنی";
     }
 
     @Override
@@ -153,11 +173,13 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
     @Override
     public int getItemCount() {
-        return Attributes.MAIN_FIELDS.length;
+        return DEFAULT_LIST.length;
     }
 
     @Override
     public void onClick(View view) {
-        context.run((String) view.getTag(), context, view);
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        context.startActivity(intent);
     }
 }
