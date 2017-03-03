@@ -3,6 +3,7 @@ package ir.gooble.clinic.application;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +12,13 @@ import android.view.View;
 
 import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.activity.DoctorActivity;
+import ir.gooble.clinic.activity.FactActivity;
 import ir.gooble.clinic.activity.GalleryActivity;
 import ir.gooble.clinic.init.InitClinic;
 import ir.gooble.clinic.init.InitDetail;
 import ir.gooble.clinic.init.InitDoctor;
 import ir.gooble.clinic.init.InitDrawer;
+import ir.gooble.clinic.init.InitFact;
 import ir.gooble.clinic.init.InitGallery;
 import ir.gooble.clinic.init.InitMain;
 import ir.gooble.clinic.instance.Attributes;
@@ -59,6 +62,8 @@ public class BaseActivity extends AppCompatActivity {
                 return new InitDoctor((BaseActivity) object);
             case "DetailActivity":
                 return new InitDetail((BaseActivity) object);
+            case "FactActivity":
+                return new InitFact((BaseActivity) object);
         }
         return null;
     }
@@ -101,11 +106,17 @@ public class BaseActivity extends AppCompatActivity {
                 intent = new Intent(context, DoctorActivity.class);
                 start(intent, context, view, data);
                 break;
+            case Attributes.FIELD_NEW_FACTS:
+                if (context instanceof FactActivity) {
+                    drawer.closeDrawer(Gravity.RIGHT);
+                    return;
+                }
+                intent = new Intent(context, FactActivity.class);
+                start(intent, context, view, data);
+                break;
             case Attributes.FIELD_ADD_ACCOUNT:
                 break;
             case Attributes.FIELD_RESERVE:
-                break;
-            case Attributes.FIELD_NEW_FACTS:
                 break;
             case InitDrawer.LOGOUT:
                 logOut();
@@ -124,5 +135,24 @@ public class BaseActivity extends AppCompatActivity {
 //        ActivityOptionsCompat options = ActivityOptionsCompat
 //                .makeSceneTransitionAnimation(context, view, "data");
 //        ActivityCompat.startActivity(context, intent, options.toBundle());
+    }
+
+    public void openDial(String number) {
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));
+        startActivity(intent);
+    }
+
+    public void openLink(String url) {
+        if (!url.startsWith("http")) {
+            url = "http://" + url;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
+
+    public void openMail(String email) {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
+        startActivity(Intent.createChooser(emailIntent, "مکاتبه با ایمیل"));
     }
 }

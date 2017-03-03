@@ -1,19 +1,17 @@
 package ir.gooble.clinic.activity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import ir.gooble.clinic.application.BaseActivity;
-import ir.gooble.clinic.init.InitClinic;
+import ir.gooble.clinic.init.InitFact;
 
-public class ClinicActivity extends BaseActivity {
-    private InitClinic initClinic;
+public class FactActivity extends BaseActivity {
+    private InitFact initFact;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initClinic = (InitClinic) setContentView(this);
+        initFact = (InitFact) setContentView(this);
     }
 }

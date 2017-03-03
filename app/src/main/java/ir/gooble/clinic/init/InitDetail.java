@@ -3,20 +3,26 @@ package ir.gooble.clinic.init;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Space;
+import android.widget.TextView;
+
+import com.astuetz.PagerSlidingTabStrip;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.DetailActivity;
+import ir.gooble.clinic.adaptor.DetailAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.instance.Attributes;
@@ -25,37 +31,27 @@ import ir.gooble.clinic.view.AppText;
 import ir.gooble.clinic.view.AppToolbar;
 
 public class InitDetail extends BaseInit {
+
     private static final int TOOLBAR_ID = +8248484;
-    private static final int CONTACT = +4874747;
-    private static final int ADDRESS = +4874748;
-    private static final int DETAIL = +4874749;
-
     private static final int LOGO_ID = +2847774;
-
     private static final int DESCRIPTION_ID = +2424886;
-    private static final int ADDRESS_ID = +215487856;
 
-    private static final int PHONE_ID = +8488245;
-    private static final int WEB_ID = +51555882;
-    private static final int EMAIL_ID = +51555883;
-    private static final int INSTAGRAM_ID = +457995552;
-    private static final int TELEGRAM_ID = +94285454;
+    private PagerSlidingTabStrip tabStrip;
 
     private DetailActivity context;
     private int margin;
     private int radius;
-
-    private int contact;
     private int detail;
-    private int address;
-
     private int top_margin;
 
     private int logo;
     private int small_margin;
+    private int indicator;
     private int line;
-
+    private int function;
     private int icon;
+    private int tab;
+    private int pager;
 
     public InitDetail(BaseActivity context) {
         super(context);
@@ -65,15 +61,15 @@ public class InitDetail extends BaseInit {
         this.radius = Util.toPx(5, context);
 
         this.detail = Util.toPx(135, context);
-        this.address = Util.toPx(120, context);
-        this.contact = Util.toPx(130, context);
+        this.logo = (int) (2f * detail / 3f);
 
         this.top_margin = Util.toPx(20, context);
-        this.logo = (int) (2f * detail / 3f);
         this.small_margin = Util.toPx(15, context);
         this.line = Util.toPx(1, context);
-
+        this.function = Util.toPx(60, context);
         this.icon = Util.toPx(20, context);
+        this.tab = Util.toPx(40, context);
+        this.indicator = Util.toPx(1, context);
     }
 
     @Override
@@ -94,10 +90,75 @@ public class InitDetail extends BaseInit {
         params.topMargin = top_margin;
         layout.setLayoutParams(params);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.addView(item(DETAIL));
-        layout.addView(item(CONTACT));
-        layout.addView(item(ADDRESS));
+        layout.addView(detail(layout));
         return layout;
+    }
+
+    private View tabs() {
+        tabStrip = new PagerSlidingTabStrip(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tabStrip.setElevation(2);
+        }
+        tabStrip.setLayoutParams(new LinearLayout.LayoutParams(-1, tab));
+        tabStrip.setBackgroundColor(Color.WHITE);
+        tabStrip.setDividerColor(Color.TRANSPARENT);
+        tabStrip.setIndicatorColorResource(R.color.toolbar);
+        tabStrip.setIndicatorHeight(indicator);
+        tabStrip.setAllCaps(false);
+        tabStrip.setUnderlineColor(Color.TRANSPARENT);
+        tabStrip.setShouldExpand(true);
+        return tabStrip;
+    }
+
+    private View pager() {
+        ViewPager viewPager = new ViewPager(context);
+        viewPager.setLayoutParams(new LinearLayout.LayoutParams(-1, pager));
+        viewPager.setAdapter(new DetailAdaptor(context, dimen));
+        setPaging(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setPaging(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        return viewPager;
+    }
+
+    private void setPaging(int position) {
+        LinearLayout layout = ((LinearLayout) tabStrip.getChildAt(0));
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View view = layout.getChildAt(i);
+            if (view instanceof TextView) {
+                if (i == position) {
+                    ((TextView) view).setTextColor(context.getResources().getColor(R.color.toolbar));
+                } else {
+                    ((TextView) view).setTextColor(Color.LTGRAY);
+                }
+            }
+        }
+    }
+
+    private void setPaging(ViewPager viewPager) {
+        tabStrip.setViewPager(viewPager);
+        LinearLayout layout = ((LinearLayout) tabStrip.getChildAt(0));
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View view = layout.getChildAt(i);
+            if (view instanceof TextView) {
+                Util.setText((TextView) view, context);
+                ((TextView) view).setTextColor(Color.LTGRAY);
+                ((TextView) view).setTextSize(1, 13);
+            }
+        }
     }
 
     private View toolbar() {
@@ -110,8 +171,8 @@ public class InitDetail extends BaseInit {
         return toolbar;
     }
 
-    private View item(int id) {
-        RelativeLayout layout = new RelativeLayout(context);
+    private View detail(final LinearLayout all) {
+        final RelativeLayout layout = new RelativeLayout(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
 
         params.setMargins(margin, 0, margin, 0);
@@ -119,22 +180,10 @@ public class InitDetail extends BaseInit {
 
         CardView cardView = new CardView(context);
         RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(-1, -2);
-        params1.setMargins(margin, 0, margin, margin / 2);
-        switch (id) {
-            case DETAIL:
-                cardView.setMinimumHeight(detail);
-                break;
-            case ADDRESS:
-                cardView.setMinimumHeight(address);
-                break;
-            case CONTACT:
-                cardView.setMinimumHeight(contact);
-                break;
-        }
-        if (id == DETAIL) {
-            params1.addRule(RelativeLayout.BELOW, LOGO_ID);
-            params1.topMargin = (int) (-1f * logo / 2f);
-        }
+        params1.setMargins(margin, 0, margin, margin);
+        cardView.setMinimumHeight(detail);
+        params1.addRule(RelativeLayout.BELOW, LOGO_ID);
+        params1.topMargin = (int) (-1f * logo / 2f);
         cardView.setLayoutParams(params1);
         cardView.setCardBackgroundColor(Color.WHITE);
         cardView.setCardElevation(5);
@@ -143,79 +192,122 @@ public class InitDetail extends BaseInit {
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setLayoutParams(new CardView.LayoutParams(-1, -2));
-        fill(box, id);
+        fill(box);
 
         cardView.addView(box);
         layout.addView(cardView);
-        if (id == DETAIL) {
-            layout.addView(logo());
-        }
+        layout.addView(logo());
+        layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                InitDetail.this.pager = (int) (dimen[1] - layout.getHeight() - top_margin - tab);
+
+                all.addView(tabs());
+                all.addView(pager());
+            }
+        });
         return layout;
     }
 
-    private void fill(LinearLayout box, int id) {
-        if (id == DETAIL) {
-            box.addView(text(Attributes.NAME));
-            box.addView(text(DESCRIPTION_ID));
-        } else if (id == ADDRESS) {
-            box.addView(text("نشانی کلینیک"));
-            box.addView(text(ADDRESS_ID));
-        } else {
-            box.addView(contact(PHONE_ID));
-            box.addView(contact(WEB_ID));
-            box.addView(contact(EMAIL_ID));
-            box.addView(contact(TELEGRAM_ID));
-            box.addView(contact(INSTAGRAM_ID));
-        }
+    private void fill(LinearLayout box) {
+        box.addView(text(Attributes.DOCTOR_NAME));
+        box.addView(text(DESCRIPTION_ID));
+        box.addView(line(false));
+        box.addView(functions());
     }
 
-    private View contact(int id) {
+    private View functions() {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setGravity(Gravity.CENTER_VERTICAL);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
+        layout.setLayoutParams(new LinearLayout.LayoutParams(-1, function));
+        layout.addView(field(false));
+        layout.addView(line(true));
+        layout.addView(field(true));
+        return layout;
+    }
 
-        View logo = new View(context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(icon, icon);
-        params.gravity = Gravity.CENTER_VERTICAL;
-        params.setMargins(small_margin, 0, small_margin, 0);
-        logo.setLayoutParams(params);
-        switch (id) {
-            case WEB_ID:
-                logo.setBackgroundResource(R.mipmap.x_email_icon);
-                break;
-            case TELEGRAM_ID:
-                logo.setBackgroundResource(R.mipmap.x_telegram_icon);
-                break;
-            case INSTAGRAM_ID:
-                logo.setBackgroundResource(R.mipmap.x_instagram_icon);
-                break;
-            case PHONE_ID:
-                logo.setBackgroundResource(R.mipmap.x_phone_icon);
-                break;
-            case EMAIL_ID:
-                logo.setBackgroundResource(R.mipmap.x_email_icon);
-                break;
+    private View field(final boolean isReserve) {
+        final LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(-2, -1, 1f));
+        Util.setBackground(layout, context);
+
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(icon, icon);
+        params1.gravity = Gravity.CENTER_HORIZONTAL;
+
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(-2, -2);
+        params2.gravity = Gravity.CENTER_HORIZONTAL;
+
+        View view = new View(context);
+        view.setLayoutParams(params1);
+        if (!isReserve) {
+            view.setBackgroundResource(R.mipmap.w_phone);
+        } else {
+            view.setBackgroundResource(R.mipmap.w_date);
         }
 
-        layout.addView(logo);
-        layout.addView(text(id));
+        AppText text = new AppText(context);
+        text.setLayoutParams(params2);
+        text.setSingleLine();
+        text.setTextColor(context.getResources().getColor(R.color.toolbar));
+        text.setTextSize(1, 11);
+        if (isReserve) {
+            text.setText("  تعیین  وقت  ");
+        } else {
+            text.setText("تماس با کلینیک");
+        }
+
+        layout.addView(space(2f));
+        layout.addView(space(1f));
+        layout.addView(view);
+        layout.addView(space(1f));
+        layout.addView(text);
+        layout.addView(space(1f));
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isReserve) {
+                    context.redirect();
+                } else {
+                    context.openDial(Attributes.PHONE_INFO);
+                }
+            }
+        });
         return layout;
+    }
+
+    private View space(float i) {
+        Space space = new Space(context);
+        space.setLayoutParams(new LinearLayout.LayoutParams(-2, -2, i));
+        return space;
+    }
+
+    private View line(boolean isVertical) {
+        View view = new View(context);
+        view.setBackgroundResource(R.color.base);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, -2);
+        if (isVertical) {
+            params.height = function;
+            params.width = line;
+        } else {
+            params.width = -1;
+            params.height = line;
+        }
+        view.setLayoutParams(params);
+        return view;
     }
 
     private View text(String input) {
         AppText appText = new AppText(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
-        params.bottomMargin = small_margin;
-        if (input.equals(Attributes.NAME)) {
-            params.topMargin = (int) (2f * logo / 3f);
-        } else {
-            params.topMargin = small_margin;
-        }
+        params.topMargin = (int) (4f * logo / 7f);
         appText.setLayoutParams(params);
         appText.setGravity(Gravity.CENTER_HORIZONTAL);
         appText.setTextColor(Color.DKGRAY);
-        appText.setTextSize(1, 14);
+        appText.setTextSize(1, 15);
         appText.setSingleLine();
         appText.setShadowLayer(1, line, line, Color.LTGRAY);
         appText.setText(input);
@@ -226,17 +318,11 @@ public class InitDetail extends BaseInit {
         final AppText text = new AppText(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         switch (id) {
-            case ADDRESS_ID:
             case DESCRIPTION_ID:
-                text.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                text.setGravity(Gravity.CENTER);
                 text.setTextColor(Color.GRAY);
                 text.setTextSize(1, 11);
-                if (id == DESCRIPTION_ID) {
-                    text.setText(Attributes.DESCRIPTION);
-                } else {
-                    text.setCompoundDrawables(null, null, getDrawable(), null);
-                    text.setText(Attributes.ADDRESS);
-                }
+                text.setText(Attributes.DOC_DESCRIPTION);
                 break;
             default:
                 params.width = -2;
@@ -246,40 +332,12 @@ public class InitDetail extends BaseInit {
                 text.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
                 text.setSingleLine();
                 Util.setBackground(text, context);
-                if (id == PHONE_ID) {
-                    text.setTextSize(1, 14);
-                } else {
-                    text.setTextSize(1, 12);
-                    text.setTypeface(text.getTypeface(), Typeface.BOLD);
-                }
-                switch (id) {
-                    case WEB_ID:
-                        text.setText(Attributes.WEBSITE_INFO);
-                        break;
-                    case EMAIL_ID:
-                        text.setText(Attributes.EMAIL_INFO);
-                        break;
-                    case TELEGRAM_ID:
-                        text.setText(Attributes.TELEGRAM_INFO);
-                        break;
-                    case INSTAGRAM_ID:
-                        text.setText(Attributes.INSTAGRAM_INFO);
-                        break;
-                    case PHONE_ID:
-                        text.setText(Attributes.PHONE_INFO);
-                        break;
-                }
-                text.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
+                text.setTextSize(1, 14);
                 break;
         }
         text.setLayoutParams(params);
 
-        if (id != ADDRESS_ID && id != DESCRIPTION_ID) {
+        if (id != DESCRIPTION_ID) {
             text.setPadding(0, small_margin / 2, 0, small_margin / 2);
         } else {
             params.bottomMargin = small_margin;
@@ -287,10 +345,6 @@ public class InitDetail extends BaseInit {
             params.rightMargin = small_margin;
         }
         return text;
-    }
-
-    private Drawable getDrawable() {
-        return context.getResources().getDrawable(R.drawable.ic_gps);
     }
 
     private View logo() {

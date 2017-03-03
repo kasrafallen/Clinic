@@ -1,6 +1,5 @@
 package ir.gooble.clinic.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -16,7 +15,11 @@ public class DetailActivity extends BaseActivity {
         initDetail = (InitDetail) setContentView(this);
     }
 
-    public void share(Context context) {
+    public void share() {
 
+    }
+
+    public void redirect() {
+//        run(ReserveActivity.class.getSimpleName(),this,null,null);
     }
 }

@@ -83,7 +83,7 @@ public class AppToolbar extends Toolbar {
                 switch (mode) {
                     case SHARE:
                         if (context instanceof DetailActivity) {
-                            ((DetailActivity) context).share(context);
+                            ((DetailActivity) context).share();
                         }
                         break;
                     case MENU:

@@ -5,6 +5,9 @@ import ir.gooble.clinic.R;
 public class Attributes {
 
     public final static String NAME = "کلینیک پوست و چشم شمس";
+    public static final String DOCTOR_NAME = "دکتر حمیدرضا حسنی";
+    public static final String DOC_DESCRIPTION = "فوق تخصص قرنیه\n و بیماریهای سطحی چشم";
+
     public static final String DESCRIPTION = "خدمات کامل در زمینه پوست و زیبایی و همچنین متخصص در زمینه درمانبیماریهای چشمی";
     public static final String ADDRESS = "تهران - خیابان ولیعصر - بالاتر از ونک - ایستگاه نیایش - خیابان بهرامی - پلاک 81 - واحد 5";
 
