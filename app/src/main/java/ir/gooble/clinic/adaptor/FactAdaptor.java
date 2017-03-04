@@ -1,5 +1,6 @@
 package ir.gooble.clinic.adaptor;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -11,11 +12,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import org.w3c.dom.Text;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
 import ir.gooble.clinic.R;
+import ir.gooble.clinic.activity.DescriptionActivity;
+import ir.gooble.clinic.activity.DetailActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.model.FactModel;
 import ir.gooble.clinic.util.Util;
@@ -61,17 +64,32 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return DEFAULT_LIST.size();
+    }
+
     public FactAdaptor(BaseActivity context, float[] dimen) {
         this.context = context;
         this.dimen = dimen;
         this.radius = Util.toPx(4, context);
-        this.height = Util.toPx(240, context);
+        this.height = Util.toPx(260, context);
         this.margin = Util.toPx(15, context);
 
         this.image = Util.toPx(130, context);
-        this.shared = Util.toPx(10, context);
+        this.shared = Util.getToolbarSize(context);
 
         FactModel model = new FactModel();
+        model.setResource(R.mipmap.test_fact);
         model.setDate("1 روز قبل");
         model.setTitle("دانستنی های جالب در مورد چشم");
         model.setDescription("آیا می دانید که اشک انسان از چه چیزی درست شده است؟ در حقیقت اشک انسان از ترکیب ۳ ماده آب، چربی و مخاط تشکیل شده است و همچنین دارای مواد ضد عفونی کننده نیز است. در صورتی که بدن انسان هر کدام از این ۳ ماده را کم داشته باشد، بدن ناچار است با فشار به سایر بخش ها این مواد را تولید کرده و اشک که محصول نهایی ترکیب آنها است را تولید کند. در غیر این صورت چشم انسان خشک شده و از بین می رود.");
@@ -103,7 +121,7 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
         layout.addView(image());
         layout.addView(top());
         layout.addView(description());
-//        layout.addView(function());
+        layout.addView(function());
 
         cardView.addView(layout);
         return cardView;
@@ -147,20 +165,44 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
 
         AppButton share = new AppButton(context);
         share.setId(SHARE_ID);
+        share.changeRipple();
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(shared, shared);
         param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         param.addRule(RelativeLayout.CENTER_VERTICAL);
-        param.rightMargin = margin / 2;
         share.setLayoutParams(param);
+        share.setBackgroundResource(R.drawable.ic_share_black_48dp);
+        share.setScaleX(0.8f);
+        share.setScaleY(0.8f);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getTag() != null && v.getTag() instanceof FactModel) {
+                    shareFact((FactModel) v.getTag());
+                }
+            }
+        });
 
         AppText next = new AppText(context);
-        next.setSingleLine();
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(shared, shared);
+        next.setId(NEXT_ID);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-2, -2);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         params.addRule(RelativeLayout.CENTER_VERTICAL);
         params.leftMargin = margin / 2;
         next.setLayoutParams(params);
+        next.setSingleLine();
+        next.setTextSize(1, 12);
+        next.setGravity(Gravity.CENTER);
         next.setText("ادامه مطلب");
+        next.setTextColor(Color.WHITE);
+        next.setBackgroundResource(R.drawable.oval_background);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getTag() != null && v.getTag() instanceof FactModel) {
+                    openFact((FactModel) v.getTag());
+                }
+            }
+        });
 
         layout.addView(next);
         layout.addView(share);
@@ -191,23 +233,23 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
     @Override
     public void onBindViewHolder(Holder holder, int position) {
         FactModel model = DEFAULT_LIST.get(position);
+
+        holder.share.setTag(model);
+        holder.next.setTag(model);
         holder.text.setText(model.getTitle());
         holder.description.setText(model.getDescription());
         holder.date.setText(model.getDate());
-        holder.imageView.setImageResource(R.mipmap.test_fact);
+        holder.imageView.setImageResource(model.getResource());
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position == 0) {
-            return 1;
-        } else {
-            return 0;
-        }
+    private void shareFact(FactModel tag) {
+        context.share(tag);
     }
 
-    @Override
-    public int getItemCount() {
-        return DEFAULT_LIST.size();
+    private void openFact(FactModel tag) {
+        Intent intent = new Intent(context, DescriptionActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.setAction(new Gson().toJson(tag));
+        context.startActivity(intent);
     }
 }

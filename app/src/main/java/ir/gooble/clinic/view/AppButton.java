@@ -15,15 +15,19 @@ public class AppButton extends RelativeLayout {
     private RelativeLayout mid;
     private View view;
 
+    private Context context;
+
     public AppButton(Context context) {
         super(context);
+        this.context = context;
+
         toolbar_size = Util.getToolbarSize(context);
         setLayoutParams(new ViewGroup.LayoutParams(toolbar_size, toolbar_size));
 
         isMaterial = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
         if (isMaterial) {
             addView(mid(context));
-            Util.setRipple(mid, context);
+            Util.setRipple(mid, context, true);
         } else {
             addView(view(context));
             Util.setBackground(this, context);
@@ -42,7 +46,7 @@ public class AppButton extends RelativeLayout {
         if (!isMaterial) {
             view.setScaleX((5f / 6f) * scale);
             view.setScaleY((5f / 6f) * scale);
-        }else {
+        } else {
             view.setScaleX(scale);
             view.setScaleY(scale);
         }
@@ -65,6 +69,12 @@ public class AppButton extends RelativeLayout {
             mid.setOnClickListener(listener);
         } else {
             super.setOnClickListener(listener);
+        }
+    }
+
+    public void changeRipple() {
+        if (isMaterial) {
+            Util.setRipple(mid, context, false);
         }
     }
 }

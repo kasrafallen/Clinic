@@ -23,7 +23,7 @@ public class Attributes {
                 return R.mipmap.z_about_clinic;
             case Attributes.FIELD_ABOUT_DOCTORS:
                 return R.mipmap.z_about_docs;
-            case Attributes.FIELD_ADD_ACCOUNT:
+            case Attributes.FIELD_REGISTER:
                 return R.mipmap.z_add_account;
             case Attributes.FIELD_RESERVE:
                 return R.mipmap.z_reserve;
@@ -39,7 +39,7 @@ public class Attributes {
     public final static String FIELD_RESERVE = "تعیین وقت";
     public final static String FIELD_GALLERY = "گالری";
     public final static String FIELD_NEW_FACTS = "تازه های پزشکی";
-    public final static String FIELD_ADD_ACCOUNT = "ثبت پرونده";
+    public final static String FIELD_REGISTER = "ثبت پرونده";
     public final static String FIELD_ABOUT_CLINIC = "اطلاعات کلینیک";
 
     public final static String[] MAIN_FIELDS = new String[]
@@ -48,7 +48,7 @@ public class Attributes {
                     , FIELD_RESERVE
                     , FIELD_GALLERY
                     , FIELD_NEW_FACTS
-                    , FIELD_ADD_ACCOUNT
+                    , FIELD_REGISTER
                     , FIELD_ABOUT_CLINIC
             };
 }

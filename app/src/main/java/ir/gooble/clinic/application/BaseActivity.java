@@ -14,6 +14,7 @@ import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.activity.DoctorActivity;
 import ir.gooble.clinic.activity.FactActivity;
 import ir.gooble.clinic.activity.GalleryActivity;
+import ir.gooble.clinic.activity.RegisterActivity;
 import ir.gooble.clinic.init.InitClinic;
 import ir.gooble.clinic.init.InitDetail;
 import ir.gooble.clinic.init.InitDoctor;
@@ -22,6 +23,7 @@ import ir.gooble.clinic.init.InitFact;
 import ir.gooble.clinic.init.InitGallery;
 import ir.gooble.clinic.init.InitMain;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.model.FactModel;
 import ir.gooble.clinic.view.AppDrawerLayout;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -64,6 +66,10 @@ public class BaseActivity extends AppCompatActivity {
                 return new InitDetail((BaseActivity) object);
             case "FactActivity":
                 return new InitFact((BaseActivity) object);
+            case "DescriptionActivity":
+                return new InitDescription((BaseActivity) object);
+            case "RegisterActivity":
+                return new InitRegister((BaseActivity) object);
         }
         return null;
     }
@@ -114,7 +120,13 @@ public class BaseActivity extends AppCompatActivity {
                 intent = new Intent(context, FactActivity.class);
                 start(intent, context, view, data);
                 break;
-            case Attributes.FIELD_ADD_ACCOUNT:
+            case Attributes.FIELD_REGISTER:
+                if (context instanceof RegisterActivity) {
+                    drawer.closeDrawer(Gravity.RIGHT);
+                    return;
+                }
+                intent = new Intent(context, RegisterActivity.class);
+                start(intent, context, view, data);
                 break;
             case Attributes.FIELD_RESERVE:
                 break;
@@ -154,5 +166,13 @@ public class BaseActivity extends AppCompatActivity {
     public void openMail(String email) {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
         startActivity(Intent.createChooser(emailIntent, "مکاتبه با ایمیل"));
+    }
+
+    public void share(FactModel tag) {
+
+    }
+
+    public void share() {
+
     }
 }

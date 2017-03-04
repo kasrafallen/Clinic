@@ -4,6 +4,15 @@ public class FactModel {
     private String date;
     private String description;
     private String title;
+    private int resource;
+
+    public int getResource() {
+        return resource;
+    }
+
+    public void setResource(int resource) {
+        this.resource = resource;
+    }
 
     public String getDate() {
         return date;

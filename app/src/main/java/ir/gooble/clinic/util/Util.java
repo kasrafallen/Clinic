@@ -6,13 +6,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.graphics.drawable.shapes.Shape;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
@@ -69,8 +66,13 @@ public class Util {
 
     @SuppressLint("NewApi")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public static void setRipple(RelativeLayout mid, Context context) {
-        int ripple_color = context.getResources().getColor(R.color.ripple_light);
+    public static void setRipple(RelativeLayout mid, Context context, boolean isDefault) {
+        int ripple_color;
+        if (isDefault) {
+            ripple_color = context.getResources().getColor(R.color.ripple_light);
+        } else {
+            ripple_color = context.getResources().getColor(R.color.ripple_dark);
+        }
         ShapeDrawable shape = new ShapeDrawable(new OvalShape());
         mid.setBackground(new RippleDrawable(new ColorStateList(
                 new int[][]

@@ -15,10 +15,6 @@ public class DetailActivity extends BaseActivity {
         initDetail = (InitDetail) setContentView(this);
     }
 
-    public void share() {
-
-    }
-
     public void redirect() {
 //        run(ReserveActivity.class.getSimpleName(),this,null,null);
     }

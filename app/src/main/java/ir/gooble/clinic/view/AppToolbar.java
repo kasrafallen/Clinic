@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.DetailActivity;
+import ir.gooble.clinic.activity.RegisterActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.util.Util;
 
@@ -22,8 +23,11 @@ public class AppToolbar extends Toolbar {
     private int toolbar_size;
     private boolean maximize;
 
+    private Context context;
+
     public AppToolbar(Context context) {
         super(context);
+        this.context = context;
         toolbar_size = Util.getToolbarSize(context);
 
         setLayoutParams(new ViewGroup.LayoutParams(-1, toolbar_size));
@@ -83,7 +87,7 @@ public class AppToolbar extends Toolbar {
                 switch (mode) {
                     case SHARE:
                         if (context instanceof DetailActivity) {
-                            ((DetailActivity) context).share();
+                            ((BaseActivity) context).share();
                         }
                         break;
                     case MENU:
@@ -104,9 +108,10 @@ public class AppToolbar extends Toolbar {
 
     private View text(Context context, String title) {
         AppText text = new AppText(context);
-        Toolbar.LayoutParams params = new LayoutParams(-2, -2);
-        params.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+        Toolbar.LayoutParams params = new LayoutParams(-2, toolbar_size);
+        params.gravity = Gravity.TOP | Gravity.RIGHT;
         text.setLayoutParams(params);
+        text.setGravity(Gravity.CENTER_VERTICAL);
         text.setSingleLine();
         text.setTextColor(Color.WHITE);
         text.setTextSize(1, 16);
@@ -122,7 +127,11 @@ public class AppToolbar extends Toolbar {
     @Override
     public void setLayoutParams(ViewGroup.LayoutParams params) {
         if (maximize) {
-            params.height = toolbar_size * 3;
+            if (context instanceof RegisterActivity) {
+                params.height = toolbar_size * 2;
+            } else {
+                params.height = toolbar_size * 3;
+            }
         } else {
             params.height = toolbar_size;
         }

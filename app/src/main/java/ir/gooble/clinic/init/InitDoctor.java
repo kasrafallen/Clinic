@@ -52,6 +52,7 @@ public class InitDoctor extends BaseInit {
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adaptor);
+        recyclerView.setMinimumHeight((int) (dimen[1] - toolbar.getSize()));
         return recyclerView;
     }
 
