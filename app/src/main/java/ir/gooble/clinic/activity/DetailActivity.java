@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitDetail;
+import ir.gooble.clinic.instance.Attributes;
 
 public class DetailActivity extends BaseActivity {
     private InitDetail initDetail;
@@ -16,6 +17,6 @@ public class DetailActivity extends BaseActivity {
     }
 
     public void redirect() {
-//        run(ReserveActivity.class.getSimpleName(),this,null,null);
+        run(Attributes.FIELD_RESERVE, this, null, null);
     }
 }

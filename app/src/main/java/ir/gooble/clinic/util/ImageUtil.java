@@ -28,6 +28,8 @@ public class ImageUtil {
     }
 
     public static void pickImage(final Activity context) {
+        current_path = null;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("عکس پروفایل خود را انتخاب کنید.");
         AlertDialog dialog = builder.create();

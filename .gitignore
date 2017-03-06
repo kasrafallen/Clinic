@@ -14,7 +14,7 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 *.iml
-.gradle
+/.gradle
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries

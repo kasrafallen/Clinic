@@ -192,7 +192,10 @@ public class InitDetail extends BaseInit {
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setLayoutParams(new CardView.LayoutParams(-1, -2));
-        fill(box);
+        box.addView(text(Attributes.DOCTOR_NAME));
+        box.addView(text(DESCRIPTION_ID));
+        box.addView(line(false));
+        box.addView(functions());
 
         cardView.addView(box);
         layout.addView(cardView);
@@ -209,13 +212,6 @@ public class InitDetail extends BaseInit {
             }
         });
         return layout;
-    }
-
-    private void fill(LinearLayout box) {
-        box.addView(text(Attributes.DOCTOR_NAME));
-        box.addView(text(DESCRIPTION_ID));
-        box.addView(line(false));
-        box.addView(functions());
     }
 
     private View functions() {

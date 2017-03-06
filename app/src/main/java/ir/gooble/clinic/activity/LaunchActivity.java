@@ -3,6 +3,7 @@ package ir.gooble.clinic.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,11 +22,17 @@ import android.widget.FrameLayout;
 
 import ir.gooble.clinic.util.DialogUtil;
 import ir.gooble.clinic.util.Util;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class LaunchActivity extends Activity {
 
     private static final int REQUEST_PERMISSION_CODE = 313;
     private FrameLayout layout;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +115,7 @@ public class LaunchActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                startApp();
+                checkPermission();
             }
         });
         dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "خروج از برنامه", new DialogInterface.OnClickListener() {

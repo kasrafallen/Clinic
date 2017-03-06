@@ -14,7 +14,6 @@ import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.activity.DoctorActivity;
 import ir.gooble.clinic.activity.FactActivity;
 import ir.gooble.clinic.activity.GalleryActivity;
-import ir.gooble.clinic.init.InitReserve;
 import ir.gooble.clinic.activity.RegisterActivity;
 import ir.gooble.clinic.activity.ReserveActivity;
 import ir.gooble.clinic.init.InitClinic;
@@ -26,6 +25,7 @@ import ir.gooble.clinic.init.InitFact;
 import ir.gooble.clinic.init.InitGallery;
 import ir.gooble.clinic.init.InitMain;
 import ir.gooble.clinic.init.InitRegister;
+import ir.gooble.clinic.init.InitReserve;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.model.FactModel;
 import ir.gooble.clinic.view.AppDrawerLayout;
@@ -153,12 +153,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void start(Intent intent, Activity context, View view, String data) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        context.startActivity(intent);
-
 //        ActivityOptionsCompat options = ActivityOptionsCompat
 //                .makeSceneTransitionAnimation(context, view, "data");
 //        ActivityCompat.startActivity(context, intent, options.toBundle());
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        context.startActivity(intent);
     }
 
     public void openDial(String number) {
