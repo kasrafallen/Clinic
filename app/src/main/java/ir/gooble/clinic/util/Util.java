@@ -12,6 +12,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputLayout;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -53,6 +54,10 @@ public class Util {
     }
 
     public static void setText(TextView tv, Context context) {
+        tv.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/font.ttf"));
+    }
+
+    public static void setText(TextInputLayout tv, Context context) {
         tv.setTypeface(Typeface.createFromAsset(context.getAssets(), "fonts/font.ttf"));
     }
 

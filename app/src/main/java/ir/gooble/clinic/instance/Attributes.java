@@ -17,6 +17,11 @@ public class Attributes {
     public static final String PHONE_INFO = "021-88456734";
     public static final String EMAIL_INFO = "info@shamsclinic.ir";
 
+
+    public static final String[] SUPPORTED_INSURANCES = new String[]{
+            "بیمه ندارد"
+    };
+
     public static int getResource(String field) {
         switch (field) {
             case Attributes.FIELD_ABOUT_CLINIC:

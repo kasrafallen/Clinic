@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.google.gson.Gson;
 
 import ir.gooble.clinic.application.BaseActivity;
-import ir.gooble.clinic.application.InitDescription;
+import ir.gooble.clinic.init.InitDescription;
 import ir.gooble.clinic.model.FactModel;
 
 public class DescriptionActivity extends BaseActivity {

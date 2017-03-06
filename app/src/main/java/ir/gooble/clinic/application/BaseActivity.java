@@ -14,14 +14,18 @@ import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.activity.DoctorActivity;
 import ir.gooble.clinic.activity.FactActivity;
 import ir.gooble.clinic.activity.GalleryActivity;
+import ir.gooble.clinic.init.InitReserve;
 import ir.gooble.clinic.activity.RegisterActivity;
+import ir.gooble.clinic.activity.ReserveActivity;
 import ir.gooble.clinic.init.InitClinic;
+import ir.gooble.clinic.init.InitDescription;
 import ir.gooble.clinic.init.InitDetail;
 import ir.gooble.clinic.init.InitDoctor;
 import ir.gooble.clinic.init.InitDrawer;
 import ir.gooble.clinic.init.InitFact;
 import ir.gooble.clinic.init.InitGallery;
 import ir.gooble.clinic.init.InitMain;
+import ir.gooble.clinic.init.InitRegister;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.model.FactModel;
 import ir.gooble.clinic.view.AppDrawerLayout;
@@ -70,6 +74,8 @@ public class BaseActivity extends AppCompatActivity {
                 return new InitDescription((BaseActivity) object);
             case "RegisterActivity":
                 return new InitRegister((BaseActivity) object);
+            case "ReserveActivity":
+                return new InitReserve((BaseActivity) object);
         }
         return null;
     }
@@ -129,6 +135,12 @@ public class BaseActivity extends AppCompatActivity {
                 start(intent, context, view, data);
                 break;
             case Attributes.FIELD_RESERVE:
+                if (context instanceof ReserveActivity) {
+                    drawer.closeDrawer(Gravity.RIGHT);
+                    return;
+                }
+                intent = new Intent(context, ReserveActivity.class);
+                start(intent, context, view, data);
                 break;
             case InitDrawer.LOGOUT:
                 logOut();
