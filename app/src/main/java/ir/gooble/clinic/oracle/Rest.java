@@ -61,7 +61,7 @@ public class Rest implements Response.Listener<String>, Response.ErrorListener {
         Volley.newRequestQueue(context).add(request);
     }
 
-    public static String getUrl(Api api, Object data, Context context) {
+    public static String getUrl(Api api, Object data) {
         String link = api.toString();
         if (link != null && data != null && link.contains("{}") && data instanceof String) {
             link = link.replace("{}", (String) data);
@@ -87,7 +87,7 @@ public class Rest implements Response.Listener<String>, Response.ErrorListener {
                 method = Request.Method.GET;
                 break;
         }
-        String url = getUrl(api, data, context);
+        String url = getUrl(api, data);
         StringRequest request = new StringRequest(method, url, this, this) {
 
             @Override
