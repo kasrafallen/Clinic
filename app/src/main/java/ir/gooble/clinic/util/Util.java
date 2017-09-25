@@ -24,7 +24,7 @@ public class Util {
     private static final String WIDTH = "WIDTH";
     private static final String HEIGHT = "HEIGHT";
 
-    private static SharedPreferences get(Context context) {
+    public static SharedPreferences get(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
