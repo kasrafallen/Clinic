@@ -6,7 +6,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 
 import ir.gooble.clinic.activity.DoctorActivity;
-import ir.gooble.clinic.activity.MainActivity;
 import ir.gooble.clinic.adaptor.DoctorAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
@@ -43,12 +42,6 @@ public class InitDoctor extends BaseInit {
         params.topMargin = toolbar.getSize();
         recyclerView.setLayoutParams(params);
         GridLayoutManager manager = new GridLayoutManager(context, 2);
-//        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//                return 100;
-//            }
-//        });
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adaptor);

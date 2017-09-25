@@ -16,10 +16,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.DetailActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 
@@ -29,16 +32,13 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
     private static final int CLICKABLE_ID = +42874487;
 
     private BaseActivity context;
+    private ArrayList<Doctor> doctors;
 
     private int height;
     private int margin;
     private int line;
     private int padding;
     private int text;
-
-    private static final int[] DEFAULT_LIST = new int[]{
-            R.mipmap.test_doc_1
-    };
 
     private int small_margin;
 
@@ -149,7 +149,7 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        holder.image.setImageResource(DEFAULT_LIST[position]);
+//        holder.image.setImageResource(doctors);
         holder.clickable.setTag(Attributes.MAIN_FIELDS[position]);
 
         SpannableString string = new SpannableString(getName(position) + "\n" + getDescription(position));
@@ -159,11 +159,11 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
     }
 
     private String getDescription(int position) {
-        return "فوق تخصص پیوند قرنیه, جراح چشم و پلک";
+        return doctors.get(position).toString();
     }
 
     private String getName(int position) {
-        return "دکتر حمیدرضا حسنی";
+        return doctors.get(position).toString();
     }
 
     @Override
@@ -173,7 +173,7 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
     @Override
     public int getItemCount() {
-        return DEFAULT_LIST.length;
+        return doctors.size();
     }
 
     @Override

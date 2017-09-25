@@ -8,7 +8,7 @@ public enum Api {
             return "/register";
         }
     },
-    INFO(Method.GET){
+    DOCTOR_INFO(Method.GET){
         @Override
         public String toString() {
             return "/doctorinfo";
@@ -38,7 +38,6 @@ public enum Api {
             return "/fillprofile";
         }
     };
-
 
     public static final String ROUTE = "pyana.ir";
     private int id;
