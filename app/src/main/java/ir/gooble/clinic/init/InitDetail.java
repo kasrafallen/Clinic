@@ -192,7 +192,7 @@ public class InitDetail extends BaseInit {
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setLayoutParams(new CardView.LayoutParams(-1, -2));
-        box.addView(text(Attributes.DOCTOR_NAME));
+        box.addView(text(context.doctor.getName()));
         box.addView(text(DESCRIPTION_ID));
         box.addView(line(false));
         box.addView(functions());
@@ -318,7 +318,7 @@ public class InitDetail extends BaseInit {
                 text.setGravity(Gravity.CENTER);
                 text.setTextColor(Color.GRAY);
                 text.setTextSize(1, 11);
-                text.setText(Attributes.DOC_DESCRIPTION);
+                text.setText(context.doctor.getExpertise());
                 break;
             default:
                 params.width = -2;

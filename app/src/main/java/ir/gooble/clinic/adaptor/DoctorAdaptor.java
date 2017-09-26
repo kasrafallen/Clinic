@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 import ir.gooble.clinic.R;
@@ -177,8 +179,6 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(context, DetailActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        context.startActivity(intent);
+        context.redirect(DetailActivity.class, new Gson().toJson(view.getTag()));
     }
 }

@@ -116,6 +116,21 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void redirect(Class className) {
+        redirect(className, null);
+    }
+
+    public void redirect(Class className, String action) {
+        redirect(className, action, 0);
+    }
+
+    public void redirect(Class className, String action, int requestCode) {
+        Intent intent = new Intent(this, className);
+        intent.setAction(action);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        startActivityForResult(intent, requestCode);
+    }
+
     public void run(String tag, BaseActivity context, View view, String data) {
         Intent intent;
         switch (tag) {
