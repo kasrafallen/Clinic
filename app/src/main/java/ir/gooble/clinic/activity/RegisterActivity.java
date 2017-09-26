@@ -11,6 +11,7 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.jar.Manifest;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitRegister;
@@ -18,6 +19,7 @@ import ir.gooble.clinic.instance.RegistryInstance;
 import ir.gooble.clinic.model.RegistryModel;
 import ir.gooble.clinic.util.DialogUtil;
 import ir.gooble.clinic.util.ImageUtil;
+import ir.gooble.clinic.util.PermissionUtil;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
 
@@ -55,7 +57,24 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     public void requestImage() {
-        ImageUtil.pickImage(this);
+        PermissionUtil.requestPermission(new String[]{android.Manifest.permission.CAMERA
+                , android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, this, new PermissionUtil.PermissionCallBack() {
+            @Override
+            public void onGranted() {
+                ImageUtil.pickImage(RegisterActivity.this);
+            }
+
+            @Override
+            public void onDenied() {
+                PermissionUtil.showPermissionDialog(new String[]{android.Manifest.permission.CAMERA
+                        , android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, RegisterActivity.this, this);
+            }
+
+            @Override
+            public void onDismissed() {
+
+            }
+        });
     }
 
     @Override

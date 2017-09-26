@@ -134,7 +134,7 @@ public class InitRegister extends BaseInit {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageUtil.pickImage(context);
+                context.requestImage();
             }
         });
 
