@@ -85,6 +85,12 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
 
+        <activity
+            android:name=".activity.SignActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dialog"
+            android:windowSoftInputMode="adjustPan" />
+
     </application>
 
 </manifest>

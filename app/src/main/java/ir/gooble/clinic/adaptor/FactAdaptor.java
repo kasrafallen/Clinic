@@ -247,9 +247,6 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
     }
 
     private void openFact(FactModel tag) {
-        Intent intent = new Intent(context, DescriptionActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        intent.setAction(new Gson().toJson(tag));
-        context.startActivity(intent);
+        context.redirect(DescriptionActivity.class,new Gson().toJson(tag));
     }
 }

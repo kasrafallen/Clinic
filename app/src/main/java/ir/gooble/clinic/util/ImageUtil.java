@@ -5,13 +5,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 
 import ir.gooble.clinic.R;
@@ -60,22 +63,48 @@ public class ImageUtil {
     }
 
     private static void requestFromGallery(Activity context) {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        context.startActivityForResult(intent, ImageUtil.GALLERY_REQUEST_CODE);
+        try {
+            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            context.startActivityForResult(intent, ImageUtil.GALLERY_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void requestFromCamera(Activity context) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
-            File photoFile = createImageFile(context);
-            if (photoFile != null) {
-                current_path = photoFile.getAbsolutePath();
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile));
-                context.startActivityForResult(takePictureIntent, ImageUtil.CAMERA_REQUEST_CODE);
-            } else {
-                Toast.makeText(context, "اجازه دسترسی به دوربین ندارید", Toast.LENGTH_SHORT).show();
+        try {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+                File photoFile = createImageFile(context);
+                if (photoFile != null) {
+                    current_path = photoFile.getAbsolutePath();
+                    checkProvider();
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            Uri.fromFile(photoFile));
+                    context.startActivityForResult(takePictureIntent, ImageUtil.CAMERA_REQUEST_CODE);
+                } else {
+                    Toast.makeText(context, "اجازه دسترسی به دوربین ندارید", Toast.LENGTH_SHORT).show();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void checkProvider() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (Build.VERSION.SDK_INT >= 24) {
+                    try {
+                        Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                        m.invoke(null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -29,6 +29,7 @@ import ir.gooble.clinic.init.InitGallery;
 import ir.gooble.clinic.init.InitMain;
 import ir.gooble.clinic.init.InitRegister;
 import ir.gooble.clinic.init.InitReserve;
+import ir.gooble.clinic.init.InitSign;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.instance.DoctorInstance;
 import ir.gooble.clinic.instance.RegistryInstance;
@@ -76,11 +77,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
-    }
-
     private BaseInit selectView(String simpleName, Object object) {
         switch (simpleName) {
             case "MainActivity":
@@ -101,6 +97,8 @@ public class BaseActivity extends AppCompatActivity {
                 return new InitRegister((BaseActivity) object);
             case "ReserveActivity":
                 return new InitReserve((BaseActivity) object);
+            case "SignActivity":
+                return new InitSign((BaseActivity) object);
         }
         return null;
     }
@@ -201,27 +199,37 @@ public class BaseActivity extends AppCompatActivity {
     private void start(Intent intent, View view, String data) {
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
-//        ActivityOptionsCompat options = ActivityOptionsCompat.makeBasic();
-//        ActivityCompat.startActivity(context, intent, options.toBundle());
     }
 
     public void openDial(String number) {
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void openLink(String url) {
-        if (!url.startsWith("http")) {
-            url = "http://" + url;
+        try {
+            if (!url.startsWith("http")) {
+                url = "http://" + url;
+            }
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
     }
 
     public void openMail(String email) {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
-        startActivity(Intent.createChooser(emailIntent, "مکاتبه با ایمیل"));
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
+            startActivity(Intent.createChooser(emailIntent, "مکاتبه با ایمیل"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void share(FactModel tag) {

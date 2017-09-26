@@ -14,7 +14,7 @@ public enum Api {
             return "/doctorinfo";
         }
     },
-    RESERVE_INFO(Method.GET){
+    RESERVE_INFO(Method.POST){
         @Override
         public String toString() {
             return "/reserveinfo";

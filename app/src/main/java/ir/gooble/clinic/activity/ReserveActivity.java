@@ -45,6 +45,7 @@ public class ReserveActivity extends BaseActivity implements View.OnClickListene
         new Rest(this, Api.RESERVE_INFO).connect(new CallBack() {
             @Override
             public void onResponse(String response) {
+                current_progress++;
                 sendRequest(objects);
             }
 
@@ -67,7 +68,7 @@ public class ReserveActivity extends BaseActivity implements View.OnClickListene
             public void onClick() {
                 sendRequest(objects);
             }
-        });
+        }, objects[current_progress]);
     }
 
     @Override
