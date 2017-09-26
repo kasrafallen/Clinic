@@ -10,6 +10,7 @@ import ir.gooble.clinic.init.InitReserve;
 public class ReserveActivity extends BaseActivity implements View.OnClickListener {
 
     private InitReserve initReserve;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

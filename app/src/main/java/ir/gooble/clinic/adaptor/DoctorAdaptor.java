@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.DetailActivity;
 import ir.gooble.clinic.application.BaseActivity;
-import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
@@ -150,9 +149,8 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-//        holder.image.setImageResource(doctors);
-        holder.clickable.setTag(Attributes.MAIN_FIELDS[position]);
-
+        holder.image.setImageResource(R.mipmap.y_def_doctor_profile_2);
+        holder.clickable.setTag(doctors.get(position));
         SpannableString string = new SpannableString(getName(position) + "\n" + getDescription(position));
         string.setSpan(new AbsoluteSizeSpan(13, true), 0, string.toString().indexOf("\n"), 0);
         string.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, string.toString().indexOf("\n"), 0);
@@ -160,11 +158,11 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
     }
 
     private String getDescription(int position) {
-        return doctors.get(position).toString();
+        return doctors.get(position).getExpertise();
     }
 
     private String getName(int position) {
-        return doctors.get(position).toString();
+        return doctors.get(position).getName();
     }
 
     @Override

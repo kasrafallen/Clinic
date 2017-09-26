@@ -39,7 +39,7 @@ public enum Api {
         }
     };
 
-    public static final String ROUTE = "pyana.ir";
+    public static final String ROUTE = "pyana.ir/api";
     private int id;
 
     Api(int id) {

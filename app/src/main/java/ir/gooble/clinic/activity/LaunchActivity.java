@@ -20,6 +20,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.util.DialogUtil;
 import ir.gooble.clinic.util.Util;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -167,5 +168,12 @@ public class LaunchActivity extends Activity {
     @Override
     public void finish() {
         super.finish();
+    }
+
+    public static void start(BaseActivity activity) {
+        Intent intent = new Intent(activity, LaunchActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        activity.startActivity(intent);
     }
 }

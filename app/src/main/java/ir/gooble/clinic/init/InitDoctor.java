@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import ir.gooble.clinic.activity.DoctorActivity;
 import ir.gooble.clinic.adaptor.DoctorAdaptor;
@@ -18,6 +19,7 @@ import ir.gooble.clinic.view.AppToolbar;
 public class InitDoctor extends BaseInit {
     private static final int TOOLBAR_ID = +8248484;
 
+    private ArrayList<Doctor> list = new ArrayList<>();
     private final DoctorAdaptor adaptor;
     private DoctorActivity context;
     private AppToolbar toolbar;
@@ -27,7 +29,7 @@ public class InitDoctor extends BaseInit {
     public InitDoctor(BaseActivity context) {
         super(context);
         this.context = (DoctorActivity) context;
-        this.adaptor = new DoctorAdaptor(context, dimen, new ArrayList<Doctor>());
+        this.adaptor = new DoctorAdaptor(context, dimen, list);
     }
 
     @Override
@@ -56,5 +58,11 @@ public class InitDoctor extends BaseInit {
         toolbar = new AppToolbar(context, true, "معرفی پزشکان", true);
         toolbar.setId(TOOLBAR_ID);
         return toolbar;
+    }
+
+    public void update(Doctor[] doctors) {
+        list.clear();
+        Collections.addAll(list, doctors);
+        adaptor.notifyDataSetChanged();
     }
 }

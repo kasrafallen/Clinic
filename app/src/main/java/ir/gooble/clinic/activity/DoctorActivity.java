@@ -5,9 +5,9 @@ import android.support.annotation.Nullable;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitDoctor;
-import ir.gooble.clinic.oracle.Api;
-import ir.gooble.clinic.oracle.CallBack;
-import ir.gooble.clinic.oracle.Rest;
+import ir.gooble.clinic.instance.DoctorInstance;
+import ir.gooble.clinic.instance.InstanceResult;
+import ir.gooble.clinic.model.Doctor;
 
 public class DoctorActivity extends BaseActivity {
     private InitDoctor initDoctor;
@@ -16,34 +16,10 @@ public class DoctorActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initDoctor = (InitDoctor) setContentView(this);
-        sendRequest();
-    }
-
-    private void sendRequest() {
-        new Rest(this, Api.DOCTOR_INFO).connect(new CallBack() {
+        DoctorInstance.getDoctors(this, new InstanceResult() {
             @Override
-            public void onResponse(String response) {
-                prompt.hide();
-            }
-
-            @Override
-            public void onError(String error) {
-                prompt.error(this, error);
-            }
-
-            @Override
-            public void onInternet() {
-                prompt.internet(this);
-            }
-
-            @Override
-            public void onBefore() {
-                prompt.progress();
-            }
-
-            @Override
-            public void onClick() {
-                sendRequest();
+            public void onResult(Object[] objects) {
+                initDoctor.update((Doctor[]) objects);
             }
         });
     }

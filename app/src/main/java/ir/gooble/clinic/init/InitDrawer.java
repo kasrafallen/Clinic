@@ -15,6 +15,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.instance.UserInstance;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 
@@ -77,7 +78,9 @@ public class InitDrawer implements View.OnClickListener {
         if (counter < Attributes.MAIN_FIELDS.length) {
             layout.addView(item(Attributes.MAIN_FIELDS[Attributes.MAIN_FIELDS.length - 1]));
         }
-        layout.addView(item(LOGOUT));
+        if (!UserInstance.isEmpty(context)) {
+            layout.addView(item(LOGOUT));
+        }
     }
 
     private View item(String mainField) {
@@ -156,7 +159,9 @@ public class InitDrawer implements View.OnClickListener {
         text.setEllipsize(TextUtils.TruncateAt.END);
         text.setTextSize(1, 12);
         text.setTextColor(Color.WHITE);
-        text.setText("حسین مجیدی نژاد" + "\n" + "09195506484");
+        if(!UserInstance.isEmpty(context)) {
+            text.setText("حسین مجیدی نژاد" + "\n" + "09195506484");
+        }
         return text;
     }
 

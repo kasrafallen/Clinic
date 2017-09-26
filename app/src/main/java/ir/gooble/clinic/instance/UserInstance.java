@@ -9,10 +9,8 @@ import ir.gooble.clinic.util.Util;
 
 public class UserInstance {
 
-    public static final String USER = "USER_";
-
     public static User getUser(Context context) {
-        String data = Util.get(context).getString(USER, null);
+        String data = Util.get(context).getString(UserInstance.class.getSimpleName(), null);
         if (data == null) {
             return null;
         } else {
@@ -21,10 +19,10 @@ public class UserInstance {
     }
 
     public static void setUser(Context context, User user) {
-        Util.get(context).edit().putString(USER, new Gson().toJson(user)).apply();
+        Util.get(context).edit().putString(UserInstance.class.getSimpleName(), new Gson().toJson(user)).apply();
     }
 
     public static boolean isEmpty(Context context) {
-        return !Util.get(context).contains(USER);
+        return !Util.get(context).contains(UserInstance.class.getSimpleName());
     }
 }
