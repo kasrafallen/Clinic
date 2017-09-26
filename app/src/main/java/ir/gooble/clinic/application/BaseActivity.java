@@ -28,15 +28,18 @@ import ir.gooble.clinic.init.InitRegister;
 import ir.gooble.clinic.init.InitReserve;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.model.FactModel;
+import ir.gooble.clinic.util.PromptUtil;
 import ir.gooble.clinic.view.AppDrawerLayout;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class BaseActivity extends AppCompatActivity {
     public AppDrawerLayout drawer;
+    public PromptUtil prompt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prompt = new PromptUtil(this);
     }
 
     public BaseInit setContentView(Object object) {
@@ -53,7 +56,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void startActivity(Intent intent) {
         super.startActivity(intent);
-//        overridePendingTransition(0, 0);
     }
 
     private BaseInit selectView(String simpleName, Object object) {

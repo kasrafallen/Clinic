@@ -42,8 +42,9 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
     private int small_margin;
 
-    public DoctorAdaptor(BaseActivity context, float[] dimen) {
+    public DoctorAdaptor(BaseActivity context, float[] dimen, ArrayList<Doctor> doctors) {
         this.context = context;
+        this.doctors = doctors;
         this.margin = Util.toPx(10, context);
         this.height = (int) (dimen[0] / 2);
         this.padding = (int) (dimen[0] / 30);

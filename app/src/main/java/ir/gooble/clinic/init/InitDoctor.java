@@ -5,10 +5,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 
+import java.util.ArrayList;
+
 import ir.gooble.clinic.activity.DoctorActivity;
 import ir.gooble.clinic.adaptor.DoctorAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
+import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.view.AppRecyclerView;
 import ir.gooble.clinic.view.AppToolbar;
 
@@ -24,7 +27,7 @@ public class InitDoctor extends BaseInit {
     public InitDoctor(BaseActivity context) {
         super(context);
         this.context = (DoctorActivity) context;
-        this.adaptor = new DoctorAdaptor(context, dimen);
+        this.adaptor = new DoctorAdaptor(context, dimen, new ArrayList<Doctor>());
     }
 
     @Override

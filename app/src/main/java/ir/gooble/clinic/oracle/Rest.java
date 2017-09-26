@@ -24,7 +24,7 @@ import ir.gooble.clinic.model.User;
 public class Rest implements Response.Listener<String>, Response.ErrorListener {
     public static final String TAG = "REST_";
 
-    private final static String IP = "https://" + Api.ROUTE;
+    private final static String IP = "http://" + Api.ROUTE;
 
     private static final int RETRIES = 0;
     private static final int TIMEOUT = 5000;

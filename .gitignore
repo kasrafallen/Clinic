@@ -16,8 +16,7 @@ gradle-app.setting
 *.iml
 /.gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
+.idea
 /PSD
 .DS_Store
 /build
@@ -25,3 +24,4 @@ gradle-app.setting
 .externalNativeBuild
 projectFilesBackup/
 projectFilesBackup1/
+
