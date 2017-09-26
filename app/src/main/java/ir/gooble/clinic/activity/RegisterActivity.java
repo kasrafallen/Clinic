@@ -1,23 +1,17 @@
 package ir.gooble.clinic.activity;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.Toast;
-
-import java.util.Calendar;
-import java.util.jar.Manifest;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitRegister;
 import ir.gooble.clinic.instance.RegistryInstance;
+import ir.gooble.clinic.instance.UserInstance;
 import ir.gooble.clinic.model.RegistryModel;
-import ir.gooble.clinic.util.DialogUtil;
 import ir.gooble.clinic.util.ImageUtil;
 import ir.gooble.clinic.util.PermissionUtil;
 
@@ -31,6 +25,18 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         this.model = RegistryInstance.getDocuments(this);
         initRegister = (InitRegister) setContentView(this);
+
+        SignActivity.start(new UserInstance.SignResult() {
+            @Override
+            public void onDone() {
+
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+        }, this);
     }
 
     @Override

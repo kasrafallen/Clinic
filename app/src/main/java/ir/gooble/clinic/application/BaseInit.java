@@ -4,6 +4,7 @@ import android.view.View;
 
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.init.InitDrawer;
+import ir.gooble.clinic.init.InitSign;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppDrawerLayout;
 
@@ -18,6 +19,9 @@ public abstract class BaseInit {
     }
 
     public View getView() {
+        if(this instanceof InitSign){
+            return create();
+        }
         context.drawer = new AppDrawerLayout(context);
         context.drawer.setBackgroundResource(R.color.base);
         context.drawer.setScrimColor(context.getResources().getColor(R.color.scrim));
