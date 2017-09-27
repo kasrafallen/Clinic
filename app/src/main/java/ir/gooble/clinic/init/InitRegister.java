@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -281,7 +282,7 @@ public class InitRegister extends BaseInit {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                context.user.setInsurance_type(Attributes.SUPPORTED_INSURANCES[position]);
             }
 
             @Override
@@ -498,7 +499,7 @@ public class InitRegister extends BaseInit {
         return layout;
     }
 
-    private View groupButton(boolean isWoman) {
+    private View groupButton(final boolean isWoman) {
         RadioButton button = new RadioButton(context);
         button.setSingleLine();
         button.setTextSize(1, 11);
@@ -522,6 +523,16 @@ public class InitRegister extends BaseInit {
             button.setChecked(false);
         }
         button.setLayoutParams(params);
+        button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isWoman) {
+                    context.user.setWomen(isChecked);
+                } else {
+                    context.user.setMen(isChecked);
+                }
+            }
+        });
         return button;
     }
 

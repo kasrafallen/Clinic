@@ -135,4 +135,12 @@ public class User extends Sign {
     public boolean isWomen() {
         return women;
     }
+
+    public void setMen(boolean men) {
+        this.men = men;
+    }
+
+    public void setWomen(boolean women) {
+        this.women = women;
+    }
 }

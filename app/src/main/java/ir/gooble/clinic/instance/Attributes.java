@@ -20,6 +20,8 @@ public class Attributes {
 
     public static final String[] SUPPORTED_INSURANCES = new String[]{
             "بیمه ندارد"
+            , "تامین اجتماعی"
+            , "نیروهای مسلح"
     };
 
     public static int getResource(String field) {

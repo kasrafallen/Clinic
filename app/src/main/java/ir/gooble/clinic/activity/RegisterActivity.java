@@ -44,36 +44,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private void getRequest() {
-        new Rest(this, Api.PROFILE_INFO).connect(new CallBack() {
-            @Override
-            public void onResponse(String response) {
-                prompt.hide();
-                fetch();
-            }
-
-            @Override
-            public void onError(String error) {
-                fetch();
-            }
-
-            @Override
-            public void onInternet() {
-                fetch();
-            }
-
-            @Override
-            public void onBefore() {
-                prompt.progress();
-            }
-
-            @Override
-            public void onClick() {
-                getRequest();
-            }
-        });
-    }
-
     private void fetch() {
         initRegister.fetch();
     }
@@ -87,10 +57,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 postRequest();
             }
         }
-    }
-
-    private void postRequest() {
-
     }
 
     public void requestImage() {
@@ -123,6 +89,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         ImageUtil.handle(this, requestCode, resultCode, data, new ImageUtil.ResultInterface() {
             @Override
             public void onResult(String path) {
+                if (user != null) {
+                    user.setImagePath(path);
+                }
+                User user = UserInstance.getUser(RegisterActivity.this);
                 if (user == null) {
                     return;
                 }
@@ -132,5 +102,68 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 LocalBroadcastManager.getInstance(RegisterActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
             }
         });
+    }
+
+    private void getRequest() {
+        new Rest(this, Api.PROFILE_INFO).connect(new CallBack() {
+            @Override
+            public void onResponse(String response) {
+                prompt.hide();
+                fetch();
+            }
+
+            @Override
+            public void onError(String error) {
+                fetch();
+            }
+
+            @Override
+            public void onInternet() {
+                fetch();
+            }
+
+            @Override
+            public void onBefore() {
+                prompt.progress();
+            }
+
+            @Override
+            public void onClick() {
+                getRequest();
+            }
+        });
+    }
+
+    private void postRequest() {
+        if (user == null) {
+            return;
+        }
+        new Rest(this, Api.PROFILE_POST).connect(new CallBack() {
+            @Override
+            public void onResponse(String response) {
+                prompt.hide();
+                UserInstance.setUser(RegisterActivity.this, user);
+            }
+
+            @Override
+            public void onError(String error) {
+                prompt.error(this, error);
+            }
+
+            @Override
+            public void onInternet() {
+                prompt.internet(this);
+            }
+
+            @Override
+            public void onBefore() {
+                prompt.progress();
+            }
+
+            @Override
+            public void onClick() {
+                postRequest();
+            }
+        }, user);
     }
 }
