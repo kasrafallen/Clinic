@@ -1,13 +1,12 @@
-.gradle
 *.iml
 /.gradle
 /local.properties
-.idea
+/.idea
 /PSD
-.DS_Store
+/.DS_Store
 /build
 /captures
-.externalNativeBuild
+/.externalNativeBuild
 projectFilesBackup/
 projectFilesBackup1/
 
