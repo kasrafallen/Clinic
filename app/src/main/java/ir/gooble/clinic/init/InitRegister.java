@@ -1,6 +1,5 @@
 package ir.gooble.clinic.init;
 
-import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
@@ -14,7 +13,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -35,7 +33,6 @@ import ir.gooble.clinic.adaptor.SpinAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.instance.Attributes;
-import ir.gooble.clinic.util.DialogUtil;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 import ir.gooble.clinic.view.AppToolbar;
@@ -224,12 +221,9 @@ public class InitRegister extends BaseInit {
 
     private void setImage(CircleImageView imageView) {
         imageView.setImageResource(R.mipmap.y_def_user_profile);
-        if (context.model.getUser_image_path() != null && new File(context.model.getUser_image_path()).exists()) {
-            Picasso.with(context).load(new File(context.model.getUser_image_path()))
-                    .resize(profile, profile).centerCrop().error(R.mipmap.y_def_user_profile).into(imageView);
-        } else if (context.model.getUser_image_link() != null) {
-            Picasso.with(context).load(context.model.getUser_image_link())
-                    .resize(profile, profile).centerCrop().error(R.mipmap.y_def_user_profile).into(imageView);
+        if (context.user != null && context.user.getImagePath() != null && new File(context.user.getImagePath()).exists()) {
+            Picasso.with(context).load(new File(context.user.getImagePath()))
+                    .fit().centerCrop().error(R.mipmap.y_def_user_profile).into(imageView);
         }
     }
 
@@ -336,58 +330,58 @@ public class InitRegister extends BaseInit {
         Util.setText(editText, context);
 
         String hint = null;
-        switch (id) {
-            case NAME_ID:
-                hint = ("نام و نام خانوادگی");
-                editText.setText(context.model.getUser_name());
-                break;
-            case FATHER_ID:
-                hint = ("نام پدر");
-                editText.setText(context.model.getFather_name());
-                break;
-            case CARD_ID:
-            case PHONE_ID:
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                if (gravity == RelativeLayout.ALIGN_PARENT_RIGHT) {
-                    hint = ("شماره ملی");
-                    editText.setText(context.model.getUser_code());
-                } else {
-                    hint = ("تلفن همراه");
-                    editText.setText(context.model.getUser_mobile());
-                }
-                break;
-            case ADDRESS_ID:
-                editText.setSingleLine(false);
-                editText.setMaxLines(4);
-                hint = ("آدرس محل سکونت");
-                editText.setText(context.model.getUser_address());
-                break;
-            case INSURANCE_ID:
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                hint = ("شماره بیمه");
-                editText.setText(context.model.getInsurance_id());
-                break;
-            case BIRTHDAY_ID:
-                editText.setFocusableInTouchMode(false);
-                editText.setFocusable(false);
-                editText.setLongClickable(false);
-                hint = ("تاریخ تولد");
-                editText.setText(context.model.getUser_birthday());
-                editText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        DialogUtil.pickDate(context, new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                String format = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
-                                editText.setText(format);
-                                context.model.setUser_birthday(format);
-                            }
-                        });
-                    }
-                });
-                break;
-        }
+//        switch (id) {
+//            case NAME_ID:
+//                hint = ("نام و نام خانوادگی");
+//                editText.setText(context.model.getUser_name());
+//                break;
+//            case FATHER_ID:
+//                hint = ("نام پدر");
+//                editText.setText(context.model.getFather_name());
+//                break;
+//            case CARD_ID:
+//            case PHONE_ID:
+//                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+//                if (gravity == RelativeLayout.ALIGN_PARENT_RIGHT) {
+//                    hint = ("شماره ملی");
+//                    editText.setText(context.model.getUser_code());
+//                } else {
+//                    hint = ("تلفن همراه");
+//                    editText.setText(context.model.getUser_mobile());
+//                }
+//                break;
+//            case ADDRESS_ID:
+//                editText.setSingleLine(false);
+//                editText.setMaxLines(4);
+//                hint = ("آدرس محل سکونت");
+//                editText.setText(context.model.getUser_address());
+//                break;
+//            case INSURANCE_ID:
+//                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+//                hint = ("شماره بیمه");
+//                editText.setText(context.model.getInsurance_id());
+//                break;
+//            case BIRTHDAY_ID:
+//                editText.setFocusableInTouchMode(false);
+//                editText.setFocusable(false);
+//                editText.setLongClickable(false);
+//                hint = ("تاریخ تولد");
+//                editText.setText(context.model.getUser_birthday());
+//                editText.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        DialogUtil.pickDate(context, new DatePickerDialog.OnDateSetListener() {
+//                            @Override
+//                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+//                                String format = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
+//                                editText.setText(format);
+//                                context.model.setUser_birthday(format);
+//                            }
+//                        });
+//                    }
+//                });
+//                break;
+//        }
         editText.setHint(hint);
         setInspector(editText, id);
 
@@ -437,26 +431,26 @@ public class InitRegister extends BaseInit {
         if (data != null && data.length() == 0) {
             data = null;
         }
-        switch (mode) {
-            case NAME_ID:
-                context.model.setUser_name(data);
-                break;
-            case FATHER_ID:
-                context.model.setFather_name(data);
-                break;
-            case CARD_ID:
-                context.model.setUser_code(data);
-                break;
-            case PHONE_ID:
-                context.model.setUser_mobile(data);
-                break;
-            case ADDRESS_ID:
-                context.model.setUser_address(data);
-                break;
-            case INSURANCE_ID:
-                context.model.setInsurance_id(data);
-                break;
-        }
+//        switch (mode) {
+//            case NAME_ID:
+//                context.model.setUser_name(data);
+//                break;
+//            case FATHER_ID:
+//                context.model.setFather_name(data);
+//                break;
+//            case CARD_ID:
+//                context.model.setUser_code(data);
+//                break;
+//            case PHONE_ID:
+//                context.model.setUser_mobile(data);
+//                break;
+//            case ADDRESS_ID:
+//                context.model.setUser_address(data);
+//                break;
+//            case INSURANCE_ID:
+//                context.model.setInsurance_id(data);
+//                break;
+//        }
     }
 
     private View essential(boolean isDate) {
@@ -523,13 +517,13 @@ public class InitRegister extends BaseInit {
             button.setId(FEMALE_ID);
             button.setText("زن");
         }
-        if (context.model.getUser_sex() == 0 && !isWoman) {
-            button.setChecked(true);
-        } else if (context.model.getUser_sex() == 1 && isWoman) {
-            button.setChecked(true);
-        } else {
-            button.setChecked(false);
-        }
+//        if (context.model.getUser_sex() == 0 && !isWoman) {
+//            button.setChecked(true);
+//        } else if (context.model.getUser_sex() == 1 && isWoman) {
+//            button.setChecked(true);
+//        } else {
+//            button.setChecked(false);
+//        }
         button.setLayoutParams(params);
         return button;
     }

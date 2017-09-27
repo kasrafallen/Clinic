@@ -18,6 +18,7 @@ import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
+import ir.gooble.clinic.activity.RegisterActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.instance.UserInstance;
@@ -186,6 +187,12 @@ public class InitDrawer implements View.OnClickListener {
         params.setMargins(0, 0, margin, 0);
         imageView.setLayoutParams(params);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.redirect(RegisterActivity.class);
+            }
+        });
         updateImage();
         return imageView;
     }
