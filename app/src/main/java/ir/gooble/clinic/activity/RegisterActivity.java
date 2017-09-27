@@ -146,6 +146,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 prompt.hide();
                 UserInstance.setUser(RegisterActivity.this, user);
                 Toast.makeText(RegisterActivity.this, "تغییرات ثبت شد", Toast.LENGTH_SHORT).show();
+                LocalBroadcastManager.getInstance(RegisterActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
             }
 
             @Override

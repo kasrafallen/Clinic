@@ -76,9 +76,9 @@ public class InitRegister extends BaseInit {
 
     public InitRegister(BaseActivity context) {
         super(context);
-        this.context = (RegisterActivity) context;
-
         int toolbar_size = Util.getToolbarSize(context);
+
+        this.context = (RegisterActivity) context;
         this.toolbar = toolbar_size * 3;
         this.profile = toolbar_size * 2;
         this.add = toolbar_size / 2;
