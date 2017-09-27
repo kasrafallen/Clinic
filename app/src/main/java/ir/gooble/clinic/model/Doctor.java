@@ -11,6 +11,13 @@ public class Doctor {
     private long start;
     private long end;
 
+    public Doctor() {
+    }
+
+    public Doctor(int doctor_id) {
+        this.doctor_id = doctor_id;
+    }
+
     public long getStart() {
         return start;
     }

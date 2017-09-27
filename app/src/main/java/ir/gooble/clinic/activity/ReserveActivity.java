@@ -72,7 +72,7 @@ public class ReserveActivity extends BaseActivity implements View.OnClickListene
             public void onClick() {
                 sendRequest(objects);
             }
-        }, objects[current_progress]);
+        }, new Doctor(objects[current_progress].getDoctor_id()));
     }
 
     @Override

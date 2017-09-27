@@ -6,6 +6,13 @@ public class User {
     private String token;
     private String name;
 
+    private String mobile_number;
+
+    public User(String name, String mobile_number) {
+        this.name = name;
+        this.mobile_number = mobile_number;
+    }
+
     public String getName() {
         return name;
     }
