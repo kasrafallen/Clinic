@@ -16,6 +16,7 @@ import ir.gooble.clinic.R;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.instance.UserInstance;
+import ir.gooble.clinic.model.User;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 
@@ -23,7 +24,6 @@ public class InitDrawer implements View.OnClickListener {
     public static final String LOGOUT = "خروج";
 
     private BaseActivity context;
-    private float[] dimen;
     private int width;
     private int profile;
     private int image;
@@ -31,9 +31,11 @@ public class InitDrawer implements View.OnClickListener {
     private int item_size;
     private int icon;
 
+    private AppText text;
+    private View sign;
+
     public InitDrawer(BaseActivity context, float[] dimen) {
         this.context = context;
-        this.dimen = dimen;
         this.width = (int) (3f * dimen[0] / 4f);
         this.profile = Util.toPx(150, context);
         this.image = (int) (2f * profile / 3f);
@@ -78,9 +80,7 @@ public class InitDrawer implements View.OnClickListener {
         if (counter < Attributes.MAIN_FIELDS.length) {
             layout.addView(item(Attributes.MAIN_FIELDS[Attributes.MAIN_FIELDS.length - 1]));
         }
-        if (!UserInstance.isEmpty(context)) {
-            layout.addView(item(LOGOUT));
-        }
+        layout.addView(item(LOGOUT));
     }
 
     private View item(String mainField) {
@@ -95,6 +95,11 @@ public class InitDrawer implements View.OnClickListener {
 
         layout.addView(text(mainField));
         layout.addView(icon(mainField));
+
+        if (UserInstance.isEmpty(context) && mainField.equals(LOGOUT)) {
+            sign = layout;
+            updateSign();
+        }
         return layout;
     }
 
@@ -149,7 +154,7 @@ public class InitDrawer implements View.OnClickListener {
     }
 
     private View name() {
-        AppText text = new AppText(context);
+        text = new AppText(context);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
         params.rightMargin = image + 2 * margin;
         params.leftMargin = margin;
@@ -159,9 +164,7 @@ public class InitDrawer implements View.OnClickListener {
         text.setEllipsize(TextUtils.TruncateAt.END);
         text.setTextSize(1, 12);
         text.setTextColor(Color.WHITE);
-        if(!UserInstance.isEmpty(context)) {
-            text.setText("حسین مجیدی نژاد" + "\n" + "09195506484");
-        }
+        updateName();
         return text;
     }
 
@@ -183,5 +186,33 @@ public class InitDrawer implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         context.run((String) view.getTag(), context, view, null);
+    }
+
+    public void update() {
+        updateName();
+        updateSign();
+    }
+
+    private void updateSign() {
+        if (sign == null) {
+            return;
+        }
+        if (!UserInstance.isEmpty(context)) {
+            sign.setVisibility(View.VISIBLE);
+        } else {
+            sign.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateName() {
+        if (text == null) {
+            return;
+        }
+        if (!UserInstance.isEmpty(context)) {
+            User user = UserInstance.getUser(context);
+            text.setText(user.getName() + "\n" + user.getMobile_number());
+        } else {
+            text.setText("");
+        }
     }
 }

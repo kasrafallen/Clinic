@@ -42,14 +42,22 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class BaseActivity extends AppCompatActivity {
     private static final String EXIT = "BaseActivity.EXIT";
+    public static final String UPDATE = "BaseActivity.UPDATE";
 
     public AppDrawerLayout drawer;
     public PromptUtil prompt;
+    private BaseInit init;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             finish();
+        }
+    };
+    private BroadcastReceiver user_receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUser();
         }
     };
 
@@ -58,11 +66,12 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         prompt = new PromptUtil(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(EXIT));
+        LocalBroadcastManager.getInstance(this).registerReceiver(user_receiver, new IntentFilter(UPDATE));
     }
 
     public BaseInit setContentView(Object object) {
         if (object != null && object instanceof BaseActivity) {
-            BaseInit init = selectView(((BaseActivity) object).getClass().getSimpleName(), object);
+            init = selectView(((BaseActivity) object).getClass().getSimpleName(), object);
             if (init != null) {
                 super.setContentView(init.getView());
                 return init;
@@ -74,6 +83,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(user_receiver);
         super.onDestroy();
     }
 
@@ -238,5 +248,11 @@ public class BaseActivity extends AppCompatActivity {
 
     public void share() {
 
+    }
+
+    private void updateUser() {
+        if(drawer != null && init != null && init.drawer != null){
+            init.drawer.update();
+        }
     }
 }

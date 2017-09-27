@@ -1,7 +1,9 @@
 package ir.gooble.clinic.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Window;
 
 import com.google.gson.Gson;
@@ -21,6 +23,7 @@ public class SignActivity extends BaseActivity {
     private InitSign initSign;
 
     public InitSign.Mode current_mode;
+    private User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,17 +88,29 @@ public class SignActivity extends BaseActivity {
         if (current_mode == InitSign.Mode.NUMBER) {
             api = Api.REGISTER;
         } else {
-
+            UserInstance.setUser(SignActivity.this, user);
+            LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
+            setResult(RESULT_OK);
+            finish();
+            return;
         }
+        final Api finalApi = api;
         new Rest(this, api).connect(new CallBack() {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
-                User user = new Gson().fromJson(response, User.class);
-                user.setName(params.getName());
-                user.setMobile_number(params.getMobile_number());
-                user.setDeviceID(params.getDeviceID());
-                initSign.setMode(InitSign.Mode.VERIFY);
+                if (finalApi == Api.REGISTER) {
+                    user = new Gson().fromJson(response, User.class);
+                    user.setName(params.getName());
+                    user.setMobile_number(params.getMobile_number());
+                    user.setDeviceID(params.getDeviceID());
+                    initSign.setMode(InitSign.Mode.VERIFY);
+                } else {
+                    UserInstance.setUser(SignActivity.this, user);
+                    LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
+                    setResult(RESULT_OK);
+                    finish();
+                }
             }
 
             @Override
