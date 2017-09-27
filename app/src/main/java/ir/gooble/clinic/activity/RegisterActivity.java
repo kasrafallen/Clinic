@@ -3,7 +3,6 @@ package ir.gooble.clinic.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,19 +23,28 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.model = RegistryInstance.getDocuments(this);
-        initRegister = (InitRegister) setContentView(this);
+        this.initRegister = (InitRegister) setContentView(this);
 
-        SignActivity.start(new UserInstance.SignResult() {
-            @Override
-            public void onDone() {
+        if (UserInstance.isEmpty(this)) {
+            SignActivity.start(new UserInstance.SignResult() {
+                @Override
+                public void onDone() {
+                    show();
+                }
 
-            }
+                @Override
+                public void onDismiss() {
+                    finish();
+                }
+            }, this);
+        } else {
+            show();
+        }
+    }
 
-            @Override
-            public void onDismiss() {
-
-            }
-        }, this);
+    private void show() {
+        initRegister.layout.setVisibility(View.VISIBLE);
+        initRegister.function.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -78,7 +86,6 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void onDismissed() {
-
             }
         });
     }
@@ -86,11 +93,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        SignActivity.handle(requestCode, resultCode);
         ImageUtil.handle(this, requestCode, resultCode, data, new ImageUtil.ResultInterface() {
             @Override
             public void onResult(String path) {
-                Log.d("TEST_IMAGE", "onResult() returned: " + path);
                 model.setUser_image_path(path);
                 save(false);
                 initRegister.updateImage();

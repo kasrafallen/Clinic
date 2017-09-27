@@ -24,9 +24,13 @@ public class ReserveActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initReserve = (InitReserve) setContentView(this);
+        continueProcess();
+    }
+
+    private void continueProcess() {
         if (getIntent().getAction() != null) {
             String json = getIntent().getAction();
-            Doctor doctor = new Gson().fromJson(getIntent().getAction(), Doctor.class);
+            Doctor doctor = new Gson().fromJson(json, Doctor.class);
             sendRequest(new Doctor[]{doctor});
         } else {
             DoctorInstance.getDoctors(this, new InstanceResult() {
@@ -39,7 +43,7 @@ public class ReserveActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void sendRequest(final Doctor[] objects) {
-        if(current_progress >= objects.length){
+        if (current_progress >= objects.length) {
             return;
         }
         new Rest(this, Api.RESERVE_INFO).connect(new CallBack() {

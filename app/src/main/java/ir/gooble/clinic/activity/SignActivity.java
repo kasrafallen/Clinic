@@ -10,6 +10,7 @@ import ir.gooble.clinic.instance.UserInstance;
 
 public class SignActivity extends BaseActivity {
 
+    private static final int REQUEST_CODE = 549;
     private InitSign initSign;
 
     @Override
@@ -22,10 +23,27 @@ public class SignActivity extends BaseActivity {
 
         }
         initSign = (InitSign) setContentView(this);
+        initSign.setMode(InitSign.Mode.NUMBER);
     }
 
     public static void start(UserInstance.SignResult result, BaseActivity context) {
         UserInstance.getInstance().setSignResult(result);
-        context.redirect(SignActivity.class);
+        context.redirect(SignActivity.class, null, REQUEST_CODE);
+    }
+
+    public static void handle(int requestCode, int resultCode) {
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                UserInstance.getInstance().getSignResult().onDone();
+            } else {
+                UserInstance.getInstance().getSignResult().onDismiss();
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (initSign.onBackPressed())
+            super.onBackPressed();
     }
 }

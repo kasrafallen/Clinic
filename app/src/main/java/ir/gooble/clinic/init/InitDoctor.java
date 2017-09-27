@@ -24,8 +24,6 @@ public class InitDoctor extends BaseInit {
     private DoctorActivity context;
     private AppToolbar toolbar;
 
-    public AppRecyclerView recyclerView;
-
     public InitDoctor(BaseActivity context) {
         super(context);
         this.context = (DoctorActivity) context;
@@ -42,7 +40,7 @@ public class InitDoctor extends BaseInit {
     }
 
     private View recycler() {
-        recyclerView = new AppRecyclerView(context);
+        AppRecyclerView recyclerView = new AppRecyclerView(context);
         CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(-1, -2);
         params.topMargin = toolbar.getSize();
         recyclerView.setLayoutParams(params);

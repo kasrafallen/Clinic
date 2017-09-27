@@ -61,12 +61,15 @@ public class InitRegister extends BaseInit {
     private int profile;
     private int add;
     private int small_margin;
-    private int function;
+    private int function_;
     private int button;
     private int field;
     private int margin;
     private int field_with;
     private int essential;
+
+    public RelativeLayout layout;
+    public LinearLayout function;
 
     public InitRegister(BaseActivity context) {
         super(context);
@@ -77,7 +80,7 @@ public class InitRegister extends BaseInit {
         this.profile = toolbar_size * 2;
         this.add = toolbar_size / 2;
         this.small_margin = Util.toPx(5, context);
-        this.function = Util.toPx(70, context);
+        this.function_ = Util.toPx(70, context);
         this.button = Util.toPx(40, context);
         this.field = Util.toPx(60, context);
         this.margin = Util.toPx(15, context);
@@ -97,7 +100,7 @@ public class InitRegister extends BaseInit {
     }
 
     private View recycler() {
-        RelativeLayout layout = new RelativeLayout(context);
+        layout = new RelativeLayout(context);
         layout.setLayoutParams(new LinearLayout.LayoutParams(-1, -2, 1f));
 
         ScrollView scrollView = new ScrollView(context);
@@ -117,20 +120,22 @@ public class InitRegister extends BaseInit {
 
         scrollView.addView(box);
         layout.addView(scrollView);
+        layout.setVisibility(View.GONE);
         return layout;
     }
 
     private View function() {
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, function);
-        layout.setLayoutParams(params);
-        layout.addView(space(1f));
-        layout.addView(button(true));
-        layout.addView(space(2f));
-        layout.addView(button(false));
-        layout.addView(space(1f));
-        return layout;
+        function = new LinearLayout(context);
+        function.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, function_);
+        function.setLayoutParams(params);
+        function.addView(space(1f));
+        function.addView(button(true));
+        function.addView(space(2f));
+        function.addView(button(false));
+        function.addView(space(1f));
+        function.setVisibility(View.GONE);
+        return function;
     }
 
     private View button(boolean isExit) {
