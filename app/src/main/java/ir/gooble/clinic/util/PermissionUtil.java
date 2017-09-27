@@ -43,7 +43,7 @@ public class PermissionUtil {
         }
     }
 
-    private static boolean checkPermission(String[] permissions, BaseActivity context) {
+    public static boolean checkPermission(String[] permissions, BaseActivity context) {
         boolean flag = true;
         if (Build.VERSION.SDK_INT >= 23) {
             for (String permission : permissions) {

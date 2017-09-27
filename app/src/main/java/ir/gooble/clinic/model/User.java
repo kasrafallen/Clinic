@@ -6,6 +6,8 @@ public class User {
     private String token;
     private String name;
 
+    private String imagePath;
+
     private String mobile_number;
     private String deviceID;
 
@@ -13,6 +15,14 @@ public class User {
         this.name = name;
         this.mobile_number = mobile_number;
         this.deviceID = deviceID;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public String getMobile_number() {

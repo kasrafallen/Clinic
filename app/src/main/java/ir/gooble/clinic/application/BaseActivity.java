@@ -32,7 +32,6 @@ import ir.gooble.clinic.init.InitReserve;
 import ir.gooble.clinic.init.InitSign;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.instance.DoctorInstance;
-import ir.gooble.clinic.instance.RegistryInstance;
 import ir.gooble.clinic.instance.UserInstance;
 import ir.gooble.clinic.model.FactModel;
 import ir.gooble.clinic.util.PromptUtil;
@@ -200,7 +199,6 @@ public class BaseActivity extends AppCompatActivity {
         Util.get(this).edit()
                 .remove(DoctorInstance.class.getSimpleName())
                 .remove(UserInstance.class.getSimpleName())
-                .remove(RegistryInstance.class.getSimpleName())
                 .apply();
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(EXIT));
         LaunchActivity.start(this);

@@ -1,5 +1,6 @@
 package ir.gooble.clinic.init;
 
+import android.Manifest;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.widget.DrawerLayout;
@@ -11,12 +12,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.instance.UserInstance;
 import ir.gooble.clinic.model.User;
+import ir.gooble.clinic.util.PermissionUtil;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 
@@ -31,6 +37,7 @@ public class InitDrawer implements View.OnClickListener {
     private int item_size;
     private int icon;
 
+    private CircleImageView imageView;
     private AppText text;
     private View sign;
 
@@ -169,7 +176,7 @@ public class InitDrawer implements View.OnClickListener {
     }
 
     private View image() {
-        CircleImageView imageView = new CircleImageView(context);
+        imageView = new CircleImageView(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             imageView.setElevation(25);
         }
@@ -179,7 +186,7 @@ public class InitDrawer implements View.OnClickListener {
         params.setMargins(0, 0, margin, 0);
         imageView.setLayoutParams(params);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.y_def_user_profile);
+        updateImage();
         return imageView;
     }
 
@@ -190,7 +197,32 @@ public class InitDrawer implements View.OnClickListener {
 
     public void update() {
         updateName();
+        updateImage();
         updateSign();
+    }
+
+    private void updateImage() {
+        if (imageView == null) {
+            return;
+        }
+        boolean haveAvatar = false;
+        if (!UserInstance.isEmpty(context) && hasAccess()) {
+            User user = UserInstance.getUser(context);
+            if (user != null && user.getImagePath() != null) {
+                File path = new File(user.getImagePath());
+                if (path.exists()) {
+                    haveAvatar = true;
+                    Picasso.with(context).load(path).fit().centerCrop().into(imageView);
+                }
+            }
+        }
+        if (!haveAvatar) {
+            imageView.setImageResource(R.mipmap.y_def_user_profile);
+        }
+    }
+
+    private boolean hasAccess() {
+        return PermissionUtil.checkPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, context);
     }
 
     private void updateSign() {

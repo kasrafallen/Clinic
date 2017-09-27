@@ -3,33 +3,34 @@ package ir.gooble.clinic.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
-import android.widget.Toast;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitRegister;
-import ir.gooble.clinic.instance.RegistryInstance;
 import ir.gooble.clinic.instance.UserInstance;
-import ir.gooble.clinic.model.RegistryModel;
+import ir.gooble.clinic.model.User;
+import ir.gooble.clinic.oracle.Api;
+import ir.gooble.clinic.oracle.CallBack;
+import ir.gooble.clinic.oracle.Rest;
 import ir.gooble.clinic.util.ImageUtil;
 import ir.gooble.clinic.util.PermissionUtil;
 
 public class RegisterActivity extends BaseActivity implements View.OnClickListener {
 
     private InitRegister initRegister;
-    public RegistryModel model;
+    public User user;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.model = RegistryInstance.getDocuments(this);
         this.initRegister = (InitRegister) setContentView(this);
-
         if (UserInstance.isEmpty(this)) {
             SignActivity.start(new UserInstance.SignResult() {
                 @Override
                 public void onDone() {
-                    show();
+                    user = UserInstance.getUser(RegisterActivity.this);
+                    getRequest();
                 }
 
                 @Override
@@ -38,11 +39,42 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 }
             }, this);
         } else {
-            show();
+            user = UserInstance.getUser(RegisterActivity.this);
+            getRequest();
         }
     }
 
-    private void show() {
+    private void getRequest() {
+        new Rest(this, Api.PROFILE_INFO).connect(new CallBack() {
+            @Override
+            public void onResponse(String response) {
+                prompt.hide();
+                fetch();
+            }
+
+            @Override
+            public void onError(String error) {
+                fetch();
+            }
+
+            @Override
+            public void onInternet() {
+                fetch();
+            }
+
+            @Override
+            public void onBefore() {
+                prompt.progress();
+            }
+
+            @Override
+            public void onClick() {
+                getRequest();
+            }
+        });
+    }
+
+    private void fetch() {
         initRegister.layout.setVisibility(View.VISIBLE);
         initRegister.function.setVisibility(View.VISIBLE);
     }
@@ -53,24 +85,19 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             if (v.getTag().equals(String.valueOf(true))) {
                 onBackPressed();
             } else {
-                save(true);
+                postRequest();
             }
         }
     }
 
-    private void save(boolean withAll) {
-        if (withAll) {
-            if (initRegister.group.getCheckedRadioButtonId() == InitRegister.FEMALE_ID) {
-                model.setUser_sex(RegistryModel.SEX_FEMALE);
-            } else {
-                model.setUser_sex(RegistryModel.SEX_MALE);
-            }
-            Toast.makeText(this, "پرونده به روز رسانی شد", Toast.LENGTH_SHORT).show();
-        }
-        RegistryInstance.setDocuments(this, model);
+    private void postRequest() {
+
     }
 
     public void requestImage() {
+        if (user == null) {
+            return;
+        }
         PermissionUtil.requestPermission(new String[]{android.Manifest.permission.CAMERA
                 , android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, this, new PermissionUtil.PermissionCallBack() {
             @Override
@@ -97,9 +124,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         ImageUtil.handle(this, requestCode, resultCode, data, new ImageUtil.ResultInterface() {
             @Override
             public void onResult(String path) {
-                model.setUser_image_path(path);
-                save(false);
+                if (user == null) {
+                    return;
+                }
+                user.setImagePath(path);
+                UserInstance.setUser(RegisterActivity.this, user);
                 initRegister.updateImage();
+                LocalBroadcastManager.getInstance(RegisterActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
             }
         });
     }
