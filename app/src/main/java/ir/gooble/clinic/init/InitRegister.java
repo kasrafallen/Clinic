@@ -1,5 +1,6 @@
 package ir.gooble.clinic.init;
 
+import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
@@ -13,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -33,6 +35,7 @@ import ir.gooble.clinic.adaptor.SpinAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.util.DialogUtil;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 import ir.gooble.clinic.view.AppToolbar;
@@ -51,6 +54,9 @@ public class InitRegister extends BaseInit {
     public static final int FEMALE_ID = +12458;
     public static final int MALE_ID = +12459;
 
+    private static final int TOOLBAR = +481487;
+    private static final int FUNCTION = +51482;
+
     private RegisterActivity context;
     public RadioGroup group;
 
@@ -65,8 +71,8 @@ public class InitRegister extends BaseInit {
     private int field_with;
     private int essential;
 
-    public RelativeLayout layout;
-    public LinearLayout function;
+    private LinearLayout function;
+    private LinearLayout box;
 
     public InitRegister(BaseActivity context) {
         super(context);
@@ -87,51 +93,49 @@ public class InitRegister extends BaseInit {
 
     @Override
     protected View create() {
-        LinearLayout layout = new LinearLayout(context);
+        RelativeLayout layout = new RelativeLayout(context);
         layout.setLayoutParams(new DrawerLayout.LayoutParams(-1, -1));
-        layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(toolbar());
-        layout.addView(recycler());
         layout.addView(function());
+        layout.addView(recycler());
         return layout;
     }
 
     private View recycler() {
-        layout = new RelativeLayout(context);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(-1, -2, 1f));
+        final RelativeLayout layout = new RelativeLayout(context);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -1);
+        params.addRule(RelativeLayout.BELOW, TOOLBAR);
+        params.addRule(RelativeLayout.ABOVE, FUNCTION);
+        layout.setLayoutParams(params);
 
         ScrollView scrollView = new ScrollView(context);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, -2);
-        params.addRule(RelativeLayout.CENTER_VERTICAL);
-        scrollView.setLayoutParams(params);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(-1, -2);
+        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        scrollView.setLayoutParams(layoutParams);
         scrollView.setHorizontalScrollBarEnabled(false);
         scrollView.setVerticalScrollBarEnabled(false);
 
-        LinearLayout box = new LinearLayout(context);
+        box = new LinearLayout(context);
         box.setOrientation(LinearLayout.VERTICAL);
-        box.addView(field(0));
-        box.addView(field(1));
-        box.addView(field(2));
-        box.addView(field(3));
-        box.addView(field(4));
 
         scrollView.addView(box);
         layout.addView(scrollView);
-        layout.setVisibility(View.GONE);
         return layout;
     }
 
     private View function() {
         function = new LinearLayout(context);
+        function.setId(FUNCTION);
         function.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, function_);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-1, function_);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         function.setLayoutParams(params);
         function.addView(space(1f));
         function.addView(button(true));
         function.addView(space(2f));
         function.addView(button(false));
         function.addView(space(1f));
-        function.setVisibility(View.GONE);
+        function.setVisibility(View.INVISIBLE);
         return function;
     }
 
@@ -169,7 +173,8 @@ public class InitRegister extends BaseInit {
 
     private View toolbar() {
         RelativeLayout layout = new RelativeLayout(context);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(-1, toolbar));
+        layout.setId(TOOLBAR);
+        layout.setLayoutParams(new RelativeLayout.LayoutParams(-1, toolbar));
 
         AppToolbar toolbar = new AppToolbar(context, true, "ثبت پرونده", true);
         toolbar.setMaximize();
@@ -186,7 +191,6 @@ public class InitRegister extends BaseInit {
         imageView.setLayoutParams(params);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Util.setBackground(imageView, context);
-        setImage(imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,13 +214,6 @@ public class InitRegister extends BaseInit {
         layout.addView(imageView);
         layout.addView(addView);
         return layout;
-    }
-
-    public void updateImage() {
-        CircleImageView imageView = (CircleImageView) context.findViewById(IMAGE);
-        if (imageView != null) {
-            setImage(imageView);
-        }
     }
 
     private void setImage(CircleImageView imageView) {
@@ -330,58 +327,58 @@ public class InitRegister extends BaseInit {
         Util.setText(editText, context);
 
         String hint = null;
-//        switch (id) {
-//            case NAME_ID:
-//                hint = ("نام و نام خانوادگی");
-//                editText.setText(context.model.getUser_name());
-//                break;
-//            case FATHER_ID:
-//                hint = ("نام پدر");
-//                editText.setText(context.model.getFather_name());
-//                break;
-//            case CARD_ID:
-//            case PHONE_ID:
-//                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-//                if (gravity == RelativeLayout.ALIGN_PARENT_RIGHT) {
-//                    hint = ("شماره ملی");
-//                    editText.setText(context.model.getUser_code());
-//                } else {
-//                    hint = ("تلفن همراه");
-//                    editText.setText(context.model.getUser_mobile());
-//                }
-//                break;
-//            case ADDRESS_ID:
-//                editText.setSingleLine(false);
-//                editText.setMaxLines(4);
-//                hint = ("آدرس محل سکونت");
-//                editText.setText(context.model.getUser_address());
-//                break;
-//            case INSURANCE_ID:
-//                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-//                hint = ("شماره بیمه");
-//                editText.setText(context.model.getInsurance_id());
-//                break;
-//            case BIRTHDAY_ID:
-//                editText.setFocusableInTouchMode(false);
-//                editText.setFocusable(false);
-//                editText.setLongClickable(false);
-//                hint = ("تاریخ تولد");
-//                editText.setText(context.model.getUser_birthday());
-//                editText.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        DialogUtil.pickDate(context, new DatePickerDialog.OnDateSetListener() {
-//                            @Override
-//                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//                                String format = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
-//                                editText.setText(format);
-//                                context.model.setUser_birthday(format);
-//                            }
-//                        });
-//                    }
-//                });
-//                break;
-//        }
+        switch (id) {
+            case NAME_ID:
+                hint = ("نام و نام خانوادگی");
+                editText.setText(context.user.getName());
+                break;
+            case FATHER_ID:
+                hint = ("نام پدر");
+                editText.setText(context.user.getFather_name());
+                break;
+            case CARD_ID:
+            case PHONE_ID:
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                if (gravity == RelativeLayout.ALIGN_PARENT_RIGHT) {
+                    hint = ("شماره ملی");
+                    editText.setText(context.user.getNational_number());
+                } else {
+                    hint = ("تلفن همراه");
+                    editText.setText(context.user.getMobile_number());
+                }
+                break;
+            case ADDRESS_ID:
+                editText.setSingleLine(false);
+                editText.setMaxLines(4);
+                hint = ("آدرس محل سکونت");
+                editText.setText(context.user.getStreet());
+                break;
+            case INSURANCE_ID:
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                hint = ("شماره بیمه");
+                editText.setText(context.user.getInsurance_number());
+                break;
+            case BIRTHDAY_ID:
+                editText.setFocusableInTouchMode(false);
+                editText.setFocusable(false);
+                editText.setLongClickable(false);
+                hint = ("تاریخ تولد");
+                editText.setText(context.user.getBirthday());
+                editText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogUtil.pickDate(context, new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                String format = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
+                                editText.setText(format);
+                                context.user.setBirthday(format);
+                            }
+                        });
+                    }
+                });
+                break;
+        }
         editText.setHint(hint);
         setInspector(editText, id);
 
@@ -431,26 +428,26 @@ public class InitRegister extends BaseInit {
         if (data != null && data.length() == 0) {
             data = null;
         }
-//        switch (mode) {
-//            case NAME_ID:
-//                context.model.setUser_name(data);
-//                break;
-//            case FATHER_ID:
-//                context.model.setFather_name(data);
-//                break;
-//            case CARD_ID:
-//                context.model.setUser_code(data);
-//                break;
-//            case PHONE_ID:
-//                context.model.setUser_mobile(data);
-//                break;
-//            case ADDRESS_ID:
-//                context.model.setUser_address(data);
-//                break;
-//            case INSURANCE_ID:
-//                context.model.setInsurance_id(data);
-//                break;
-//        }
+        switch (mode) {
+            case NAME_ID:
+                context.user.setName(data);
+                break;
+            case FATHER_ID:
+                context.user.setFather_name(data);
+                break;
+            case CARD_ID:
+                context.user.setNational_number(data);
+                break;
+            case PHONE_ID:
+                context.user.setMobile_number(data);
+                break;
+            case ADDRESS_ID:
+                context.user.setStreet(data);
+                break;
+            case INSURANCE_ID:
+                context.user.setInsurance_number(data);
+                break;
+        }
     }
 
     private View essential(boolean isDate) {
@@ -517,14 +514,32 @@ public class InitRegister extends BaseInit {
             button.setId(FEMALE_ID);
             button.setText("زن");
         }
-//        if (context.model.getUser_sex() == 0 && !isWoman) {
-//            button.setChecked(true);
-//        } else if (context.model.getUser_sex() == 1 && isWoman) {
-//            button.setChecked(true);
-//        } else {
-//            button.setChecked(false);
-//        }
+        if (context.user.isMen() && !isWoman) {
+            button.setChecked(true);
+        } else if (context.user.isWomen() && isWoman) {
+            button.setChecked(true);
+        } else {
+            button.setChecked(false);
+        }
         button.setLayoutParams(params);
         return button;
+    }
+
+    public void fetch() {
+        box.addView(field(0));
+        box.addView(field(1));
+        box.addView(field(2));
+        box.addView(field(3));
+        box.addView(field(4));
+
+        updateImage();
+        function.setVisibility(View.VISIBLE);
+    }
+
+    public void updateImage() {
+        CircleImageView imageView = (CircleImageView) context.findViewById(IMAGE);
+        if (imageView != null) {
+            setImage(imageView);
+        }
     }
 }

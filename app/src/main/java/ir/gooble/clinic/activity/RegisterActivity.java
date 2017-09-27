@@ -75,8 +75,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void fetch() {
-        initRegister.layout.setVisibility(View.VISIBLE);
-        initRegister.function.setVisibility(View.VISIBLE);
+        initRegister.fetch();
     }
 
     @Override
