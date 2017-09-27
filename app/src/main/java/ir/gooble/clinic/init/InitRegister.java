@@ -52,14 +52,13 @@ public class InitRegister extends BaseInit {
     private static final int ADDRESS_ID = +458966;
     private static final int PHONE_ID = +458965;
 
-    public static final int FEMALE_ID = +12458;
-    public static final int MALE_ID = +12459;
+    private static final int FEMALE_ID = +12458;
+    private static final int MALE_ID = +12459;
 
     private static final int TOOLBAR = +481487;
     private static final int FUNCTION = +51482;
 
     private RegisterActivity context;
-    public RadioGroup group;
 
     private int toolbar;
     private int profile;
@@ -493,7 +492,7 @@ public class InitRegister extends BaseInit {
         hint.setTextSize(1, 11);
         hint.setText("جنسیت");
 
-        group = new RadioGroup(context);
+        RadioGroup group = new RadioGroup(context);
         group.setOrientation(LinearLayout.HORIZONTAL);
         RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(-2, -2);
         params1.addRule(RelativeLayout.CENTER_IN_PARENT);
