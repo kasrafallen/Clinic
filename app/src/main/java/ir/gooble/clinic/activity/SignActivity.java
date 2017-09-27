@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Window;
 
+import com.google.gson.Gson;
+
 import ir.gooble.clinic.application.BaseActivity;
+import ir.gooble.clinic.application.BaseApplication;
 import ir.gooble.clinic.init.InitSign;
 import ir.gooble.clinic.instance.UserInstance;
 import ir.gooble.clinic.model.User;
@@ -60,14 +63,16 @@ public class SignActivity extends BaseActivity {
     public void next(String var) {
         if (current_mode == InitSign.Mode.NUMBER) {
             if (var.length() == 11 && var.trim().length() == 11 && var.startsWith("09")) {
-                sendRequest(var);
+                User params = new User("Asghar", var, BaseApplication.getId(SignActivity.this));
+                sendRequest(params);
                 initSign.setError(null);
             } else {
                 initSign.setError("شماره وارد شده صحیح نیست");
             }
         } else {
             if (var.length() == 0) {
-                sendRequest(var);
+                User params = null;
+                sendRequest(params);
                 initSign.setError(null);
             } else {
                 initSign.setError("کد تایید معتبر نیست");
@@ -75,7 +80,7 @@ public class SignActivity extends BaseActivity {
         }
     }
 
-    private void sendRequest(final String var) {
+    private void sendRequest(final User params) {
         Api api = null;
         if (current_mode == InitSign.Mode.NUMBER) {
             api = Api.REGISTER;
@@ -86,6 +91,11 @@ public class SignActivity extends BaseActivity {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
+                User user = new Gson().fromJson(response, User.class);
+                user.setName(params.getName());
+                user.setMobile_number(params.getMobile_number());
+                user.setDeviceID(params.getDeviceID());
+                initSign.setMode(InitSign.Mode.VERIFY);
             }
 
             @Override
@@ -105,8 +115,8 @@ public class SignActivity extends BaseActivity {
 
             @Override
             public void onClick() {
-                sendRequest(var);
+                sendRequest(params);
             }
-        }, new User("Asghar", var));
+        }, params);
     }
 }
