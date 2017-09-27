@@ -290,6 +290,15 @@ public class InitRegister extends BaseInit {
 
             }
         });
+        if (context.user.getInsurance_type() != null) {
+            int counter = 0;
+            for (String type : Attributes.SUPPORTED_INSURANCES) {
+                if (type.equals(context.user.getInsurance_type())) {
+                    spinner.setSelection(counter);
+                }
+                counter++;
+            }
+        }
 
         layout.addView(spinner);
         setPadding(layout, gravity);
@@ -537,6 +546,9 @@ public class InitRegister extends BaseInit {
     }
 
     public void fetch() {
+        if (context.user == null) {
+            return;
+        }
         box.addView(field(0));
         box.addView(field(1));
         box.addView(field(2));

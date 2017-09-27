@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.widget.Toast;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitRegister;
@@ -100,6 +101,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 UserInstance.setUser(RegisterActivity.this, user);
                 initRegister.updateImage();
                 LocalBroadcastManager.getInstance(RegisterActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
+                Toast.makeText(RegisterActivity.this, "عکس کاربری تغییر کرد", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -143,6 +145,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             public void onResponse(String response) {
                 prompt.hide();
                 UserInstance.setUser(RegisterActivity.this, user);
+                Toast.makeText(RegisterActivity.this, "تغییرات ثبت شد", Toast.LENGTH_SHORT).show();
             }
 
             @Override

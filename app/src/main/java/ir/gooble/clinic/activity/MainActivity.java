@@ -15,11 +15,4 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         initMain = (InitMain) setContentView(this);
     }
-
-    @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-//        setRecyclerAdapter(initMain.recyclerView);
-//        initMain.recyclerView.scheduleLayoutAnimation();
-    }
 }
