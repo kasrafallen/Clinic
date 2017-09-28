@@ -1,9 +1,11 @@
 package ir.gooble.clinic.init;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -205,6 +207,7 @@ public class InitClinic extends BaseInit {
         } else if (id == ADDRESS) {
             box.addView(text("نشانی کلینیک"));
             box.addView(text(ADDRESS_ID));
+            box.addView(kossher());
         } else {
             box.addView(contact(PHONE_ID));
             box.addView(contact(WEB_ID));
@@ -212,6 +215,65 @@ public class InitClinic extends BaseInit {
             box.addView(contact(TELEGRAM_ID));
             box.addView(contact(INSTAGRAM_ID));
         }
+    }
+
+    private View kossher() {
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+        layout.setLayoutParams(params);
+        layout.addView(gps());
+        layout.addView(text());
+        Util.setBackground(layout, context);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectToMap();
+            }
+        });
+        layout.setPadding(margin, 0, margin, 0);
+        return layout;
+    }
+
+    private void redirectToMap() {
+        try {
+            double lat = 35.7395263;
+            double lng = 51.3774143;
+            float zoom = 16f;
+            String label = Attributes.NAME;
+            String uriBegin = "geo:" + lat + "," + lng;
+            String query = lat + "," + lng + "(" + label + ")";
+            String encodedQuery = Uri.encode(query);
+            String uriString = uriBegin + "?q=" + encodedQuery + "&z=" + zoom;
+            Uri uri = Uri.parse(uriString);
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private View text() {
+        AppText text = new AppText(context);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, -2, 1f);
+        params.gravity = Gravity.CENTER_VERTICAL;
+        text.setLayoutParams(params);
+        text.setSingleLine();
+        text.setGravity(Gravity.RIGHT);
+        text.setTextColor(Color.DKGRAY);
+        text.setTextSize(1, 13);
+        text.setText("آدرس بر روی نقشه");
+        return text;
+    }
+
+    private View gps() {
+        View view = new View(context);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(icon, icon);
+        params.setMargins(0, margin, margin, margin);
+        params.gravity = Gravity.CENTER_VERTICAL;
+        view.setLayoutParams(params);
+        view.setBackgroundResource(R.drawable.ic_location_on_black_48px);
+        return view;
     }
 
     private View contact(int id) {

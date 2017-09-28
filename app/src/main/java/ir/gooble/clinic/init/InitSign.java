@@ -23,6 +23,7 @@ import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 
 public class InitSign extends BaseInit {
+
     private SignActivity context;
     private int margin;
 
