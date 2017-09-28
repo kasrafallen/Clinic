@@ -413,7 +413,7 @@ public class InitClinic extends BaseInit {
     }
 
     private Drawable getDrawable() {
-        return context.getResources().getDrawable(R.drawable.ic_gps);
+        return context.getResources().getDrawable(R.drawable.ic_location_on_black_48px);
     }
 
     private View logo() {
