@@ -3,10 +3,12 @@ package ir.gooble.clinic.adaptor;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import java.util.ArrayList;
 
@@ -29,6 +31,7 @@ public class DetailAdaptor extends PagerAdapter {
     };
     private int margin;
     private int small;
+    private int line;
 
     public DetailAdaptor(DetailActivity context, float[] dimen, Doctor doctor) {
         this.context = context;
@@ -36,6 +39,7 @@ public class DetailAdaptor extends PagerAdapter {
         this.doctor = doctor;
         this.margin = Util.toPx(20, context);
         this.small = Util.toPx(10, context);
+        this.line = Util.toPx(1, context) / 2;
     }
 
     @Override
@@ -66,9 +70,13 @@ public class DetailAdaptor extends PagerAdapter {
     }
 
     private View createView(int position) {
+        ScrollView scrollView = new ScrollView(context);
+        scrollView.setVerticalScrollBarEnabled(false);
+        scrollView.setHorizontalScrollBarEnabled(false);
+
         LinearLayout layout = new LinearLayout(context);
-        layout.setBackgroundColor(Color.WHITE);
-        layout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
         ArrayList<String> list = new ArrayList<>();
         switch (position) {
             case 0:
@@ -87,7 +95,9 @@ public class DetailAdaptor extends PagerAdapter {
                 layout.addView(line());
             }
         }
-        return layout;
+
+        scrollView.addView(layout);
+        return scrollView;
     }
 
     private View field(String data) {
@@ -104,7 +114,7 @@ public class DetailAdaptor extends PagerAdapter {
 
     private View line() {
         View view = new View(context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, Util.toPx(1, context));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, line);
         view.setLayoutParams(params);
         view.setBackgroundResource(R.color.toolbar);
         return view;

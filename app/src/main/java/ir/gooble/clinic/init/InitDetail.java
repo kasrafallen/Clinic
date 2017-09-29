@@ -113,6 +113,7 @@ public class InitDetail extends BaseInit {
         ViewPager viewPager = new ViewPager(context);
         viewPager.setLayoutParams(new LinearLayout.LayoutParams(-1, pager));
         viewPager.setAdapter(new DetailAdaptor(context, dimen, context.doctor));
+        viewPager.setBackgroundColor(Color.WHITE);
         setPaging(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
