@@ -10,13 +10,68 @@ public class User extends Sign {
     private String birthday;
     private String national_number;
     private String father_name;
-    private String fix_number;
     private String street;
     private String insurance_number;
     private String insurance_type;
 
+    private String trading_method = "-";
+    private String description = "-";
+    private String family_name = "-";
+    private String fix_number = "-";
+    private String alley = "-";
+    private String plaque = "-";
+    private String unit = "-";
+
     private boolean men;
     private boolean women;
+
+    public String getTrading_method() {
+        return trading_method;
+    }
+
+    public void setTrading_method(String trading_method) {
+        this.trading_method = trading_method;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getFamily_name() {
+        return family_name;
+    }
+
+    public void setFamily_name(String family_name) {
+        this.family_name = family_name;
+    }
+
+    public String getAlley() {
+        return alley;
+    }
+
+    public void setAlley(String alley) {
+        this.alley = alley;
+    }
+
+    public String getPlaque() {
+        return plaque;
+    }
+
+    public void setPlaque(String plaque) {
+        this.plaque = plaque;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     public String getInsurance_type() {
         return insurance_type;

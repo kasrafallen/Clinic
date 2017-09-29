@@ -116,11 +116,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void onError(String error) {
+                prompt.hide();
                 fetch();
             }
 
             @Override
             public void onInternet() {
+                prompt.hide();
                 fetch();
             }
 

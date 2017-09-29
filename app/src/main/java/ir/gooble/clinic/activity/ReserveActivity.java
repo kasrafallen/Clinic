@@ -19,6 +19,7 @@ public class ReserveActivity extends BaseActivity implements View.OnClickListene
 
     private InitReserve initReserve;
     private int current_progress;
+    private boolean isClosed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +50,9 @@ public class ReserveActivity extends BaseActivity implements View.OnClickListene
         new Rest(this, Api.RESERVE_INFO).connect(new CallBack() {
             @Override
             public void onResponse(String response) {
+                if (isClosed) {
+                    return;
+                }
                 current_progress++;
                 sendRequest(objects);
             }
@@ -78,5 +82,11 @@ public class ReserveActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public void finish() {
+        isClosed = true;
+        super.finish();
     }
 }
