@@ -1,11 +1,14 @@
 package ir.gooble.clinic.model;
 
+import ir.gooble.clinic.oracle.Api;
+
 public class Doctor {
 
     private int doctor_id;
     private String name;
     private String family_name;
-    private String expertise;
+    private Expertise[] expertise;
+    private Degree[] degree;
     private String image;
 
     private long start;
@@ -58,15 +61,18 @@ public class Doctor {
         this.family_name = family_name;
     }
 
-    public String getExpertise() {
+    public Expertise[] getExpertise() {
         return expertise;
     }
 
-    public void setExpertise(String expertise) {
+    public void setExpertise(Expertise[] expertise) {
         this.expertise = expertise;
     }
 
     public String getImage() {
+        if(image != null){
+            return Api.BASE + image;
+        }
         return image;
     }
 
