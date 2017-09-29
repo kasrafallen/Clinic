@@ -318,7 +318,7 @@ public class InitDetail extends BaseInit {
                 text.setGravity(Gravity.CENTER);
                 text.setTextColor(Color.GRAY);
                 text.setTextSize(1, 11);
-                text.setText(context.doctor.getExpertise());
+                text.setText(context.doctor.getExpertiseString());
                 break;
             default:
                 params.width = -2;

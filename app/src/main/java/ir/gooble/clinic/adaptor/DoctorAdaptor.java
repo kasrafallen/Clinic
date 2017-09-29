@@ -160,7 +160,7 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
     }
 
     private String getDescription(int position) {
-        return doctors.get(position).getExpertise();
+        return doctors.get(position).getExpertiseString();
     }
 
     private String getName(int position) {

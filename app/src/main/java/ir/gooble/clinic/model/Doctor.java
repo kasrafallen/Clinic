@@ -70,7 +70,7 @@ public class Doctor {
     }
 
     public String getImage() {
-        if(image != null){
+        if (image != null) {
             return Api.BASE + image;
         }
         return image;
@@ -78,5 +78,12 @@ public class Doctor {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getExpertiseString() {
+        if (expertise != null && expertise.length > 0) {
+            return expertise[0].getName();
+        }
+        return "-";
     }
 }

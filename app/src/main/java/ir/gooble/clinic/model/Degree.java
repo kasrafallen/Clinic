@@ -7,7 +7,7 @@ public class Degree {
     private Pivot pivot;
 
     public class Pivot {
-        
+
         private int doctor_id;
         private int degree_id;
 
