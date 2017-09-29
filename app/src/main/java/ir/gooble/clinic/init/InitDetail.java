@@ -2,7 +2,6 @@ package ir.gooble.clinic.init;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
@@ -113,7 +112,7 @@ public class InitDetail extends BaseInit {
     private View pager() {
         ViewPager viewPager = new ViewPager(context);
         viewPager.setLayoutParams(new LinearLayout.LayoutParams(-1, pager));
-        viewPager.setAdapter(new DetailAdaptor(context, dimen));
+        viewPager.setAdapter(new DetailAdaptor(context, dimen, context.doctor));
         setPaging(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

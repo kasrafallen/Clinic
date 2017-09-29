@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -151,12 +152,15 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        holder.image.setImageResource(R.mipmap.y_def_doctor_profile_2);
         holder.clickable.setTag(doctors.get(position));
         SpannableString string = new SpannableString(getName(position) + "\n" + getDescription(position));
         string.setSpan(new AbsoluteSizeSpan(13, true), 0, string.toString().indexOf("\n"), 0);
         string.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, string.toString().indexOf("\n"), 0);
         holder.text.setText(string);
+        holder.image.setImageResource(R.mipmap.y_def_doctor_profile_2);
+        if(doctors.get(position).getImage() != null){
+            Picasso.with(context).load(doctors.get(position).getImage()).fit().centerCrop().into(holder.image);
+        }
     }
 
     private String getDescription(int position) {

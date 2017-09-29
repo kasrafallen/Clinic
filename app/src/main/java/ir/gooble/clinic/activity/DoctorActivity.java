@@ -10,6 +10,7 @@ import ir.gooble.clinic.instance.InstanceResult;
 import ir.gooble.clinic.model.Doctor;
 
 public class DoctorActivity extends BaseActivity {
+
     private InitDoctor initDoctor;
 
     @Override
