@@ -1,7 +1,6 @@
 package ir.gooble.clinic.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import ir.gooble.clinic.oracle.Api;
 
@@ -14,12 +13,12 @@ public class Doctor {
         this.doctor_id = doctor_id;
     }
 
-    private int doctor_id;
-    private String name;
-    private String family_name;
     private Expertise[] expertise;
+    private String family_name;
     private Degree[] degree;
+    private int doctor_id;
     private String image;
+    private String name;
 
     private long start;
     private long end;
