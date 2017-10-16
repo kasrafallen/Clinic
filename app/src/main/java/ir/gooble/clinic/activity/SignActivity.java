@@ -86,7 +86,7 @@ public class SignActivity extends BaseActivity {
         if (current_mode == InitSign.Mode.NUMBER) {
             api = Api.REGISTER;
         } else {
-            UserInstance.setUser(SignActivity.this, user);
+//            UserInstance.setUser(SignActivity.this, user);
             LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
             setResult(RESULT_OK);
             finish();
@@ -97,18 +97,18 @@ public class SignActivity extends BaseActivity {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
-                if (finalApi == Api.REGISTER) {
+                initSign.setMode(InitSign.Mode.VERIFY);
+//                if (finalApi == Api.REGISTER) {
 //                    user = new Gson().fromJson(response, User.class);
 //                    user.setName(params.getName());
 //                    user.setMobile_number(params.getMobile_number());
 //                    user.setDeviceID(params.getDeviceID());
-                    initSign.setMode(InitSign.Mode.VERIFY);
-                } else {
+//                } else {
 //                    UserInstance.setUser(SignActivity.this, user);
 //                    LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
 //                    setResult(RESULT_OK);
-                    finish();
-                }
+//                    finish();
+//                }
             }
 
             @Override
