@@ -24,6 +24,7 @@ public class User extends Sign {
 
     private boolean men;
     private boolean women;
+    private String deviceID;
 
     public String getTrading_method() {
         return trading_method;

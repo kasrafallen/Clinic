@@ -2,7 +2,7 @@ package ir.gooble.clinic.model;
 
 public class Sign {
 
-    private String mobile_number;
+    public String mobile_number;
     private String fcm_token;
     private String verify_code;
 

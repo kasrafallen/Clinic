@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Window;
 
-import com.google.gson.Gson;
-
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseApplication;
 import ir.gooble.clinic.init.InitSign;
@@ -100,15 +98,15 @@ public class SignActivity extends BaseActivity {
             public void onResponse(String response) {
                 prompt.hide();
                 if (finalApi == Api.REGISTER) {
-                    user = new Gson().fromJson(response, User.class);
-                    user.setName(params.getName());
-                    user.setMobile_number(params.getMobile_number());
-                    user.setDeviceID(params.getDeviceID());
+//                    user = new Gson().fromJson(response, User.class);
+//                    user.setName(params.getName());
+//                    user.setMobile_number(params.getMobile_number());
+//                    user.setDeviceID(params.getDeviceID());
                     initSign.setMode(InitSign.Mode.VERIFY);
                 } else {
-                    UserInstance.setUser(SignActivity.this, user);
-                    LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
-                    setResult(RESULT_OK);
+//                    UserInstance.setUser(SignActivity.this, user);
+//                    LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
+//                    setResult(RESULT_OK);
                     finish();
                 }
             }
