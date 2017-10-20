@@ -1,7 +1,6 @@
 package ir.gooble.clinic.instance;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
@@ -13,18 +12,18 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import ir.gooble.clinic.application.BaseActivity;
-import ir.gooble.clinic.model.Doctor;
+import ir.gooble.clinic.model.Clinic;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;
 import ir.gooble.clinic.oracle.Rest;
 import ir.gooble.clinic.util.PromptUtil;
 import ir.gooble.clinic.util.Util;
 
-public class DoctorInstance {
+public class ClinicInstance {
 
-    public static void getDoctors(Activity context, InstanceResult resultCall) {
+    public static void getClinic(Activity context, InstanceResult resultCall) {
         SharedPreferences preferences = Util.get(context);
-        String data = preferences.getString(DoctorInstance.class.getSimpleName(), null);
+        String data = preferences.getString(ClinicInstance.class.getSimpleName(), null);
         if (data == null) {
             sendRequest(context, resultCall);
         } else {
@@ -38,7 +37,7 @@ public class DoctorInstance {
 
     private static boolean shouldUpdate(Activity context) {
         SharedPreferences preferences = Util.get(context);
-        long lastUpdate = preferences.getLong(DoctorInstance.class.getSimpleName() + "_TimeStamp", 0);
+        long lastUpdate = preferences.getLong(ClinicInstance.class.getSimpleName() + "_TimeStamp", 0);
         long current = Calendar.getInstance().getTimeInMillis();
         return current > (lastUpdate + TimeUnit.DAYS.toMillis(4));
     }
@@ -46,8 +45,8 @@ public class DoctorInstance {
     private static void saveResponse(Activity context, String response) {
         SharedPreferences preferences = Util.get(context);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(DoctorInstance.class.getSimpleName(), response);
-        editor.putLong(DoctorInstance.class.getSimpleName() + "_TimeStamp", Calendar.getInstance().getTimeInMillis());
+        editor.putString(ClinicInstance.class.getSimpleName(), response);
+        editor.putLong(ClinicInstance.class.getSimpleName() + "_TimeStamp", Calendar.getInstance().getTimeInMillis());
         editor.apply();
     }
 
@@ -94,7 +93,7 @@ public class DoctorInstance {
             if (array.length() > 0) {
                 JSONArray jsonArray = array.getJSONArray(0);
                 String data = jsonArray.toString();
-                objects = new Gson().fromJson(data, Doctor[].class);
+                objects = new Gson().fromJson(data, Clinic[].class);
             }
         } catch (JSONException e) {
             e.printStackTrace();

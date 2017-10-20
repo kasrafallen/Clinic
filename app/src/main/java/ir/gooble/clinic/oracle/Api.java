@@ -14,6 +14,18 @@ public enum Api {
             return "/Verify";
         }
     },
+    CLINIC_INFO(Method.POST) {
+        @Override
+        public String toString() {
+            return "/Clinicinfo";
+        }
+    },
+    PROFILE_INFO(Method.GET) {
+        @Override
+        public String toString() {
+            return "/patientinfo";
+        }
+    },
     DOCTOR_INFO(Method.GET) {
         @Override
         public String toString() {
@@ -30,12 +42,6 @@ public enum Api {
         @Override
         public String toString() {
             return "/reservepost";
-        }
-    },
-    PROFILE_INFO(Method.GET) {
-        @Override
-        public String toString() {
-            return "/patientinfo";
         }
     },
     PROFILE_POST(Method.POST) {

@@ -10,6 +10,8 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import ir.gooble.clinic.application.BaseActivity;
+import ir.gooble.clinic.instance.ClinicInstance;
+import ir.gooble.clinic.instance.InstanceResult;
 import ir.gooble.clinic.util.Util;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -51,6 +53,12 @@ public class LaunchActivity extends Activity {
     }
 
     private void startApp() {
+        ClinicInstance.getClinic(this, new InstanceResult() {
+            @Override
+            public void onResult(Object[] objects) {
+
+            }
+        });
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
