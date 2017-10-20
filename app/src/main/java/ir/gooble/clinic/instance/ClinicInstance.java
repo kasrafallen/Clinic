@@ -57,7 +57,7 @@ public class ClinicInstance {
         } else {
             prompt = new PromptUtil(context);
         }
-        new Rest(context, Api.DOCTOR_INFO).connect(new CallBack() {
+        new Rest(context, Api.CLINIC_INFO).connect(new CallBack() {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
