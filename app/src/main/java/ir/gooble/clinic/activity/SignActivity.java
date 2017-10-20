@@ -123,17 +123,6 @@ public class SignActivity extends BaseActivity {
         return false;
     }
 
-    private void notifyCode(String smsCode) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setContentText("کد ورود: " + smsCode);
-        builder.setAutoCancel(true);
-        builder.setVibrate(new long[]{500, 300, 100});
-        builder.setSmallIcon(R.mipmap.ic_launcher);
-
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
-    }
-
     private void verify(final User user) {
         new Rest(this, Api.VERIFY).connect(new CallBack() {
             @Override
@@ -166,5 +155,16 @@ public class SignActivity extends BaseActivity {
                 verify(user);
             }
         }, user);
+    }
+
+    private void notifyCode(String smsCode) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentText("سلام، خوش آمدید\nکد ورود: " + smsCode);
+        builder.setAutoCancel(true);
+        builder.setVibrate(new long[]{500, 300, 100});
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
     }
 }

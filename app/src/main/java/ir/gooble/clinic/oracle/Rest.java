@@ -93,6 +93,7 @@ public class Rest implements Response.Listener<String>, Response.ErrorListener {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> header = new HashMap<>();
+                header.put("ClinicIdentifier", context.getPackageName());
                 User user = UserInstance.getUser(context);
                 if (user != null && user.getToken() != null) {
                     header.put("Authorization", "Bearer " + user.getToken());
