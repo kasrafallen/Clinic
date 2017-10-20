@@ -5,9 +5,6 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
