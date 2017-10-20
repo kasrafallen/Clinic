@@ -4,26 +4,6 @@ import ir.gooble.clinic.R;
 
 public class Attributes {
 
-    public final static String NAME = "کلینیک پوست و چشم شمس";
-    public static final String DOCTOR_NAME = "دکتر حمیدرضا حسنی";
-    public static final String DOC_DESCRIPTION = "فوق تخصص قرنیه\n و بیماریهای سطحی چشم";
-
-    public static final String DESCRIPTION = "خدمات کامل در زمینه پوست و زیبایی و همچنین متخصص در زمینه درمانبیماریهای چشمی";
-    public static final String ADDRESS = "تهران - خیابان ولیعصر - بالاتر از ونک - ایستگاه نیایش - خیابان بهرامی - پلاک 81 - واحد 5";
-
-    public static final String WEBSITE_INFO = "clinic.com";
-    public static final String TELEGRAM_INFO = "@shamsclinic";
-    public static final String INSTAGRAM_INFO = "shams_clinic";
-    public static final String PHONE_INFO = "021-88456734";
-    public static final String EMAIL_INFO = "info@shamsclinic.ir";
-
-
-    public static final String[] SUPPORTED_INSURANCES = new String[]{
-            "بیمه ندارد"
-            , "تامین اجتماعی"
-            , "نیروهای مسلح"
-    };
-
     public static int getResource(String field) {
         switch (field) {
             case Attributes.FIELD_ABOUT_CLINIC:
@@ -58,4 +38,10 @@ public class Attributes {
                     , FIELD_REGISTER
                     , FIELD_ABOUT_CLINIC
             };
+
+    public static final String[] SUPPORTED_INSURANCES = new String[]{
+            "بیمه ندارد"
+            , "تامین اجتماعی"
+            , "نیروهای مسلح"
+    };
 }

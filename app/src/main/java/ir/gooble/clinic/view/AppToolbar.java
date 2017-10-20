@@ -24,6 +24,7 @@ public class AppToolbar extends Toolbar {
     private boolean maximize;
 
     private Context context;
+    private AppText text;
 
     public AppToolbar(Context context) {
         super(context);
@@ -107,7 +108,7 @@ public class AppToolbar extends Toolbar {
     }
 
     private View text(Context context, String title) {
-        AppText text = new AppText(context);
+        text = new AppText(context);
         Toolbar.LayoutParams params = new LayoutParams(-2, toolbar_size);
         params.gravity = Gravity.TOP | Gravity.RIGHT;
         text.setLayoutParams(params);
@@ -141,5 +142,9 @@ public class AppToolbar extends Toolbar {
 
     public void setMaximize() {
         maximize = true;
+    }
+
+    public void setText(String title) {
+        text.setText(title);
     }
 }

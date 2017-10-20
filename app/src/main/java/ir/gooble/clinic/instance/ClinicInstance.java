@@ -86,7 +86,7 @@ public class ClinicInstance {
 
     private static void decompile(String response, InstanceResult resultCall) {
         Object[] objects = new Object[1];
-        objects[1] = new Gson().fromJson(response, Clinic.class);
+        objects[0] = new Gson().fromJson(response, Clinic.class);
         resultCall.onResult(objects);
     }
 }

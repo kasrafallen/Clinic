@@ -13,6 +13,9 @@ import ir.gooble.clinic.adaptor.MainAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.instance.ClinicInstance;
+import ir.gooble.clinic.instance.InstanceResult;
+import ir.gooble.clinic.model.Clinic;
 import ir.gooble.clinic.view.AppRecyclerView;
 import ir.gooble.clinic.view.AppToolbar;
 
@@ -60,8 +63,15 @@ public class InitMain extends BaseInit {
     }
 
     private View toolbar() {
-        toolbar = new AppToolbar(context, true, Attributes.NAME, true);
+        toolbar = new AppToolbar(context, true, "", true);
         toolbar.setId(TOOLBAR_ID);
+        ClinicInstance.getClinic(context, new InstanceResult() {
+            @Override
+            public void onResult(Object[] objects) {
+                Clinic clinic = (Clinic) objects[0];
+                toolbar.setText(clinic.getTitle());
+            }
+        });
         return toolbar;
     }
 }

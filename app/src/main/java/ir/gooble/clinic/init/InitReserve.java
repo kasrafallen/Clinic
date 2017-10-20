@@ -237,7 +237,8 @@ public class InitReserve extends BaseInit {
     }
 
     private SpannableString getNameSpan() {
-        String text = Attributes.DOCTOR_NAME + "\n" + Attributes.DOC_DESCRIPTION.replaceAll("\n", "");
+//        String text = Attributes.DOCTOR_NAME + "\n" + Attributes.DOC_DESCRIPTION.replaceAll("\n", "");
+        String text = "" + "\n" + "";
         SpannableString span = new SpannableString(text);
         span.setSpan(new AbsoluteSizeSpan(11, true), text.indexOf("\n"), text.length(), 0);
         span.setSpan(new ForegroundColorSpan(Color.GRAY), text.indexOf("\n"), text.length(), 0);

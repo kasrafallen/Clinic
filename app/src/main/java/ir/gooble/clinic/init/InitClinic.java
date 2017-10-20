@@ -19,12 +19,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.squareup.picasso.Picasso;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.instance.ClinicInstance;
+import ir.gooble.clinic.instance.InstanceResult;
+import ir.gooble.clinic.model.Clinic;
+import ir.gooble.clinic.model.PhoneNumber;
+import ir.gooble.clinic.model.SocialAccount;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 import ir.gooble.clinic.view.AppToolbar;
@@ -40,13 +47,8 @@ public class InitClinic extends BaseInit {
     private static final int DESCRIPTION_ID = +2424886;
     private static final int ADDRESS_ID = +215487856;
 
-    private static final int PHONE_ID = +8488245;
-    private static final int WEB_ID = +51555882;
-    private static final int EMAIL_ID = +51555883;
-    private static final int INSTAGRAM_ID = +457995552;
-    private static final int TELEGRAM_ID = +94285454;
-
     private ClinicActivity context;
+    public Clinic clinic;
     private int appBar;
     private int margin;
     private int radius;
@@ -110,11 +112,17 @@ public class InitClinic extends BaseInit {
             scrollView.setElevation(20);
         }
 
-        LinearLayout layout = new LinearLayout(context);
+        final LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.addView(item(DETAIL));
-        layout.addView(item(CONTACT));
-        layout.addView(item(ADDRESS));
+        ClinicInstance.getClinic(context, new InstanceResult() {
+            @Override
+            public void onResult(Object[] objects) {
+                InitClinic.this.clinic = (Clinic) objects[0];
+                layout.addView(item(DETAIL));
+                layout.addView(item(CONTACT));
+                layout.addView(item(ADDRESS));
+            }
+        });
 
         scrollView.addView(layout);
         return scrollView;
@@ -202,22 +210,27 @@ public class InitClinic extends BaseInit {
 
     private void fill(LinearLayout box, int id) {
         if (id == DETAIL) {
-            box.addView(text(Attributes.NAME));
-            box.addView(text(DESCRIPTION_ID));
+            box.addView(text(get(NAME)));
+            box.addView(text(DESCRIPTION_ID, null, null));
         } else if (id == ADDRESS) {
             box.addView(text("نشانی کلینیک"));
-            box.addView(text(ADDRESS_ID));
-            box.addView(kossher());
+            box.addView(text(ADDRESS_ID, null, null));
+            box.addView(gpsAddress());
         } else {
-            box.addView(contact(PHONE_ID));
-            box.addView(contact(WEB_ID));
-            box.addView(contact(EMAIL_ID));
-            box.addView(contact(TELEGRAM_ID));
-            box.addView(contact(INSTAGRAM_ID));
+            if (clinic.getSocialAccounts() != null && clinic.getSocialAccounts().length > 0) {
+                for (SocialAccount account : clinic.getSocialAccounts()) {
+                    box.addView(contact(account, null));
+                }
+            }
+            if (clinic.getPhoneNumbers() != null && clinic.getPhoneNumbers().length > 0) {
+                for (PhoneNumber account : clinic.getPhoneNumbers()) {
+                    box.addView(contact(null, account));
+                }
+            }
         }
     }
 
-    private View kossher() {
+    private View gpsAddress() {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
@@ -240,7 +253,7 @@ public class InitClinic extends BaseInit {
             double lat = 35.7395263;
             double lng = 51.3774143;
             float zoom = 16f;
-            String label = Attributes.NAME;
+            String label = get(NAME);
             String uriBegin = "geo:" + lat + "," + lng;
             String query = lat + "," + lng + "(" + label + ")";
             String encodedQuery = Uri.encode(query);
@@ -276,45 +289,33 @@ public class InitClinic extends BaseInit {
         return view;
     }
 
-    private View contact(int id) {
+    private View contact(SocialAccount socialAccount, PhoneNumber phoneNumber) {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setGravity(Gravity.CENTER_VERTICAL);
         layout.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
 
-        View logo = new View(context);
+        layout.addView(logo(socialAccount));
+        layout.addView(text(0, socialAccount, phoneNumber));
+        return layout;
+    }
+
+    private View logo(SocialAccount socialAccount) {
+        CircleImageView logo = new CircleImageView(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(icon, icon);
         params.gravity = Gravity.CENTER_VERTICAL;
         params.setMargins(small_margin, 0, small_margin, 0);
         logo.setLayoutParams(params);
-        switch (id) {
-            case WEB_ID:
-                logo.setBackgroundResource(R.mipmap.x_email_icon);
-                break;
-            case TELEGRAM_ID:
-                logo.setBackgroundResource(R.mipmap.x_telegram_icon);
-                break;
-            case INSTAGRAM_ID:
-                logo.setBackgroundResource(R.mipmap.x_instagram_icon);
-                break;
-            case PHONE_ID:
-                logo.setBackgroundResource(R.mipmap.x_phone_icon);
-                break;
-            case EMAIL_ID:
-                logo.setBackgroundResource(R.mipmap.x_email_icon);
-                break;
-        }
-
-        layout.addView(logo);
-        layout.addView(text(id));
-        return layout;
+        logo.setImageResource(R.color.white);
+        Picasso.with(context).load(socialAccount.getSocialLogo()).fit().centerCrop().into(logo);
+        return logo;
     }
 
     private View text(String input) {
         AppText appText = new AppText(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         params.bottomMargin = small_margin;
-        if (input.equals(Attributes.NAME)) {
+        if (input.equals(get(NAME))) {
             params.topMargin = (int) (2f * logo / 3f);
         } else {
             params.topMargin = small_margin;
@@ -329,7 +330,7 @@ public class InitClinic extends BaseInit {
         return appText;
     }
 
-    private View text(final int id) {
+    private View text(final int id, final SocialAccount account, final PhoneNumber phoneNumber) {
         final AppText text = new AppText(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         switch (id) {
@@ -339,10 +340,10 @@ public class InitClinic extends BaseInit {
                 text.setTextColor(Color.GRAY);
                 text.setTextSize(1, 11);
                 if (id == DESCRIPTION_ID) {
-                    text.setText(Attributes.DESCRIPTION);
+                    text.setText(get(DESCRIPTION));
                 } else {
                     text.setCompoundDrawables(null, null, getDrawable(), null);
-                    text.setText(Attributes.ADDRESS);
+                    text.setText(get(ADDRESS_BOOK));
                 }
                 break;
             default:
@@ -353,48 +354,20 @@ public class InitClinic extends BaseInit {
                 text.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
                 text.setSingleLine();
                 Util.setBackground(text, context);
-                if (id == PHONE_ID) {
-                    text.setTextSize(1, 14);
+                text.setTextSize(1, 12);
+                text.setTypeface(text.getTypeface(), Typeface.BOLD);
+                if (account != null) {
+                    text.setText(account.getSoccialName());
                 } else {
-                    text.setTextSize(1, 12);
-                    text.setTypeface(text.getTypeface(), Typeface.BOLD);
-                }
-                switch (id) {
-                    case WEB_ID:
-                        text.setText(Attributes.WEBSITE_INFO);
-                        break;
-                    case EMAIL_ID:
-                        text.setText(Attributes.EMAIL_INFO);
-                        break;
-                    case TELEGRAM_ID:
-                        text.setText(Attributes.TELEGRAM_INFO);
-                        break;
-                    case INSTAGRAM_ID:
-                        text.setText(Attributes.INSTAGRAM_INFO);
-                        break;
-                    case PHONE_ID:
-                        text.setText(Attributes.PHONE_INFO);
-                        break;
+                    text.setText(phoneNumber.getPhoneNumber());
                 }
                 text.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        switch (id) {
-                            case WEB_ID:
-                                context.openLink(Attributes.WEBSITE_INFO);
-                                break;
-                            case EMAIL_ID:
-                                context.openMail(Attributes.EMAIL_INFO);
-                                break;
-                            case TELEGRAM_ID:
-                                context.openLink("telegram.me/" + Attributes.TELEGRAM_INFO.replaceAll("@", ""));
-                                break;
-                            case INSTAGRAM_ID:
-                                context.openLink("instagram.com/" + Attributes.INSTAGRAM_INFO);
-                                break;
-                            case PHONE_ID:
-                                context.openDial(Attributes.PHONE_INFO);
-                                break;
+                        if (phoneNumber != null) {
+                            context.openDial(phoneNumber.getPhoneNumber());
+                        } else {
+                            context.openLink(account.getSocialLink());
                         }
                     }
                 });
@@ -431,5 +404,20 @@ public class InitClinic extends BaseInit {
         imageView.setBorderColor(context.getResources().getColor(R.color.circle_border));
         imageView.setImageResource(R.mipmap.test_clinic_logo);
         return imageView;
+    }
+
+    private static final int NAME = +54187478;
+    private static final int DESCRIPTION = +6433188;
+    private static final int ADDRESS_BOOK = +54187479;
+
+    private String get(int id) {
+        switch (id) {
+            case NAME:
+                return clinic.getTitle();
+            case ADDRESS_BOOK:
+                return clinic.getAddressesString();
+            default:
+                return clinic.getDescription();
+        }
     }
 }

@@ -101,4 +101,15 @@ public class Clinic {
     public void setTitle(String title) {
         Title = title;
     }
+
+    public String getAddressesString() {
+        if (getAddresses() == null || getAddresses().length == 0) {
+            return "-";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (Address address : getAddresses()) {
+            builder.append(address.getAddress()).append("\n");
+        }
+        return builder.toString();
+    }
 }

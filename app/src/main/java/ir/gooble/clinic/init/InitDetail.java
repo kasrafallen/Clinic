@@ -25,6 +25,9 @@ import ir.gooble.clinic.adaptor.DetailAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.instance.ClinicInstance;
+import ir.gooble.clinic.instance.InstanceResult;
+import ir.gooble.clinic.model.Clinic;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
 import ir.gooble.clinic.view.AppToolbar;
@@ -268,7 +271,15 @@ public class InitDetail extends BaseInit {
                 if (isReserve) {
                     context.redirect();
                 } else {
-                    context.openDial(Attributes.PHONE_INFO);
+                    ClinicInstance.getClinic(context, new InstanceResult() {
+                        @Override
+                        public void onResult(Object[] objects) {
+                            Clinic clinic = (Clinic) objects[0];
+                            if (clinic.getPhoneNumbers() != null && clinic.getPhoneNumbers().length > 0) {
+                                context.openDial(clinic.getPhoneNumbers()[0].getPhoneNumber());
+                            }
+                        }
+                    });
                 }
             }
         });
