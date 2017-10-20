@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ir.gooble.clinic.instance.UserInstance;
+import ir.gooble.clinic.model.Status;
 import ir.gooble.clinic.model.User;
 
 public class Rest implements Response.Listener<String>, Response.ErrorListener {
@@ -132,6 +133,16 @@ public class Rest implements Response.Listener<String>, Response.ErrorListener {
 
     @Override
     public void onResponse(String response) {
+        try {
+            Status status = new Gson().fromJson(response, Status.class);
+            if (status != null && status.getStatus() != 0) {
+                Log.d(TAG + "onFailure", "returned(" + statusCode + "): " + response);
+                callBack.onError(status.getMessageFA());
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Log.d(TAG + "response", "returned(" + statusCode + "): " + response);
         callBack.onResponse(response);
     }

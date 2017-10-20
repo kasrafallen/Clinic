@@ -30,7 +30,7 @@ public class ClinicInstance {
             if (shouldUpdate(context)) {
                 sendRequest(context, resultCall);
             } else {
-                decompile(context, data, resultCall);
+                decompile(data, resultCall);
             }
         }
     }
@@ -61,7 +61,8 @@ public class ClinicInstance {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
-                decompile(context, response, resultCall);
+                saveResponse(context, response);
+                decompile(response, resultCall);
             }
 
             @Override
@@ -86,21 +87,9 @@ public class ClinicInstance {
         });
     }
 
-    private static void decompile(Activity context, String response, InstanceResult resultCall) {
-        Object[] objects = null;
-        try {
-            JSONArray array = new JSONArray(response);
-            if (array.length() > 0) {
-                JSONArray jsonArray = array.getJSONArray(0);
-                String data = jsonArray.toString();
-                objects = new Gson().fromJson(data, Clinic[].class);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if (objects != null) {
-            saveResponse(context, response);
-            resultCall.onResult(objects);
-        }
+    private static void decompile(String response, InstanceResult resultCall) {
+        Object[] objects = new Object[1];
+        objects[1] = new Gson().fromJson(response, Clinic.class);
+        resultCall.onResult(objects);
     }
 }

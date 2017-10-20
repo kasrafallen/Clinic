@@ -31,7 +31,7 @@ public class DoctorInstance {
             if (shouldUpdate(context)) {
                 sendRequest(context, resultCall);
             } else {
-                decompile(context, data, resultCall);
+                decompile(data, resultCall);
             }
         }
     }
@@ -62,7 +62,8 @@ public class DoctorInstance {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
-                decompile(context, response, resultCall);
+                saveResponse(context, response);
+                decompile(response, resultCall);
             }
 
             @Override
@@ -87,7 +88,7 @@ public class DoctorInstance {
         });
     }
 
-    private static void decompile(Activity context, String response, InstanceResult resultCall) {
+    private static void decompile(String response, InstanceResult resultCall) {
         Object[] objects = null;
         try {
             JSONArray array = new JSONArray(response);
@@ -100,7 +101,6 @@ public class DoctorInstance {
             e.printStackTrace();
         }
         if (objects != null) {
-            saveResponse(context, response);
             resultCall.onResult(objects);
         }
     }

@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitDetail;
-import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.model.Doctor;
 
 public class DetailActivity extends BaseActivity {

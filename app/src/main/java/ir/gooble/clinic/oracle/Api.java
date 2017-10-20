@@ -17,7 +17,7 @@ public enum Api {
     CLINIC_INFO(Method.POST) {
         @Override
         public String toString() {
-            return "/Clinicinfo";
+            return "/ClinicInfo";
         }
     },
     PROFILE_INFO(Method.GET) {
