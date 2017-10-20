@@ -5,7 +5,13 @@ public enum Api {
     REGISTER(Method.POST) {
         @Override
         public String toString() {
-            return "/register";
+            return "/Register";
+        }
+    },
+    VERIFY(Method.POST) {
+        @Override
+        public String toString() {
+            return "/Verify";
         }
     },
     DOCTOR_INFO(Method.GET) {
@@ -39,8 +45,8 @@ public enum Api {
         }
     };
 
-    public static final String BASE = "pyana.ir/";
-    public static final String ROUTE = BASE + "api";
+    public static final String BASE = "192.168.1.7:5000";
+    public static final String ROUTE = BASE + "/api/Spand";
     private int id;
 
     Api(int id) {

@@ -1,11 +1,31 @@
 package ir.gooble.clinic.model;
 
-public class User extends Sign {
+public class User {
+
+    private String mobile_number;
+    private String Token;
+    private String UID;
+    private String sms_code;
 
     private String imagePath;
-    private String number;
-    private String token;
+    private String fcm_token;
     private String name;
+
+    public String getToken() {
+        return Token;
+    }
+
+    public void setToken(String token) {
+        Token = token;
+    }
+
+    public String getUID() {
+        return UID;
+    }
+
+    public void setUID(String UID) {
+        this.UID = UID;
+    }
 
     private String birthday;
     private String national_number;
@@ -25,6 +45,14 @@ public class User extends Sign {
     private boolean men;
     private boolean women;
     private String deviceID;
+
+    public String getSms_code() {
+        return sms_code;
+    }
+
+    public void setSms_code(String sms_code) {
+        this.sms_code = sms_code;
+    }
 
     public String getTrading_method() {
         return trading_method;
@@ -130,10 +158,8 @@ public class User extends Sign {
         this.insurance_number = insurance_number;
     }
 
-    public User(String name, String mobile_number, String deviceID) {
-        this.name = name;
+    public User(String mobile_number) {
         this.mobile_number = mobile_number;
-        this.deviceID = deviceID;
     }
 
     public String getImagePath() {
@@ -142,14 +168,6 @@ public class User extends Sign {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-    }
-
-    public String getMobile_number() {
-        return mobile_number;
-    }
-
-    public void setMobile_number(String mobile_number) {
-        this.mobile_number = mobile_number;
     }
 
     public String getDeviceID() {
@@ -168,22 +186,6 @@ public class User extends Sign {
         this.name = name;
     }
 
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public boolean isMen() {
         return men;
     }
@@ -198,5 +200,21 @@ public class User extends Sign {
 
     public void setWomen(boolean women) {
         this.women = women;
+    }
+
+    public String getMobile_number() {
+        return mobile_number;
+    }
+
+    public void setMobile_number(String mobile_number) {
+        this.mobile_number = mobile_number;
+    }
+
+    public String getFcm_token() {
+        return fcm_token;
+    }
+
+    public void setFcm_token(String fcm_token) {
+        this.fcm_token = fcm_token;
     }
 }

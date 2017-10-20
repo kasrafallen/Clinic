@@ -1,13 +1,17 @@
 package ir.gooble.clinic.activity;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Window;
 
+import com.google.gson.Gson;
+
+import ir.gooble.clinic.R;
 import ir.gooble.clinic.application.BaseActivity;
-import ir.gooble.clinic.application.BaseApplication;
 import ir.gooble.clinic.init.InitSign;
 import ir.gooble.clinic.instance.UserInstance;
 import ir.gooble.clinic.model.User;
@@ -64,16 +68,13 @@ public class SignActivity extends BaseActivity {
     public void next(String var) {
         if (current_mode == InitSign.Mode.NUMBER) {
             if (var.length() == 11 && var.trim().length() == 11 && var.startsWith("09")) {
-                User params = new User("Asghar", var, BaseApplication.getId(SignActivity.this));
-                sendRequest(params);
+                sendRequest(new User(var));
                 initSign.setError(null);
             } else {
                 initSign.setError("شماره وارد شده صحیح نیست");
             }
         } else {
-            if (var.length() == 0) {
-                User params = null;
-                sendRequest(params);
+            if (checkResult(var)) {
                 initSign.setError(null);
             } else {
                 initSign.setError("کد تایید معتبر نیست");
@@ -82,33 +83,14 @@ public class SignActivity extends BaseActivity {
     }
 
     private void sendRequest(final User params) {
-        Api api = null;
-        if (current_mode == InitSign.Mode.NUMBER) {
-            api = Api.REGISTER;
-        } else {
-//            UserInstance.setUser(SignActivity.this, user);
-            LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
-            setResult(RESULT_OK);
-            finish();
-            return;
-        }
-        final Api finalApi = api;
-        new Rest(this, api).connect(new CallBack() {
+        new Rest(this, Api.REGISTER).connect(new CallBack() {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
+                user = new Gson().fromJson(response, User.class);
+                user.setMobile_number(params.getMobile_number());
                 initSign.setMode(InitSign.Mode.VERIFY);
-//                if (finalApi == Api.REGISTER) {
-//                    user = new Gson().fromJson(response, User.class);
-//                    user.setName(params.getName());
-//                    user.setMobile_number(params.getMobile_number());
-//                    user.setDeviceID(params.getDeviceID());
-//                } else {
-//                    UserInstance.setUser(SignActivity.this, user);
-//                    LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
-//                    setResult(RESULT_OK);
-//                    finish();
-//                }
+                notifyCode(user.getSms_code());
             }
 
             @Override
@@ -131,5 +113,58 @@ public class SignActivity extends BaseActivity {
                 sendRequest(params);
             }
         }, params);
+    }
+
+    private boolean checkResult(String var) {
+        if (user != null && user.getSms_code() != null && user.getSms_code().equals(var)) {
+            verify(user);
+            return true;
+        }
+        return false;
+    }
+
+    private void notifyCode(String smsCode) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentText("کد ورود: " + smsCode);
+        builder.setAutoCancel(true);
+        builder.setVibrate(new long[]{500, 300, 100});
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+    }
+
+    private void verify(final User user) {
+        new Rest(this, Api.VERIFY).connect(new CallBack() {
+            @Override
+            public void onResponse(String response) {
+                prompt.hide();
+                User signed = new Gson().fromJson(response, User.class);
+                UserInstance.setUser(SignActivity.this, signed);
+                LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
+                setResult(RESULT_OK);
+                finish();
+            }
+
+            @Override
+            public void onError(String error) {
+                prompt.error(this, error);
+            }
+
+            @Override
+            public void onInternet() {
+                prompt.internet(this);
+            }
+
+            @Override
+            public void onBefore() {
+                prompt.progress();
+            }
+
+            @Override
+            public void onClick() {
+                verify(user);
+            }
+        }, user);
     }
 }
