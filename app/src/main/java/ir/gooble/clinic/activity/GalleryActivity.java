@@ -7,6 +7,7 @@ import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitGallery;
 import ir.gooble.clinic.instance.GalleryInstance;
 import ir.gooble.clinic.instance.InstanceResult;
+import ir.gooble.clinic.model.Gallery;
 
 public class GalleryActivity extends BaseActivity {
 
@@ -19,7 +20,7 @@ public class GalleryActivity extends BaseActivity {
         GalleryInstance.getPictures(this, new InstanceResult() {
             @Override
             public void onResult(Object[] objects) {
-                initGallery.setAdaptor((String[]) objects);
+                initGallery.setAdaptor((Gallery.Picture[]) objects);
             }
         });
     }

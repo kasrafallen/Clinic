@@ -11,16 +11,17 @@ import com.squareup.picasso.Picasso;
 
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.application.BaseActivity;
+import ir.gooble.clinic.model.Gallery;
 import ir.gooble.clinic.util.Util;
 
 public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.Holder> {
     private BaseActivity context;
-    private String[] data;
+    private Gallery.Picture[] data;
     private int margin;
 
     private static final int IMAGE_ID = +84877744;
 
-    public GalleryAdaptor(BaseActivity context, String[] data) {
+    public GalleryAdaptor(BaseActivity context, Gallery.Picture[] data) {
         this.data = data;
         this.context = context;
         this.margin = Util.toPx(5, context);
@@ -71,7 +72,7 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.Holder> 
 
     @Override
     public void onBindViewHolder(GalleryAdaptor.Holder holder, int position) {
-        String path = data[position];
+        String path = data[position].getAddress();
         holder.imageView.setImageResource(R.color.transparent);
         if (path != null) {
             Picasso.with(context).load(path).fit().centerCrop().into(holder.imageView);

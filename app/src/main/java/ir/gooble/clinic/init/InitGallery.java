@@ -9,6 +9,7 @@ import ir.gooble.clinic.activity.GalleryActivity;
 import ir.gooble.clinic.adaptor.GalleryAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
+import ir.gooble.clinic.model.Gallery;
 import ir.gooble.clinic.view.AppRecyclerView;
 import ir.gooble.clinic.view.AppToolbar;
 
@@ -45,7 +46,7 @@ public class InitGallery extends BaseInit {
         return recyclerView;
     }
 
-    public void setAdaptor(String[] list){
+    public void setAdaptor(Gallery.Picture[] list){
         GalleryAdaptor adaptor = new GalleryAdaptor(context, list);
         recyclerView.setAdapter(adaptor);
     }
