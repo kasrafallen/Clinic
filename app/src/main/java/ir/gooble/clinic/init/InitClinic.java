@@ -1,11 +1,7 @@
 package ir.gooble.clinic.init;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -26,9 +22,9 @@ import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
-import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.instance.ClinicInstance;
 import ir.gooble.clinic.instance.InstanceResult;
+import ir.gooble.clinic.model.Address;
 import ir.gooble.clinic.model.Clinic;
 import ir.gooble.clinic.model.PhoneNumber;
 import ir.gooble.clinic.model.SocialAccount;
@@ -46,6 +42,9 @@ public class InitClinic extends BaseInit {
 
     private static final int DESCRIPTION_ID = +2424886;
     private static final int ADDRESS_ID = +215487856;
+
+    private static final int NAME = +54187478;
+    private static final int DESCRIPTION = +6433188;
 
     private ClinicActivity context;
     public Clinic clinic;
@@ -75,8 +74,8 @@ public class InitClinic extends BaseInit {
         this.radius = Util.toPx(5, context);
 
         this.detail = Util.toPx(135, context);
-        this.address = Util.toPx(120, context);
-        this.contact = Util.toPx(130, context);
+        this.address = Util.toPx(100, context);
+        this.contact = Util.toPx(100, context);
 
         this.top_margin = (int) (2f * appBar / 4f);
         this.space_margin = (int) (2f * appBar / 4f);
@@ -89,10 +88,16 @@ public class InitClinic extends BaseInit {
 
     @Override
     protected View create() {
-        CoordinatorLayout layout = new CoordinatorLayout(context);
+        final CoordinatorLayout layout = new CoordinatorLayout(context);
         layout.setLayoutParams(new DrawerLayout.LayoutParams(-1, -1));
-        layout.addView(toolbar());
-        layout.addView(recycler());
+        ClinicInstance.getClinic(context, new InstanceResult() {
+            @Override
+            public void onResult(Object[] objects) {
+                InitClinic.this.clinic = (Clinic) objects[0];
+                layout.addView(toolbar());
+                layout.addView(recycler());
+            }
+        });
         return layout;
     }
 
@@ -111,18 +116,11 @@ public class InitClinic extends BaseInit {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             scrollView.setElevation(20);
         }
-
         final LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
-        ClinicInstance.getClinic(context, new InstanceResult() {
-            @Override
-            public void onResult(Object[] objects) {
-                InitClinic.this.clinic = (Clinic) objects[0];
-                layout.addView(item(DETAIL));
-                layout.addView(item(CONTACT));
-                layout.addView(item(ADDRESS));
-            }
-        });
+        layout.addView(item(DETAIL));
+        layout.addView(item(CONTACT));
+        layout.addView(item(ADDRESS));
 
         scrollView.addView(layout);
         return scrollView;
@@ -149,7 +147,10 @@ public class InitClinic extends BaseInit {
         params2.setCollapseMode(CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX);
         imageView.setLayoutParams(params2);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.test_clinic_banner);
+        imageView.setImageResource(R.color.toolbar);
+        if (clinic.getPictureURL() != null) {
+            Picasso.with(context).load(clinic.getPictureURL()).fit().centerCrop().into(imageView);
+        }
 
         AppToolbar toolbar = new AppToolbar(context, true, null, true);
         toolbar.setMaximize();
@@ -211,23 +212,38 @@ public class InitClinic extends BaseInit {
     private void fill(LinearLayout box, int id) {
         if (id == DETAIL) {
             box.addView(text(get(NAME)));
-            box.addView(text(DESCRIPTION_ID, null, null));
+            box.addView(text(DESCRIPTION_ID));
         } else if (id == ADDRESS) {
             box.addView(text("نشانی کلینیک"));
-            box.addView(text(ADDRESS_ID, null, null));
-            box.addView(gpsAddress());
+            if (clinic.getAddresses() != null && clinic.getAddresses().length > 0) {
+                int counter = 0;
+                for (Address account : clinic.getAddresses()) {
+                    box.addView(contact(account));
+                    counter++;
+                    if (counter != clinic.getAddresses().length) {
+                        box.addView(line());
+                    }
+                }
+            }
         } else {
             if (clinic.getSocialAccounts() != null && clinic.getSocialAccounts().length > 0) {
                 for (SocialAccount account : clinic.getSocialAccounts()) {
-                    box.addView(contact(account, null));
+                    box.addView(contact(account));
                 }
             }
             if (clinic.getPhoneNumbers() != null && clinic.getPhoneNumbers().length > 0) {
                 for (PhoneNumber account : clinic.getPhoneNumbers()) {
-                    box.addView(contact(null, account));
+                    box.addView(contact(account));
                 }
             }
         }
+    }
+
+    private View line() {
+        View view = new View(context);
+        view.setLayoutParams(new LinearLayout.LayoutParams(-1, line));
+        view.setBackgroundColor(Color.LTGRAY);
+        return view;
     }
 
     private View gpsAddress() {
@@ -237,33 +253,8 @@ public class InitClinic extends BaseInit {
         layout.setLayoutParams(params);
         layout.addView(gps());
         layout.addView(text());
-        Util.setBackground(layout, context);
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                redirectToMap();
-            }
-        });
         layout.setPadding(margin, 0, margin, 0);
         return layout;
-    }
-
-    private void redirectToMap() {
-        try {
-            double lat = 35.7395263;
-            double lng = 51.3774143;
-            float zoom = 16f;
-            String label = get(NAME);
-            String uriBegin = "geo:" + lat + "," + lng;
-            String query = lat + "," + lng + "(" + label + ")";
-            String encodedQuery = Uri.encode(query);
-            String uriString = uriBegin + "?q=" + encodedQuery + "&z=" + zoom;
-            Uri uri = Uri.parse(uriString);
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
-            context.startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private View text() {
@@ -273,8 +264,8 @@ public class InitClinic extends BaseInit {
         text.setLayoutParams(params);
         text.setSingleLine();
         text.setGravity(Gravity.RIGHT);
-        text.setTextColor(Color.DKGRAY);
-        text.setTextSize(1, 13);
+        text.setTextColor(Color.GRAY);
+        text.setTextSize(1, 11);
         text.setText("آدرس بر روی نقشه");
         return text;
     }
@@ -282,21 +273,55 @@ public class InitClinic extends BaseInit {
     private View gps() {
         View view = new View(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(icon, icon);
-        params.setMargins(0, margin, margin, margin);
+        params.setMargins(0, margin / 4, margin, margin / 2);
         params.gravity = Gravity.CENTER_VERTICAL;
         view.setLayoutParams(params);
         view.setBackgroundResource(R.drawable.ic_location_on_black_48px);
         return view;
     }
 
-    private View contact(SocialAccount socialAccount, PhoneNumber phoneNumber) {
+    private View contact(final SocialAccount socialAccount) {
+        return contact(socialAccount, null, null);
+    }
+
+    private View contact(final PhoneNumber phoneNumber) {
+        return contact(null, phoneNumber, null);
+    }
+
+    private View contact(final Address address) {
+        return contact(null, null, address);
+    }
+
+    private View contact(final SocialAccount socialAccount, final PhoneNumber phoneNumber, final Address address) {
         LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
+        if (address != null) {
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.addView(text(address));
+            layout.addView(gpsAddress());
+        } else {
+            layout.setOrientation(LinearLayout.HORIZONTAL);
+            layout.addView(logo(socialAccount));
+            if (phoneNumber != null) {
+                layout.addView(text(phoneNumber));
+            } else {
+                layout.addView(text(socialAccount));
+            }
+        }
         layout.setGravity(Gravity.CENTER_VERTICAL);
         layout.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
-
-        layout.addView(logo(socialAccount));
-        layout.addView(text(0, socialAccount, phoneNumber));
+        Util.setBackground(layout, context);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (address != null) {
+                    context.openMap(address);
+                } else if (phoneNumber != null) {
+                    context.openDial(phoneNumber.getPhoneNumber());
+                } else {
+                    context.openLink(socialAccount.getSocialLink());
+                }
+            }
+        });
         return layout;
     }
 
@@ -307,7 +332,11 @@ public class InitClinic extends BaseInit {
         params.setMargins(small_margin, 0, small_margin, 0);
         logo.setLayoutParams(params);
         logo.setImageResource(R.color.white);
-        Picasso.with(context).load(socialAccount.getSocialLogo()).fit().centerCrop().into(logo);
+        if (socialAccount != null && socialAccount.getSocialLogo() != null) {
+            Picasso.with(context).load(socialAccount.getSocialLogo()).fit().centerCrop().into(logo);
+        } else {
+            logo.setImageResource(R.mipmap.x_phone_icon);
+        }
         return logo;
     }
 
@@ -330,7 +359,23 @@ public class InitClinic extends BaseInit {
         return appText;
     }
 
-    private View text(final int id, final SocialAccount account, final PhoneNumber phoneNumber) {
+    private View text(final SocialAccount account) {
+        return text(0, account, null, null);
+    }
+
+    private View text(final Address address) {
+        return text(0, null, null, address);
+    }
+
+    private View text(final PhoneNumber phoneNumber) {
+        return text(0, null, phoneNumber, null);
+    }
+
+    private View text(final int id) {
+        return text(id, null, null, null);
+    }
+
+    private View text(final int id, final SocialAccount account, final PhoneNumber phoneNumber, Address address) {
         final AppText text = new AppText(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         switch (id) {
@@ -339,54 +384,38 @@ public class InitClinic extends BaseInit {
                 text.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 text.setTextColor(Color.GRAY);
                 text.setTextSize(1, 11);
-                if (id == DESCRIPTION_ID) {
-                    text.setText(get(DESCRIPTION));
-                } else {
-                    text.setCompoundDrawables(null, null, getDrawable(), null);
-                    text.setText(get(ADDRESS_BOOK));
-                }
+                text.setText(get(DESCRIPTION));
                 break;
             default:
-                params.width = -2;
                 params.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
                 text.setGravity(Gravity.RIGHT);
-                text.setTextColor(Color.DKGRAY);
-                text.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
                 text.setSingleLine();
-                Util.setBackground(text, context);
-                text.setTextSize(1, 12);
-                text.setTypeface(text.getTypeface(), Typeface.BOLD);
-                if (account != null) {
-                    text.setText(account.getSoccialName());
+                text.setTextColor(Color.DKGRAY);
+                if (address != null) {
+                    params.width = -1;
+                    text.setTextSize(1, 12);
+                    text.setText(address.getAddress());
                 } else {
-                    text.setText(phoneNumber.getPhoneNumber());
-                }
-                text.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (phoneNumber != null) {
-                            context.openDial(phoneNumber.getPhoneNumber());
-                        } else {
-                            context.openLink(account.getSocialLink());
-                        }
+                    text.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+                    params.width = -2;
+                    text.setTextSize(1, 13);
+                    if (account != null) {
+                        text.setText(account.getSoccialName());
+                    } else {
+                        text.setText(phoneNumber.getPhoneNumber());
                     }
-                });
+                }
                 break;
         }
         text.setLayoutParams(params);
-
         if (id != ADDRESS_ID && id != DESCRIPTION_ID) {
-            text.setPadding(0, small_margin / 2, 0, small_margin / 2);
+            text.setPadding(small_margin, small_margin / 2, small_margin, 0);
         } else {
             params.bottomMargin = small_margin;
             params.leftMargin = small_margin;
             params.rightMargin = small_margin;
         }
         return text;
-    }
-
-    private Drawable getDrawable() {
-        return context.getResources().getDrawable(R.drawable.ic_location_on_black_48px);
     }
 
     private View logo() {
@@ -403,19 +432,16 @@ public class InitClinic extends BaseInit {
         imageView.setBorderWidth(line);
         imageView.setBorderColor(context.getResources().getColor(R.color.circle_border));
         imageView.setImageResource(R.mipmap.test_clinic_logo);
+        if (clinic.getLogoURL() != null) {
+            Picasso.with(context).load(clinic.getLogoURL()).fit().centerCrop().into(imageView);
+        }
         return imageView;
     }
-
-    private static final int NAME = +54187478;
-    private static final int DESCRIPTION = +6433188;
-    private static final int ADDRESS_BOOK = +54187479;
 
     private String get(int id) {
         switch (id) {
             case NAME:
                 return clinic.getTitle();
-            case ADDRESS_BOOK:
-                return clinic.getAddressesString();
             default:
                 return clinic.getDescription();
         }

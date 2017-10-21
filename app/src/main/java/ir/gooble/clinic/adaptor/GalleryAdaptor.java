@@ -7,23 +7,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.squareup.picasso.Picasso;
+
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.util.Util;
 
 public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.Holder> {
     private BaseActivity context;
+    private String[] data;
     private int margin;
 
     private static final int IMAGE_ID = +84877744;
-    private static final int[] DEFAULT_LIST = new int[]{
-            R.mipmap.test_1
-            , R.mipmap.test_2
-            , R.mipmap.test_3
-            , R.mipmap.test_4
-    };
 
-    public GalleryAdaptor(BaseActivity context, float[] dimen) {
+    public GalleryAdaptor(BaseActivity context, String[] data) {
+        this.data = data;
         this.context = context;
         this.margin = Util.toPx(5, context);
     }
@@ -73,7 +71,11 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.Holder> 
 
     @Override
     public void onBindViewHolder(GalleryAdaptor.Holder holder, int position) {
-        holder.imageView.setImageResource(DEFAULT_LIST[position]);
+        String path = data[position];
+        holder.imageView.setImageResource(R.color.transparent);
+        if (path != null) {
+            Picasso.with(context).load(path).fit().centerCrop().into(holder.imageView);
+        }
     }
 
     @Override
@@ -83,6 +85,6 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.Holder> 
 
     @Override
     public int getItemCount() {
-        return DEFAULT_LIST.length;
+        return data.length;
     }
 }

@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.model.Clinic;
@@ -36,7 +35,7 @@ public class ClinicInstance {
         SharedPreferences preferences = Util.get(context);
         long lastUpdate = preferences.getLong(ClinicInstance.class.getSimpleName() + "_TimeStamp", 0);
         long current = Calendar.getInstance().getTimeInMillis();
-        return current > (lastUpdate + TimeUnit.DAYS.toMillis(4));
+        return current > (lastUpdate + BaseActivity.UPDATE_RATE);
     }
 
     private static void saveResponse(Activity context, String response) {

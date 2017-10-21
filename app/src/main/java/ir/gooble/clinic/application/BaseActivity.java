@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 
+import java.util.concurrent.TimeUnit;
+
 import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.activity.DoctorActivity;
 import ir.gooble.clinic.activity.FactActivity;
@@ -33,6 +35,7 @@ import ir.gooble.clinic.init.InitSign;
 import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.instance.DoctorInstance;
 import ir.gooble.clinic.instance.UserInstance;
+import ir.gooble.clinic.model.Address;
 import ir.gooble.clinic.model.FactModel;
 import ir.gooble.clinic.util.PromptUtil;
 import ir.gooble.clinic.util.Util;
@@ -40,6 +43,9 @@ import ir.gooble.clinic.view.AppDrawerLayout;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class BaseActivity extends AppCompatActivity {
+
+    public static final long UPDATE_RATE = TimeUnit.DAYS.toMillis(0);
+
     private static final String EXIT = "BaseActivity.EXIT";
     public static final String UPDATE = "BaseActivity.UPDATE";
 
@@ -240,6 +246,23 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void openMap(Address address) {
+        try {
+            double lat = address.getLat();
+            double lng = address.getLong();
+            float zoom = 16f;
+            String uriBegin = "geo:" + lat + "," + lng;
+            String query = lat + "," + lng + "(" + address.getAddress() + ")";
+            String encodedQuery = Uri.encode(query);
+            String uriString = uriBegin + "?q=" + encodedQuery + "&z=" + zoom;
+            Uri uri = Uri.parse(uriString);
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void share(FactModel tag) {
 
     }
@@ -249,7 +272,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void updateUser() {
-        if(drawer != null && init != null && init.drawer != null){
+        if (drawer != null && init != null && init.drawer != null) {
             init.drawer.update();
         }
     }

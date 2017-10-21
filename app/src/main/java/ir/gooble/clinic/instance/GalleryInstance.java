@@ -5,24 +5,21 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.Calendar;
 
 import ir.gooble.clinic.application.BaseActivity;
-import ir.gooble.clinic.model.Doctor;
+import ir.gooble.clinic.model.Gallery;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;
 import ir.gooble.clinic.oracle.Rest;
 import ir.gooble.clinic.util.PromptUtil;
 import ir.gooble.clinic.util.Util;
 
-public class DoctorInstance {
+public class GalleryInstance {
 
-    public static void getDoctors(Activity context, InstanceResult resultCall) {
+    public static void getPictures(Activity context, InstanceResult resultCall) {
         SharedPreferences preferences = Util.get(context);
-        String data = preferences.getString(DoctorInstance.class.getSimpleName(), null);
+        String data = preferences.getString(GalleryInstance.class.getSimpleName(), null);
         if (data == null) {
             sendRequest(context, resultCall);
         } else {
@@ -36,7 +33,7 @@ public class DoctorInstance {
 
     private static boolean shouldUpdate(Activity context) {
         SharedPreferences preferences = Util.get(context);
-        long lastUpdate = preferences.getLong(DoctorInstance.class.getSimpleName() + "_TimeStamp", 0);
+        long lastUpdate = preferences.getLong(GalleryInstance.class.getSimpleName() + "_TimeStamp", 0);
         long current = Calendar.getInstance().getTimeInMillis();
         return current > (lastUpdate + BaseActivity.UPDATE_RATE);
     }
@@ -44,8 +41,8 @@ public class DoctorInstance {
     private static void saveResponse(Activity context, String response) {
         SharedPreferences preferences = Util.get(context);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(DoctorInstance.class.getSimpleName(), response);
-        editor.putLong(DoctorInstance.class.getSimpleName() + "_TimeStamp", Calendar.getInstance().getTimeInMillis());
+        editor.putString(GalleryInstance.class.getSimpleName(), response);
+        editor.putLong(GalleryInstance.class.getSimpleName() + "_TimeStamp", Calendar.getInstance().getTimeInMillis());
         editor.apply();
     }
 
@@ -56,7 +53,7 @@ public class DoctorInstance {
         } else {
             prompt = new PromptUtil(context);
         }
-        new Rest(context, Api.DOCTOR_INFO).connect(new CallBack() {
+        new Rest(context, Api.GALLERY).connect(new CallBack() {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
@@ -87,19 +84,10 @@ public class DoctorInstance {
     }
 
     private static void decompile(String response, InstanceResult resultCall) {
-        Object[] objects = null;
-        try {
-            JSONArray array = new JSONArray(response);
-            if (array.length() > 0) {
-                JSONArray jsonArray = array.getJSONArray(0);
-                String data = jsonArray.toString();
-                objects = new Gson().fromJson(data, Doctor[].class);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        Gallery gallery = new Gson().fromJson(response, Gallery.class);
+        if (gallery == null) {
+            return;
         }
-        if (objects != null) {
-            resultCall.onResult(objects);
-        }
+        resultCall.onResult(gallery.getPictures());
     }
 }

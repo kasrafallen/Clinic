@@ -20,16 +20,22 @@ public enum Api {
             return "/ClinicInfo";
         }
     },
+    GALLERY(Method.POST) {
+        @Override
+        public String toString() {
+            return "/galery";
+        }
+    },
+    DOCTOR_INFO(Method.POST) {
+        @Override
+        public String toString() {
+            return "/Doctors";
+        }
+    },
     PROFILE_INFO(Method.GET) {
         @Override
         public String toString() {
             return "/patientinfo";
-        }
-    },
-    DOCTOR_INFO(Method.GET) {
-        @Override
-        public String toString() {
-            return "/doctorinfo";
         }
     },
     RESERVE_INFO(Method.POST) {
@@ -51,7 +57,7 @@ public enum Api {
         }
     };
 
-    public static final String BASE = "192.168.1.7:5000";
+    public static final String BASE = "176.9.220.144:8080";
     public static final String ROUTE = BASE + "/api/Spand";
     private int id;
 

@@ -249,7 +249,14 @@ public class InitDrawer implements View.OnClickListener {
         }
         if (!UserInstance.isEmpty(context)) {
             User user = UserInstance.getUser(context);
-            text.setText(user.getName() + "\n" + user.getMobile_number());
+            StringBuilder builder = new StringBuilder("");
+            if (user.getName() != null) {
+                builder.append(user.getName()).append("\n");
+            }
+            if (user.getMobile_number() != null) {
+                builder.append(user.getMobile_number());
+            }
+            text.setText(builder.toString());
         } else {
             text.setText("");
         }
