@@ -7,10 +7,8 @@ import android.view.View;
 
 import ir.gooble.clinic.activity.FactActivity;
 import ir.gooble.clinic.adaptor.FactAdaptor;
-import ir.gooble.clinic.adaptor.MainAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
-import ir.gooble.clinic.instance.Attributes;
 import ir.gooble.clinic.view.AppRecyclerView;
 import ir.gooble.clinic.view.AppToolbar;
 
