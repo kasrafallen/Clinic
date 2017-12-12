@@ -15,7 +15,7 @@ public class Doctor {
 
     private Expertise[] expertise;
     private String family_name;
-    private Degree[] degree;
+    private Degree[] Certificates;
     private int doctor_id;
     private String image;
     private String name;
@@ -55,12 +55,12 @@ public class Doctor {
         this.expertise = expertise;
     }
 
-    public Degree[] getDegree() {
-        return degree;
+    public Degree[] getCertificates() {
+        return Certificates;
     }
 
-    public void setDegree(Degree[] degree) {
-        this.degree = degree;
+    public void setCertificates(Degree[] certificates) {
+        Certificates = certificates;
     }
 
     public long getStart() {
@@ -113,8 +113,8 @@ public class Doctor {
 
     public ArrayList<String> getDegreeList() {
         ArrayList<String> list = new ArrayList<>();
-        if (degree != null && degree.length > 0) {
-            for (Degree de : degree) {
+        if (Certificates != null && Certificates.length > 0) {
+            for (Degree de : Certificates) {
                 list.add("- " + de.getName());
             }
         }

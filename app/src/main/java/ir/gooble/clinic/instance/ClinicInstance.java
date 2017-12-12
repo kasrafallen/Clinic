@@ -84,8 +84,12 @@ public class ClinicInstance {
     }
 
     private static void decompile(String response, InstanceResult resultCall) {
-        Object[] objects = new Object[1];
-        objects[0] = new Gson().fromJson(response, Clinic.class);
-        resultCall.onResult(objects);
+        try {
+            Object[] objects = new Object[1];
+            objects[0] = new Gson().fromJson(response, Clinic.class);
+            resultCall.onResult(objects);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

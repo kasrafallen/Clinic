@@ -43,14 +43,7 @@ public class InitFact extends BaseInit {
         CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(-1, -2);
         params.topMargin = toolbar.getSize();
         recyclerView.setLayoutParams(params);
-        LinearLayoutManager manager = new LinearLayoutManager(context);
-//        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//                return 100;
-//            }
-//        });
-        recyclerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adaptor);
         recyclerView.setMinimumHeight((int) (dimen[1] - toolbar.getSize()));

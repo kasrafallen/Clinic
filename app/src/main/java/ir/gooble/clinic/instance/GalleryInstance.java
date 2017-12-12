@@ -84,10 +84,14 @@ public class GalleryInstance {
     }
 
     private static void decompile(String response, InstanceResult resultCall) {
-        Gallery gallery = new Gson().fromJson(response, Gallery.class);
-        if (gallery == null) {
-            return;
+        try {
+            Gallery gallery = new Gson().fromJson(response, Gallery.class);
+            if (gallery == null) {
+                return;
+            }
+            resultCall.onResult(gallery.getPictures());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        resultCall.onResult(gallery.getPictures());
     }
 }

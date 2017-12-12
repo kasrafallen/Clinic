@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -67,6 +68,8 @@ public class InitClinic extends BaseInit {
     private int line;
 
     private HashMap<Integer, TextView> textViewHashMap = new HashMap<>();
+    private ArrayList<View> cardViewHashMap = new ArrayList<>();
+
     private CircleImageView circleImageView;
     private LinearLayout addressBox;
     private LinearLayout socialBox;
@@ -113,11 +116,15 @@ public class InitClinic extends BaseInit {
     }
 
     private void setData() {
+        imageView.setVisibility(View.VISIBLE);
+        circleImageView.setVisibility(View.VISIBLE);
         if (clinic.getPictureURL() != null) {
             Picasso.with(context).load(clinic.getPictureURL()).fit().centerCrop().into(imageView);
         }
         if (clinic.getLogoURL() != null) {
             Picasso.with(context).load(clinic.getLogoURL()).fit().centerCrop().into(circleImageView);
+        } else {
+            circleImageView.setImageResource(R.mipmap.test_clinic_logo);
         }
         if (clinic.getAddresses() != null && clinic.getAddresses().length > 0) {
             int counter = 0;
@@ -149,6 +156,9 @@ public class InitClinic extends BaseInit {
                     break;
             }
         }
+        for (View view : cardViewHashMap) {
+            view.setVisibility(View.VISIBLE);
+        }
     }
 
     private View recycler() {
@@ -166,6 +176,7 @@ public class InitClinic extends BaseInit {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             scrollView.setElevation(20);
         }
+
         final LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(item(DETAIL));
@@ -198,6 +209,7 @@ public class InitClinic extends BaseInit {
         imageView.setLayoutParams(params2);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setImageResource(R.color.toolbar);
+        imageView.setVisibility(View.GONE);
 
         AppToolbar toolbar = new AppToolbar(context, true, null, true);
         toolbar.setMaximize();
@@ -253,6 +265,9 @@ public class InitClinic extends BaseInit {
         if (id == DETAIL) {
             layout.addView(logo());
         }
+
+        cardView.setVisibility(View.GONE);
+        cardViewHashMap.add(cardView);
         return layout;
     }
 
@@ -460,7 +475,7 @@ public class InitClinic extends BaseInit {
         circleImageView.setLayoutParams(params);
         circleImageView.setBorderWidth(line);
         circleImageView.setBorderColor(context.getResources().getColor(R.color.circle_border));
-        circleImageView.setImageResource(R.mipmap.test_clinic_logo);
+        circleImageView.setVisibility(View.GONE);
         return circleImageView;
     }
 }

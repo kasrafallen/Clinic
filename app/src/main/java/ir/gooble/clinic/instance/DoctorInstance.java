@@ -4,14 +4,17 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.model.Doctor;
+import ir.gooble.clinic.model.Doctors;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;
 import ir.gooble.clinic.oracle.Rest;
@@ -89,17 +92,15 @@ public class DoctorInstance {
     private static void decompile(String response, InstanceResult resultCall) {
         Object[] objects = null;
         try {
-            JSONArray array = new JSONArray(response);
-            if (array.length() > 0) {
-                JSONArray jsonArray = array.getJSONArray(0);
-                String data = jsonArray.toString();
-                objects = new Gson().fromJson(data, Doctor[].class);
+            Doctors doctors = new Gson().fromJson(response, Doctors.class);
+            if (doctors != null) {
+                objects = doctors.getDoctors();
+                if (objects != null) {
+                    resultCall.onResult(objects);
+                }
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        if (objects != null) {
-            resultCall.onResult(objects);
         }
     }
 }
