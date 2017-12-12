@@ -14,8 +14,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
@@ -63,6 +66,11 @@ public class InitClinic extends BaseInit {
     private int small_margin;
     private int line;
 
+    private HashMap<Integer, TextView> textViewHashMap = new HashMap<>();
+    private CircleImageView circleImageView;
+    private LinearLayout addressBox;
+    private LinearLayout socialBox;
+    private ImageView imageView;
     private int icon;
 
     public InitClinic(BaseActivity context) {
@@ -90,15 +98,57 @@ public class InitClinic extends BaseInit {
     protected View create() {
         final CoordinatorLayout layout = new CoordinatorLayout(context);
         layout.setLayoutParams(new DrawerLayout.LayoutParams(-1, -1));
+        layout.addView(toolbar());
+        layout.addView(recycler());
         ClinicInstance.getClinic(context, new InstanceResult() {
             @Override
             public void onResult(Object[] objects) {
                 InitClinic.this.clinic = (Clinic) objects[0];
-                layout.addView(toolbar());
-                layout.addView(recycler());
+                if (clinic != null) {
+                    setData();
+                }
             }
         });
         return layout;
+    }
+
+    private void setData() {
+        if (clinic.getPictureURL() != null) {
+            Picasso.with(context).load(clinic.getPictureURL()).fit().centerCrop().into(imageView);
+        }
+        if (clinic.getLogoURL() != null) {
+            Picasso.with(context).load(clinic.getLogoURL()).fit().centerCrop().into(circleImageView);
+        }
+        if (clinic.getAddresses() != null && clinic.getAddresses().length > 0) {
+            int counter = 0;
+            for (Address account : clinic.getAddresses()) {
+                addressBox.addView(contact(account));
+                counter++;
+                if (counter != clinic.getAddresses().length) {
+                    addressBox.addView(line());
+                }
+            }
+        }
+        if (clinic.getSocialAccounts() != null && clinic.getSocialAccounts().length > 0) {
+            for (SocialAccount account : clinic.getSocialAccounts()) {
+                socialBox.addView(contact(account));
+            }
+        }
+        if (clinic.getPhoneNumbers() != null && clinic.getPhoneNumbers().length > 0) {
+            for (PhoneNumber account : clinic.getPhoneNumbers()) {
+                socialBox.addView(contact(account));
+            }
+        }
+        for (int id : textViewHashMap.keySet()) {
+            switch (id) {
+                case NAME:
+                    textViewHashMap.get(id).setText(clinic.getTitle());
+                    break;
+                default:
+                    textViewHashMap.get(id).setText(clinic.getDescription());
+                    break;
+            }
+        }
     }
 
     private View recycler() {
@@ -142,15 +192,12 @@ public class InitClinic extends BaseInit {
         collapsingToolbarLayout.setContentScrimResource(R.color.toolbar);
         collapsingToolbarLayout.setBackgroundResource(R.color.toolbar);
 
-        ImageView imageView = new ImageView(context);
+        imageView = new ImageView(context);
         CollapsingToolbarLayout.LayoutParams params2 = new CollapsingToolbarLayout.LayoutParams(-1, -1);
         params2.setCollapseMode(CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX);
         imageView.setLayoutParams(params2);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setImageResource(R.color.toolbar);
-        if (clinic.getPictureURL() != null) {
-            Picasso.with(context).load(clinic.getPictureURL()).fit().centerCrop().into(imageView);
-        }
 
         AppToolbar toolbar = new AppToolbar(context, true, null, true);
         toolbar.setMaximize();
@@ -211,31 +258,13 @@ public class InitClinic extends BaseInit {
 
     private void fill(LinearLayout box, int id) {
         if (id == DETAIL) {
-            box.addView(text(get(NAME)));
+            box.addView(text("NAME"));
             box.addView(text(DESCRIPTION_ID));
         } else if (id == ADDRESS) {
             box.addView(text("نشانی کلینیک"));
-            if (clinic.getAddresses() != null && clinic.getAddresses().length > 0) {
-                int counter = 0;
-                for (Address account : clinic.getAddresses()) {
-                    box.addView(contact(account));
-                    counter++;
-                    if (counter != clinic.getAddresses().length) {
-                        box.addView(line());
-                    }
-                }
-            }
+            addressBox = box;
         } else {
-            if (clinic.getSocialAccounts() != null && clinic.getSocialAccounts().length > 0) {
-                for (SocialAccount account : clinic.getSocialAccounts()) {
-                    box.addView(contact(account));
-                }
-            }
-            if (clinic.getPhoneNumbers() != null && clinic.getPhoneNumbers().length > 0) {
-                for (PhoneNumber account : clinic.getPhoneNumbers()) {
-                    box.addView(contact(account));
-                }
-            }
+            socialBox = box;
         }
     }
 
@@ -344,7 +373,8 @@ public class InitClinic extends BaseInit {
         AppText appText = new AppText(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         params.bottomMargin = small_margin;
-        if (input.equals(get(NAME))) {
+        if (input.equals("NAME")) {
+            textViewHashMap.put(NAME, appText);
             params.topMargin = (int) (2f * logo / 3f);
         } else {
             params.topMargin = small_margin;
@@ -355,7 +385,6 @@ public class InitClinic extends BaseInit {
         appText.setTextSize(1, 14);
         appText.setSingleLine();
         appText.setShadowLayer(1, line, line, Color.LTGRAY);
-        appText.setText(input);
         return appText;
     }
 
@@ -384,7 +413,7 @@ public class InitClinic extends BaseInit {
                 text.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 text.setTextColor(Color.GRAY);
                 text.setTextSize(1, 11);
-                text.setText(get(DESCRIPTION));
+                textViewHashMap.put(DESCRIPTION, text);
                 break;
             default:
                 params.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
@@ -419,31 +448,19 @@ public class InitClinic extends BaseInit {
     }
 
     private View logo() {
-        CircleImageView imageView = new CircleImageView(context);
-        imageView.setId(LOGO_ID);
+        circleImageView = new CircleImageView(context);
+        circleImageView.setId(LOGO_ID);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            imageView.setElevation(25);
+            circleImageView.setElevation(25);
         }
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        circleImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(logo, logo);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        imageView.setLayoutParams(params);
-        imageView.setBorderWidth(line);
-        imageView.setBorderColor(context.getResources().getColor(R.color.circle_border));
-        imageView.setImageResource(R.mipmap.test_clinic_logo);
-        if (clinic.getLogoURL() != null) {
-            Picasso.with(context).load(clinic.getLogoURL()).fit().centerCrop().into(imageView);
-        }
-        return imageView;
-    }
-
-    private String get(int id) {
-        switch (id) {
-            case NAME:
-                return clinic.getTitle();
-            default:
-                return clinic.getDescription();
-        }
+        circleImageView.setLayoutParams(params);
+        circleImageView.setBorderWidth(line);
+        circleImageView.setBorderColor(context.getResources().getColor(R.color.circle_border));
+        circleImageView.setImageResource(R.mipmap.test_clinic_logo);
+        return circleImageView;
     }
 }
