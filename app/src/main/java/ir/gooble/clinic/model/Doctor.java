@@ -2,57 +2,32 @@ package ir.gooble.clinic.model;
 
 import java.util.ArrayList;
 
-import ir.gooble.clinic.oracle.Api;
-
 public class Doctor {
 
     public Doctor() {
     }
 
-    public Doctor(int doctor_id) {
-        this.doctor_id = doctor_id;
-    }
-
-    private Expertise[] expertise;
-    private String family_name;
+    private int DoctorID;
+    private String Email;
+    private String about;
     private Degree[] Certificates;
-    private int doctor_id;
-    private String image;
-    private String name;
+    private Expertise[] Experties;
+    private String DoctorLastName;
+    private String DoctorTitle;
+    private String PhoneNumber;
+    private String NationalID;
+    private String DoctorName;
+    private String PictureURL;
 
     private long start;
     private long end;
 
-    public int getDoctor_id() {
-        return doctor_id;
+    public void setAbout(String about) {
+        this.about = about;
     }
 
-    public void setDoctor_id(int doctor_id) {
-        this.doctor_id = doctor_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFamily_name() {
-        return family_name;
-    }
-
-    public void setFamily_name(String family_name) {
-        this.family_name = family_name;
-    }
-
-    public Expertise[] getExpertise() {
-        return expertise;
-    }
-
-    public void setExpertise(Expertise[] expertise) {
-        this.expertise = expertise;
+    public String getAbout() {
+        return about;
     }
 
     public Degree[] getCertificates() {
@@ -61,6 +36,78 @@ public class Doctor {
 
     public void setCertificates(Degree[] certificates) {
         Certificates = certificates;
+    }
+
+    public Expertise[] getExperties() {
+        return Experties;
+    }
+
+    public void setExperties(Expertise[] experties) {
+        Experties = experties;
+    }
+
+    public String getPictureURL() {
+        return PictureURL;
+    }
+
+    public int getDoctorID() {
+        return DoctorID;
+    }
+
+    public void setDoctorID(int doctorID) {
+        DoctorID = doctorID;
+    }
+
+    public String getDoctorLastName() {
+        return DoctorLastName;
+    }
+
+    public void setDoctorLastName(String doctorLastName) {
+        DoctorLastName = doctorLastName;
+    }
+
+    public String getDoctorName() {
+        return DoctorName;
+    }
+
+    public void setDoctorName(String doctorName) {
+        DoctorName = doctorName;
+    }
+
+    public String getDoctorTitle() {
+        return DoctorTitle;
+    }
+
+    public void setDoctorTitle(String doctorTitle) {
+        DoctorTitle = doctorTitle;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
+    }
+
+    public String getNationalID() {
+        return NationalID;
+    }
+
+    public void setNationalID(String nationalID) {
+        NationalID = nationalID;
+    }
+
+    public String getPhoneNumber() {
+        return PhoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        PhoneNumber = phoneNumber;
+    }
+
+    public void setPictureURL(String pictureURL) {
+        PictureURL = pictureURL;
     }
 
     public long getStart() {
@@ -79,33 +126,18 @@ public class Doctor {
         this.end = end;
     }
 
-    public String getImage() {
-        if (image != null) {
-            return Api.BASE + image;
-        }
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public String getExpertiseString() {
-        if (expertise != null && expertise.length > 0) {
-            return expertise[0].getName();
+        if (Experties != null && Experties.length > 0) {
+            return Experties[0].getText();
         }
-        return "-";
-    }
-
-    public String getAbout() {
         return "-";
     }
 
     public ArrayList<String> getExpertiseList() {
         ArrayList<String> list = new ArrayList<>();
-        if (expertise != null && expertise.length > 0) {
-            for (Expertise ex : expertise) {
-                list.add("- " + ex.getName());
+        if (Experties != null && Experties.length > 0) {
+            for (Expertise ex : Experties) {
+                list.add("- " + ex.getText());
             }
         }
         return list;
@@ -115,7 +147,7 @@ public class Doctor {
         ArrayList<String> list = new ArrayList<>();
         if (Certificates != null && Certificates.length > 0) {
             for (Degree de : Certificates) {
-                list.add("- " + de.getName());
+                list.add("- " + de.getText());
             }
         }
         return list;

@@ -2,53 +2,22 @@ package ir.gooble.clinic.model;
 
 public class Degree {
 
-    private int id;
-    private String name;
-    private Pivot pivot;
+    private int ID;
+    private String Text;
 
-    public class Pivot {
-
-        private int doctor_id;
-        private int degree_id;
-
-        public int getDoctor_id() {
-            return doctor_id;
-        }
-
-        public void setDoctor_id(int doctor_id) {
-            this.doctor_id = doctor_id;
-        }
-
-        public int getDegree_id() {
-            return degree_id;
-        }
-
-        public void setDegree_id(int degree_id) {
-            this.degree_id = degree_id;
-        }
+    public int getID() {
+        return ID;
     }
 
-    public int getId() {
-        return id;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getText() {
+        return Text;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Pivot getPivot() {
-        return pivot;
-    }
-
-    public void setPivot(Pivot pivot) {
-        this.pivot = pivot;
+    public void setText(String text) {
+        Text = text;
     }
 }
