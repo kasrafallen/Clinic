@@ -234,4 +234,12 @@ public class CalendarUtil {
         CalendarUtil util = new CalendarUtil(date);
         return util.strWeekDay + " - " + util.date + " " + util.strMonth;
     }
+
+    public static int get(int i) {
+        if (i == 7) {
+            return 0;
+        } else {
+            return i;
+        }
+    }
 }

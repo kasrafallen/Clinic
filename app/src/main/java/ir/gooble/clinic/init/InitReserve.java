@@ -9,7 +9,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import ir.gooble.clinic.activity.ReserveActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.model.Doctor;
+import ir.gooble.clinic.model.Reserve;
 import ir.gooble.clinic.util.CalendarUtil;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppButton;
@@ -53,6 +53,7 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
     private int time;
     private int timer;
 
+    private boolean firstTime = true;
     private ViewPager pager;
 
     public InitReserve(BaseActivity context) {
@@ -192,7 +193,6 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
                 }
             }
         });
-        onPageSelected(0);
         return button;
     }
 
@@ -202,7 +202,7 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         return toolbar;
     }
 
-    private View item(Doctor doctor) {
+    private View item(Reserve reserve) {
         LinearLayout layout = new LinearLayout(context);
         layout.setBackgroundResource(R.color.white);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -214,7 +214,7 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         params.bottomMargin = margin / 2;
         layout.setLayoutParams(params);
 
-        layout.addView(detail(doctor));
+        layout.addView(detail(reserve.getDoctor()));
         layout.addView(time());
         return layout;
     }
@@ -342,13 +342,19 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
             right.setVisibility(View.VISIBLE);
         }
 
-        date.setText(context.getDate(position));
-        context.reset();
         layout.removeAllViews();
-        context.sendRequest();
+        context.load(position);
+        date.setText(CalendarUtil.getDate(context.current_calendar.getTime()));
     }
 
-    public void add(Doctor doctor, String response) {
-        layout.addView(item(doctor));
+    public void add(Reserve reserve) {
+        layout.addView(item(reserve));
+    }
+
+    public void setPager() {
+        if (firstTime) {
+            firstTime = false;
+            onPageSelected(0);
+        }
     }
 }

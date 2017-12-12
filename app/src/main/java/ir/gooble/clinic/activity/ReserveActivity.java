@@ -1,11 +1,15 @@
 package ir.gooble.clinic.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -23,11 +27,13 @@ import ir.gooble.clinic.util.CalendarUtil;
 
 public class ReserveActivity extends BaseActivity {
 
-    private HashMap<Doctor, Boolean> list = new HashMap<>();
+    public HashMap<long[], ArrayList<Reserve>> data = new HashMap<>();
+    private HashMap<Doctor, Boolean> doctors = new HashMap<>();
+
     private InitReserve initReserve;
     private boolean isClosed;
 
-    private Calendar current_calendar;
+    public Calendar current_calendar;
     private Calendar base_calendar;
     private boolean isSingle;
 
@@ -40,16 +46,21 @@ public class ReserveActivity extends BaseActivity {
         base_calendar = TimeInstance.getCalendar(this);
         current_calendar = TimeInstance.getCalendar(this);
         initReserve = (InitReserve) setContentView(this);
-        continueProcess();
+        startProcess();
     }
 
-    private void continueProcess() {
+    private void startProcess() {
         if (getIntent().getAction() != null) {
             isSingle = true;
             String json = getIntent().getAction();
             Doctor doctor = new Gson().fromJson(json, Doctor.class);
-            list.put(doctor, false);
-            sendRequest();
+            doctors.put(doctor, false);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    initReserve.setPager();
+                }
+            });
         } else {
             isSingle = false;
             DoctorInstance.getDoctors(this, new InstanceResult() {
@@ -59,17 +70,22 @@ public class ReserveActivity extends BaseActivity {
                         return;
                     }
                     for (Object doctor : objects) {
-                        list.put((Doctor) doctor, false);
+                        doctors.put((Doctor) doctor, false);
                     }
-                    sendRequest();
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            initReserve.setPager();
+                        }
+                    });
                 }
             });
         }
     }
 
     public void sendRequest() {
-        for (Doctor dr : list.keySet()) {
-            if (!list.get(dr)) {
+        for (Doctor dr : doctors.keySet()) {
+            if (!doctors.get(dr)) {
                 sendRequest(dr);
             }
         }
@@ -86,21 +102,21 @@ public class ReserveActivity extends BaseActivity {
                 if (isClosed) {
                     return;
                 }
+                requests++;
                 if (isSingle) {
                     prompt.hide();
                 }
-                list.put(doctor, true);
-                initReserve.add(doctor, response);
-                requests++;
-                if (requests == list.size()) {
+                doctors.put(doctor, true);
+                if (requests == doctors.size()) {
                     sendRequest();
                 }
+                initReserve.add(createData(doctor, response));
             }
 
             @Override
             public void onError(String error) {
                 requests++;
-                if (isSingle || requests == list.size()) {
+                if (isSingle || requests == doctors.size()) {
                     prompt.error(this, error);
                 }
             }
@@ -108,7 +124,7 @@ public class ReserveActivity extends BaseActivity {
             @Override
             public void onInternet() {
                 requests++;
-                if (isSingle || requests == list.size()) {
+                if (isSingle || requests == doctors.size()) {
                     prompt.internet(this);
                 }
             }
@@ -125,13 +141,8 @@ public class ReserveActivity extends BaseActivity {
                 requests--;
                 sendRequest(doctor);
             }
-        }, new Reserve(doctor.getDoctorID(), getStartTime(), current_calendar.get(Calendar.DAY_OF_WEEK)));
-    }
-
-    private String getStartTime() {
-        return current_calendar.get(Calendar.YEAR)
-                + "-" + (current_calendar.get(Calendar.MONTH) + 1)
-                + "-" + current_calendar.get(Calendar.DAY_OF_MONTH);
+        }, new Reserve(doctor.getDoctorID(), getStartTime(current_calendar)
+                , CalendarUtil.get(current_calendar.get(Calendar.DAY_OF_WEEK))));
     }
 
     @Override
@@ -140,17 +151,72 @@ public class ReserveActivity extends BaseActivity {
         super.finish();
     }
 
-    public String getDate(int position) {
-        current_calendar.setTimeInMillis(base_calendar.getTimeInMillis() + TimeUnit.DAYS.toMillis(position));
-        return CalendarUtil.getDate(current_calendar.getTime());
-    }
-
     public void reset() {
         if (rest != null) {
             rest.cancel();
         }
-        for (Doctor doctor : list.keySet()) {
-            list.put(doctor, false);
+        for (Doctor doctor : doctors.keySet()) {
+            doctors.put(doctor, false);
         }
     }
+
+    private Reserve createData(Doctor doctor, String response) {
+        Reserve reserve = new Gson().fromJson(response, Reserve.class);
+        reserve.setDoctor(doctor);
+
+        long from = current_calendar.getTimeInMillis();
+        long to = from + TimeUnit.DAYS.toMillis(6 - CalendarUtil.get(current_calendar.get(Calendar.DAY_OF_WEEK)));
+
+        long[] key = new long[]{from, to};
+
+        ArrayList<Reserve> reserves = getReserves(key);
+        reserves.add(reserve);
+
+        data.put(key, reserves);
+        return reserve;
+    }
+
+    public void load(int position) {
+        current_calendar.setTimeInMillis(base_calendar.getTimeInMillis() + TimeUnit.DAYS.toMillis(position));
+
+        boolean isFound = false;
+        ArrayList<Reserve> reserves = getReserves(current_calendar.getTimeInMillis());
+        if (reserves.size() > 0) {
+            isFound = true;
+            for (Reserve reserve : reserves) {
+                initReserve.add(reserve);
+            }
+        }
+        if (!isFound) {
+            reset();
+            sendRequest();
+        }
+    }
+
+    private ArrayList<Reserve> getReserves(long startTime) {
+        ArrayList<Reserve> reserves = new ArrayList<>();
+        for (long[] stamp : data.keySet()) {
+            if (stamp != null) {
+                if (stamp[0] <= startTime && stamp[1] >= startTime) {
+                    reserves.addAll(data.get(stamp));
+                }
+            }
+        }
+        return reserves;
+    }
+
+    private ArrayList<Reserve> getReserves(long[] calendarTimes) {
+        ArrayList<Reserve> reserves = new ArrayList<>();
+        if (data.containsKey(calendarTimes)) {
+            reserves.addAll(data.get(calendarTimes));
+        }
+        return reserves;
+    }
+
+    private String getStartTime(Calendar current_calendar) {
+        return current_calendar.get(Calendar.YEAR)
+                + "-" + (current_calendar.get(Calendar.MONTH) + 1)
+                + "-" + current_calendar.get(Calendar.DAY_OF_MONTH);
+    }
 }
+

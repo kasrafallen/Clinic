@@ -12,6 +12,35 @@ public class Reserve {
     private String PLastName;
     private String Mobile;
 
+    private Week[] Week;
+    private Day[] Days;
+
+    private Doctor Doctor;
+
+    public Week[] getWeek() {
+        return Week;
+    }
+
+    public void setWeek(Week[] week) {
+        Week = week;
+    }
+
+    public Day[] getDays() {
+        return Days;
+    }
+
+    public void setDays(Day[] days) {
+        Days = days;
+    }
+
+    public Doctor getDoctor() {
+        return Doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        Doctor = doctor;
+    }
+
     public Reserve(int doctorID, String startDate, int index) {
         DoctorID = doctorID;
         StartDate = startDate;
