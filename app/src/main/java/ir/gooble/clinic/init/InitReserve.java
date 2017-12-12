@@ -206,12 +206,12 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         LinearLayout layout = new LinearLayout(context);
         layout.setBackgroundResource(R.color.white);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            layout.setElevation(15);
+            layout.setElevation(8);
         }
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         params.topMargin = margin;
-        params.bottomMargin = margin;
+        params.bottomMargin = margin / 2;
         layout.setLayoutParams(params);
 
         layout.addView(detail(doctor));
