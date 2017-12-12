@@ -62,6 +62,7 @@ public class BaseActivity extends AppCompatActivity {
             finish();
         }
     };
+
     private BroadcastReceiver user_receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -213,11 +214,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void logOut() {
-        Util.get(this).edit()
+        Util.get(this)
+                .edit()
                 .remove(GalleryInstance.class.getSimpleName())
                 .remove(DoctorInstance.class.getSimpleName())
                 .remove(ClinicInstance.class.getSimpleName())
-                .remove(UserInstance.class.getSimpleName()).apply();
+                .remove(UserInstance.class.getSimpleName())
+                .apply();
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(EXIT));
         LaunchActivity.start(this);
     }
