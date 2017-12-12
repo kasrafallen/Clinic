@@ -55,10 +55,19 @@ public enum Api {
         public String toString() {
             return "/fillprofile";
         }
+    },
+    GET_TIME(Method.POST) {
+        @Override
+        public String toString() {
+            return "http://api.timezonedb.com/v2/get-time-zone"
+                    + "?key=" + KEY + "&format=json&by=zone&zone=Asia/Tehran";
+        }
     };
 
     public static final String BASE = "176.9.220.144:8080";
     public static final String ROUTE = BASE + "/api/Spand";
+    private static final String KEY = "1LVD4F1050VT";
+
     private int id;
 
     Api(int id) {

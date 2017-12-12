@@ -11,9 +11,12 @@ public class CalendarUtil {
     private int month;
     private int year;
 
-    public CalendarUtil() {
-        Date date = new Date();
+    public CalendarUtil(Date date) {
         calcSolarCalendar(date);
+    }
+
+    public CalendarUtil() {
+
     }
 
     private void calcSolarCalendar(Date da) {
@@ -191,7 +194,7 @@ public class CalendarUtil {
                 strMonth = "آذر";
                 break;
             case 10:
-                strMonth = "دي";
+                strMonth = "دی";
                 break;
             case 11:
                 strMonth = "بهمن";
@@ -227,8 +230,8 @@ public class CalendarUtil {
         }
     }
 
-    public String getDate() {
-        CalendarUtil util = new CalendarUtil();
-        return util.strWeekDay + " - " + date + " " + strMonth;
+    public static String getDate(Date date) {
+        CalendarUtil util = new CalendarUtil(date);
+        return util.strWeekDay + " - " + util.date + " " + util.strMonth;
     }
 }

@@ -9,15 +9,24 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
+import com.google.gson.Gson;
+
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.instance.ClinicInstance;
 import ir.gooble.clinic.instance.InstanceResult;
+import ir.gooble.clinic.instance.TimeInstance;
+import ir.gooble.clinic.model.TimeStamp;
+import ir.gooble.clinic.oracle.Api;
+import ir.gooble.clinic.oracle.CallBack;
+import ir.gooble.clinic.oracle.Rest;
+import ir.gooble.clinic.util.PromptUtil;
 import ir.gooble.clinic.util.Util;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class LaunchActivity extends Activity {
 
     private FrameLayout layout;
+    private PromptUtil promptUtil;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -27,6 +36,7 @@ public class LaunchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        promptUtil = new PromptUtil(this);
         setContentView(createView());
         if (!Util.isDimen(this)) {
             setObserver();
@@ -42,24 +52,72 @@ public class LaunchActivity extends Activity {
     }
 
     private void setObserver() {
-        layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                Util.setDimen(new float[]{layout.getWidth(), layout.getHeight()}, LaunchActivity.this);
-                startApp();
-            }
-        });
+        layout.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        Util.setDimen(new float[]{layout.getWidth(), layout.getHeight()}, LaunchActivity.this);
+                        startApp();
+                    }
+                });
     }
 
     private void startApp() {
         ClinicInstance.getClinic(this, new InstanceResult() {
             @Override
             public void onResult(Object[] objects) {
-                MainActivity.start(LaunchActivity.this);
-                finish();
+                if (TimeInstance.isEmpty(LaunchActivity.this)) {
+                    getTime();
+                } else {
+                    redirect();
+                }
             }
         });
+    }
+
+    private void getTime() {
+        new Rest(this, Api.GET_TIME).connect(new CallBack() {
+            @Override
+            public void onResponse(String response) {
+                promptUtil.hide();
+                try {
+                    TimeStamp timeStamp = new Gson().fromJson(response, TimeStamp.class);
+                    if (timeStamp != null && timeStamp.isSuccess()) {
+                        long time = (timeStamp.getTimestamp() - timeStamp.getGmtOffset()) * 1000;
+                        TimeInstance.setTime(LaunchActivity.this, time);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                redirect();
+            }
+
+            @Override
+            public void onError(String error) {
+                promptUtil.error(this, error);
+            }
+
+            @Override
+            public void onInternet() {
+                promptUtil.internet(this);
+            }
+
+            @Override
+            public void onBefore() {
+                promptUtil.progress();
+            }
+
+            @Override
+            public void onClick() {
+                getTime();
+            }
+        });
+    }
+
+    private void redirect() {
+        MainActivity.start(LaunchActivity.this);
+        finish();
     }
 
     @Override

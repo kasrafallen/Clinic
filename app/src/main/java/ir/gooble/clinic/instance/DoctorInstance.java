@@ -4,16 +4,10 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Calendar;
 
 import ir.gooble.clinic.application.BaseActivity;
-import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.model.Doctors;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;

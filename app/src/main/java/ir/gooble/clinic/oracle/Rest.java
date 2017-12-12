@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ir.gooble.clinic.instance.UserInstance;
+import ir.gooble.clinic.instance.VolleyInstance;
 import ir.gooble.clinic.model.Status;
 import ir.gooble.clinic.model.User;
 
@@ -59,7 +60,8 @@ public class Rest implements Response.Listener<String>, Response.ErrorListener {
         }
         callBack.onBefore();
         Request request = createClient(api, data);
-        Volley.newRequestQueue(context).add(request);
+        request.setTag(TAG);
+        VolleyInstance.getInstance().getRequestQueue(context).add(request);
     }
 
     public static String getUrl(Api api, Object data) {
@@ -67,7 +69,9 @@ public class Rest implements Response.Listener<String>, Response.ErrorListener {
         if (link != null && data != null && link.contains("{}") && data instanceof String) {
             link = link.replace("{}", (String) data);
         }
-        link = IP + link;
+        if (api != Api.GET_TIME) {
+            link = IP + link;
+        }
         Log.d(TAG + "called", "returned(" + link + "): " + new Gson().toJson(data));
         return link;
     }
@@ -159,5 +163,9 @@ public class Rest implements Response.Listener<String>, Response.ErrorListener {
         }
         Log.d(TAG + "onFailure", "returned(" + statusCode + "): " + response);
         callBack.onError(response);
+    }
+
+    public void cancel() {
+        VolleyInstance.getInstance().getRequestQueue(context).cancelAll(TAG);
     }
 }
