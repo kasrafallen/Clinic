@@ -17,6 +17,7 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
@@ -195,7 +196,7 @@ public class InitDetail extends BaseInit {
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.VERTICAL);
         box.setLayoutParams(new CardView.LayoutParams(-1, -2));
-        box.addView(text(context.doctor.getName()));
+        box.addView(text(context.doctor.getFullName()));
         box.addView(text(DESCRIPTION_ID));
         box.addView(line(false));
         box.addView(functions());
@@ -329,7 +330,7 @@ public class InitDetail extends BaseInit {
                 text.setGravity(Gravity.CENTER);
                 text.setTextColor(Color.GRAY);
                 text.setTextSize(1, 11);
-                text.setText(context.doctor.getExpertiseString());
+                text.setText(context.doctor.getDoctorTitle());
                 break;
             default:
                 params.width = -2;
@@ -367,7 +368,12 @@ public class InitDetail extends BaseInit {
         imageView.setLayoutParams(params);
         imageView.setBorderWidth(line);
         imageView.setBorderColor(context.getResources().getColor(R.color.circle_border));
-        imageView.setImageResource(R.mipmap.y_def_doctor_profile);
+        if (context.doctor.getPictureURL() == null) {
+            imageView.setImageResource(R.mipmap.y_def_doctor_profile);
+        } else {
+            Picasso.with(context).load(context.doctor.getPictureURL()).fit()
+                    .centerCrop().into(imageView);
+        }
         return imageView;
     }
 }

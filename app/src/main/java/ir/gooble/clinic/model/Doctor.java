@@ -7,6 +7,10 @@ public class Doctor {
     public Doctor() {
     }
 
+    public Doctor(int doctorID) {
+        DoctorID = doctorID;
+    }
+
     private int DoctorID;
     private String Email;
     private String about;
@@ -151,5 +155,9 @@ public class Doctor {
             }
         }
         return list;
+    }
+
+    public String getFullName() {
+        return getDoctorName() + " " + getDoctorLastName();
     }
 }

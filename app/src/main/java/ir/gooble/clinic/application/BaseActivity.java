@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -144,7 +145,7 @@ public class BaseActivity extends AppCompatActivity {
         startActivityForResult(intent, requestCode);
     }
 
-    public void run(String tag, BaseActivity context, View view, String data) {
+    public void run(String tag, final BaseActivity context, View view, final String data) {
         Intent intent;
         switch (tag) {
             case Attributes.FIELD_ABOUT_CLINIC:
@@ -199,6 +200,14 @@ public class BaseActivity extends AppCompatActivity {
                 logOut();
                 break;
         }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (context != null && drawer != null) {
+                    drawer.closeDrawer(Gravity.RIGHT);
+                }
+            }
+        }, 500);
     }
 
     private void logOut() {

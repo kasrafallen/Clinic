@@ -158,17 +158,17 @@ public class DoctorAdaptor extends RecyclerView.Adapter<DoctorAdaptor.Holder> im
         string.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, string.toString().indexOf("\n"), 0);
         holder.text.setText(string);
         holder.image.setImageResource(R.mipmap.y_def_doctor_profile_2);
-        if(doctors.get(position).getImage() != null){
-            Picasso.with(context).load(doctors.get(position).getImage()).fit().centerCrop().into(holder.image);
+        if (doctors.get(position).getPictureURL() != null) {
+            Picasso.with(context).load(doctors.get(position).getPictureURL()).fit().centerCrop().into(holder.image);
         }
     }
 
     private String getDescription(int position) {
-        return doctors.get(position).getExpertiseString();
+        return doctors.get(position).getDoctorTitle();
     }
 
     private String getName(int position) {
-        return doctors.get(position).getName();
+        return doctors.get(position).getFullName();
     }
 
     @Override
