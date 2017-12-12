@@ -41,13 +41,13 @@ public enum Api {
     RESERVE_INFO(Method.POST) {
         @Override
         public String toString() {
-            return "/reserveinfo";
+            return "/GetWeek";
         }
     },
     RESERVE_POST(Method.POST) {
         @Override
         public String toString() {
-            return "/reservepost";
+            return "/ReserveTime";
         }
     },
     PROFILE_POST(Method.POST) {
