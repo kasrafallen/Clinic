@@ -1,6 +1,7 @@
 package ir.gooble.clinic.model;
 
 public class Doctors {
+
     private int CID;
     private Doctor[] Doctors;
 
