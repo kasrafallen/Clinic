@@ -93,8 +93,12 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
 
     private View tab() {
         pager = new ViewPager(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            pager.setElevation(4);
+        }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, tab);
         pager.setLayoutParams(params);
+        pager.setBackgroundResource(R.color.white);
         pager.setAdapter(new PagerAdapter() {
 
             @Override
@@ -127,10 +131,6 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         RelativeLayout layout = new RelativeLayout(context);
         layout.setTag(position + "");
         layout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
-        layout.setBackgroundResource(R.color.white);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            layout.setElevation(4);
-        }
 
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.HORIZONTAL);
@@ -206,7 +206,7 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         LinearLayout layout = new LinearLayout(context);
         layout.setBackgroundResource(R.color.white);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            layout.setElevation(8);
+            layout.setElevation(2);
         }
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
@@ -328,7 +328,6 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
     @Override
     public void onPageSelected(int position) {
         View view = pager.findViewWithTag(position + "");
-        Log.d("SHIT", "onPageSelected() returned: " + view);
         if (view == null) {
             return;
         }
