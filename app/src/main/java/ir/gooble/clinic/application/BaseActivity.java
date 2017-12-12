@@ -34,7 +34,9 @@ import ir.gooble.clinic.init.InitRegister;
 import ir.gooble.clinic.init.InitReserve;
 import ir.gooble.clinic.init.InitSign;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.instance.ClinicInstance;
 import ir.gooble.clinic.instance.DoctorInstance;
+import ir.gooble.clinic.instance.GalleryInstance;
 import ir.gooble.clinic.instance.UserInstance;
 import ir.gooble.clinic.model.Address;
 import ir.gooble.clinic.model.FactModel;
@@ -198,7 +200,7 @@ public class BaseActivity extends AppCompatActivity {
                 break;
             case InitDrawer.LOGOUT:
                 logOut();
-                break;
+                return;
         }
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -212,9 +214,10 @@ public class BaseActivity extends AppCompatActivity {
 
     private void logOut() {
         Util.get(this).edit()
+                .remove(GalleryInstance.class.getSimpleName())
                 .remove(DoctorInstance.class.getSimpleName())
-                .remove(UserInstance.class.getSimpleName())
-                .apply();
+                .remove(ClinicInstance.class.getSimpleName())
+                .remove(UserInstance.class.getSimpleName()).apply();
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(EXIT));
         LaunchActivity.start(this);
     }
