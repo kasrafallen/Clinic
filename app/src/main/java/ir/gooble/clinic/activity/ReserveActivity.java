@@ -1,5 +1,6 @@
 package ir.gooble.clinic.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -250,6 +251,18 @@ public class ReserveActivity extends BaseActivity {
     public void sendRequest(final Day day, final Reserve reserve) {
         User user = UserInstance.getUser(this);
         if (user == null) {
+            SignActivity.start(new UserInstance.SignResult() {
+
+                @Override
+                public void onDone() {
+
+                }
+
+                @Override
+                public void onDismiss() {
+
+                }
+            }, this);
             return;
         }
         new Rest(this, Api.RESERVE_POST).connect(new CallBack() {
@@ -278,6 +291,12 @@ public class ReserveActivity extends BaseActivity {
                 sendRequest(day, reserve);
             }
         }, new Reserve(reserve.getDoctorID(), day.getDate(), day.getIndex(), day.getTime(), user));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        SignActivity.handle(requestCode, resultCode);
     }
 }
 
