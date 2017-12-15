@@ -21,11 +21,14 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.ReserveActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
+import ir.gooble.clinic.model.Day;
 import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.model.Reserve;
 import ir.gooble.clinic.util.CalendarUtil;
@@ -206,22 +209,21 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         LinearLayout layout = new LinearLayout(context);
         layout.setBackgroundResource(R.color.white);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            layout.setElevation(2);
+            layout.setElevation(3);
         }
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
-        params.topMargin = margin;
-        params.bottomMargin = margin / 2;
         layout.setLayoutParams(params);
 
         layout.addView(detail(reserve.getDoctor()));
-        layout.addView(time());
+        layout.addView(time(reserve));
         return layout;
     }
 
-    private View time() {
+    private View time(Reserve reserve) {
         RelativeLayout layout = new RelativeLayout(context);
-        layout.setLayoutParams(new LinearLayout.LayoutParams(-1, time));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-1, -2);
+        layout.setLayoutParams(layoutParams);
 
         HorizontalScrollView view = new HorizontalScrollView(context);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(-2, -2);
@@ -232,8 +234,14 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
 
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.HORIZONTAL);
-        for (int i = 0; i < 6; i++) {
-            box.addView(time(i));
+
+        ArrayList<Day> days = context.getDays(reserve, context.getStartTime(context.current_calendar));
+        for (int i = 0; i < days.size(); i++) {
+            boolean flag = false;
+            if (i == days.size() - 1) {
+                flag = true;
+            }
+            box.addView(time(days.get(i), i, flag, reserve));
         }
 
         view.addView(box);
@@ -241,12 +249,14 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         return layout;
     }
 
-    private View time(int index) {
+    private View time(final Day day, int index, boolean isLast, final Reserve reserve) {
         Button text = new Button(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, timer);
         params.gravity = Gravity.CENTER_VERTICAL;
-        if (index == 0 || index == 5) {
-            if (index == 5) {
+        params.bottomMargin = margin / 2;
+        params.topMargin = margin / 2;
+        if (index == 0 || isLast) {
+            if (isLast) {
                 params.rightMargin = margin;
                 params.leftMargin = margin / 2;
             } else {
@@ -264,11 +274,16 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         Util.setText(text, context);
         text.setBackgroundResource(R.drawable.timer_background);
 
-        if (index == 2 || index == 3 || index == 5) {
-            text.setAlpha(0.5f);
-        }
+        int hour = day.getHour();
+        int min = day.getMinute();
 
-        text.setText((index + 9) + " - " + (index + 10));
+        text.setText(Day.config(hour, min, day.getIndex(), reserve.getDuration()));
+        text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.sendRequest(day, reserve);
+            }
+        });
         return text;
     }
 

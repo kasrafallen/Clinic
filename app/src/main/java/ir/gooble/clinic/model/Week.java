@@ -6,14 +6,14 @@ public class Week {
     private String DayName;
     private String EndTime;
     private String StartTime;
-    private int index;
+    private int Index;
 
     public int getIndex() {
-        return index;
+        return Index;
     }
 
     public void setIndex(int index) {
-        this.index = index;
+        this.Index = index;
     }
 
     public String getCondition() {
@@ -49,6 +49,6 @@ public class Week {
     }
 
     public boolean isCurrentDay(int currentDay) {
-        return index == currentDay;
+        return Index == currentDay;
     }
 }

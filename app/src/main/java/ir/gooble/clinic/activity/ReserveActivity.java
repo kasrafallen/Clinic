@@ -16,8 +16,11 @@ import ir.gooble.clinic.init.InitReserve;
 import ir.gooble.clinic.instance.DoctorInstance;
 import ir.gooble.clinic.instance.InstanceResult;
 import ir.gooble.clinic.instance.TimeInstance;
+import ir.gooble.clinic.instance.UserInstance;
+import ir.gooble.clinic.model.Day;
 import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.model.Reserve;
+import ir.gooble.clinic.model.User;
 import ir.gooble.clinic.model.Week;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;
@@ -94,6 +97,8 @@ public class ReserveActivity extends BaseActivity {
         if (doctor == null) {
             return;
         }
+        int index_time = CalendarUtil.get(current_calendar.get(Calendar.DAY_OF_WEEK));
+        final String start_time = getStartTime(current_calendar);
         rest = new Rest(this, Api.RESERVE_INFO);
         rest.connect(new CallBack() {
             @Override
@@ -140,8 +145,7 @@ public class ReserveActivity extends BaseActivity {
                 requests--;
                 sendRequest(doctor);
             }
-        }, new Reserve(doctor.getDoctorID(), getStartTime(current_calendar)
-                , CalendarUtil.get(current_calendar.get(Calendar.DAY_OF_WEEK))));
+        }, new Reserve(doctor.getDoctorID(), start_time, index_time));
     }
 
     @Override
@@ -212,7 +216,7 @@ public class ReserveActivity extends BaseActivity {
         return reserves;
     }
 
-    private String getStartTime(Calendar current_calendar) {
+    public String getStartTime(Calendar current_calendar) {
         return current_calendar.get(Calendar.YEAR)
                 + "-" + (current_calendar.get(Calendar.MONTH) + 1)
                 + "-" + current_calendar.get(Calendar.DAY_OF_MONTH);
@@ -228,6 +232,52 @@ public class ReserveActivity extends BaseActivity {
             }
         }
         return false;
+    }
+
+    public ArrayList<Day> getDays(Reserve reserve, String time) {
+        ArrayList<Day> days = new ArrayList<>();
+        if (reserve.getWeek() != null && reserve.getWeek().length > 0
+                && reserve.getDays() != null && reserve.getDays().length > 0) {
+            for (Day day : reserve.getDays()) {
+                if (day.isCurrentDate(time)) {
+                    days.add(day);
+                }
+            }
+        }
+        return days;
+    }
+
+    public void sendRequest(final Day day, final Reserve reserve) {
+        User user = UserInstance.getUser(this);
+        if (user == null) {
+            return;
+        }
+        new Rest(this, Api.RESERVE_POST).connect(new CallBack() {
+            @Override
+            public void onResponse(String response) {
+                prompt.hide();
+            }
+
+            @Override
+            public void onError(String error) {
+                prompt.error(this, error);
+            }
+
+            @Override
+            public void onInternet() {
+                prompt.internet(this);
+            }
+
+            @Override
+            public void onBefore() {
+                prompt.progress();
+            }
+
+            @Override
+            public void onClick() {
+                sendRequest(day, reserve);
+            }
+        }, new Reserve(reserve.getDoctorID(), day.getDate(), day.getIndex(), day.getTime(), user));
     }
 }
 
