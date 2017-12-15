@@ -68,7 +68,7 @@ public class InitClinic extends BaseInit {
     private int line;
 
     private HashMap<Integer, TextView> textViewHashMap = new HashMap<>();
-    private ArrayList<View> cardViewHashMap = new ArrayList<>();
+    private HashMap<Integer, View> cardViewHashMap = new HashMap<>();
 
     private CircleImageView circleImageView;
     private LinearLayout addressBox;
@@ -135,16 +135,19 @@ public class InitClinic extends BaseInit {
                     addressBox.addView(line());
                 }
             }
+            cardViewHashMap.get(ADDRESS).setVisibility(View.VISIBLE);
         }
         if (clinic.getSocialAccounts() != null && clinic.getSocialAccounts().length > 0) {
             for (SocialAccount account : clinic.getSocialAccounts()) {
                 socialBox.addView(contact(account));
             }
+            cardViewHashMap.get(CONTACT).setVisibility(View.VISIBLE);
         }
         if (clinic.getPhoneNumbers() != null && clinic.getPhoneNumbers().length > 0) {
             for (PhoneNumber account : clinic.getPhoneNumbers()) {
                 socialBox.addView(contact(account));
             }
+            cardViewHashMap.get(CONTACT).setVisibility(View.VISIBLE);
         }
         for (int id : textViewHashMap.keySet()) {
             switch (id) {
@@ -155,9 +158,7 @@ public class InitClinic extends BaseInit {
                     textViewHashMap.get(id).setText(clinic.getDescription());
                     break;
             }
-        }
-        for (View view : cardViewHashMap) {
-            view.setVisibility(View.VISIBLE);
+            cardViewHashMap.get(DETAIL).setVisibility(View.VISIBLE);
         }
     }
 
@@ -228,6 +229,7 @@ public class InitClinic extends BaseInit {
     private View item(int id) {
         RelativeLayout layout = new RelativeLayout(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+        layout.setId(id);
 
         params.setMargins(margin, 0, margin, 0);
         layout.setLayoutParams(params);
@@ -267,7 +269,7 @@ public class InitClinic extends BaseInit {
         }
 
         cardView.setVisibility(View.GONE);
-        cardViewHashMap.add(cardView);
+        cardViewHashMap.put(id, cardView);
         return layout;
     }
 
