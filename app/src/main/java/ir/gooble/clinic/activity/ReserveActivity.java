@@ -3,13 +3,11 @@ package ir.gooble.clinic.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +18,7 @@ import ir.gooble.clinic.instance.InstanceResult;
 import ir.gooble.clinic.instance.TimeInstance;
 import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.model.Reserve;
+import ir.gooble.clinic.model.Week;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;
 import ir.gooble.clinic.oracle.Rest;
@@ -217,6 +216,18 @@ public class ReserveActivity extends BaseActivity {
         return current_calendar.get(Calendar.YEAR)
                 + "-" + (current_calendar.get(Calendar.MONTH) + 1)
                 + "-" + current_calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public boolean isValid(Reserve reserve) {
+        if (reserve.getWeek() != null && reserve.getWeek().length > 0
+                && reserve.getDays() != null && reserve.getDays().length > 0) {
+            for (Week week : reserve.getWeek()) {
+                if (week.isCurrentDay(CalendarUtil.get(current_calendar.get(Calendar.DAY_OF_WEEK)))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 

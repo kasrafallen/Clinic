@@ -348,7 +348,9 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
     }
 
     public void add(Reserve reserve) {
-        layout.addView(item(reserve));
+        if (context.isValid(reserve)) {
+            layout.addView(item(reserve));
+        }
     }
 
     public void setPager() {

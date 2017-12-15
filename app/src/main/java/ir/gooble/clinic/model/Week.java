@@ -6,6 +6,15 @@ public class Week {
     private String DayName;
     private String EndTime;
     private String StartTime;
+    private int index;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public String getCondition() {
         return Condition;
@@ -37,5 +46,9 @@ public class Week {
 
     public void setStartTime(String startTime) {
         StartTime = startTime;
+    }
+
+    public boolean isCurrentDay(int currentDay) {
+        return index == currentDay;
     }
 }
