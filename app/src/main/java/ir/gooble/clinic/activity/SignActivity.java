@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -32,7 +33,12 @@ public class SignActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setup();
         initSign = (InitSign) setContentView(this);
-        initSign.setMode(InitSign.Mode.NUMBER);
+        user = UserInstance.getUser(this);
+        if (user != null && user.getFamily_name() == null && user.getName() == null) {
+            initSign.setMode(InitSign.Mode.NAME);
+        } else {
+            initSign.setMode(InitSign.Mode.NUMBER);
+        }
     }
 
     private void setup() {
@@ -73,11 +79,22 @@ public class SignActivity extends BaseActivity {
             } else {
                 initSign.setError("شماره وارد شده صحیح نیست");
             }
-        } else {
+        } else if (current_mode == InitSign.Mode.VERIFY) {
             if (checkResult(var)) {
                 initSign.setError(null);
             } else {
                 initSign.setError("کد تایید معتبر نیست");
+            }
+        } else {
+            if (var.length() > 3 && var.trim().length() > 3) {
+                if (var.contains(" ") && !var.endsWith(" ")) {
+                    sendEditRequest(var);
+                    initSign.setError(null);
+                } else {
+                    initSign.setError("نام خانوادگی را با فاصله جدا کنید");
+                }
+            } else {
+                initSign.setError("نام و نام خانوادگی صحیح نیست");
             }
         }
     }
@@ -130,9 +147,11 @@ public class SignActivity extends BaseActivity {
                 prompt.hide();
                 User signed = new Gson().fromJson(response, User.class);
                 UserInstance.setUser(SignActivity.this, signed);
-                LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
-                setResult(RESULT_OK);
-                finish();
+                if (signed.getName() == null && signed.getFamily_name() == null) {
+                    initSign.setMode(InitSign.Mode.NAME);
+                    return;
+                }
+                redirect();
             }
 
             @Override
@@ -157,6 +176,46 @@ public class SignActivity extends BaseActivity {
         }, user);
     }
 
+    private void sendEditRequest(final String var) {
+        String[] names = var.split(" ");
+        if (names.length > 1) {
+            user.setName(names[0]);
+            user.setFamily_name(names[names.length - 1]);
+        } else {
+            user.setName(names[0]);
+            user.setFamily_name("");
+        }
+        new Rest(this, Api.PROFILE_POST).connect(new CallBack() {
+            @Override
+            public void onResponse(String response) {
+                prompt.hide();
+                UserInstance.setUser(SignActivity.this, user);
+                Toast.makeText(SignActivity.this, "تغییرات ثبت شد", Toast.LENGTH_SHORT).show();
+                redirect();
+            }
+
+            @Override
+            public void onError(String error) {
+                prompt.error(this, error);
+            }
+
+            @Override
+            public void onInternet() {
+                prompt.internet(this);
+            }
+
+            @Override
+            public void onBefore() {
+                prompt.progress();
+            }
+
+            @Override
+            public void onClick() {
+                sendEditRequest(var);
+            }
+        }, user);
+    }
+
     private void notifyCode(String smsCode) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentText("سلام، خوش آمدید\nکد ورود: " + smsCode);
@@ -166,5 +225,11 @@ public class SignActivity extends BaseActivity {
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
+    }
+
+    public void redirect() {
+        LocalBroadcastManager.getInstance(SignActivity.this).sendBroadcast(new Intent(BaseActivity.UPDATE));
+        setResult(RESULT_OK);
+        finish();
     }
 }

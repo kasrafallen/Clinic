@@ -85,7 +85,7 @@ public class InitDescription extends BaseInit {
 
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setMinimumHeight((int) dimen[1]);
+        layout.setMinimumHeight((int) dimen[1] / 2);
         layout.addView(text());
 
         scrollView.addView(layout);

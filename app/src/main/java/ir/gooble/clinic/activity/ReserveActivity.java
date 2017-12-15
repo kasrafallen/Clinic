@@ -250,9 +250,8 @@ public class ReserveActivity extends BaseActivity {
 
     public void sendRequest(final Day day, final Reserve reserve) {
         User user = UserInstance.getUser(this);
-        if (user == null) {
+        if (user == null || (user.getFamily_name() == null && user.getName() == null)) {
             SignActivity.start(new UserInstance.SignResult() {
-
                 @Override
                 public void onDone() {
 

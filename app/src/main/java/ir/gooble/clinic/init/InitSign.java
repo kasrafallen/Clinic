@@ -1,9 +1,11 @@
 package ir.gooble.clinic.init;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -32,7 +34,7 @@ public class InitSign extends BaseInit {
     private AppText text;
 
     public enum Mode {
-        NUMBER, VERIFY
+        NUMBER, VERIFY, NAME
     }
 
     public InitSign(BaseActivity context) {
@@ -120,14 +122,12 @@ public class InitSign extends BaseInit {
         TextInputLayout.LayoutParams params1 = new TextInputLayout.LayoutParams(-1, -2);
         params1.gravity = Gravity.CENTER_VERTICAL;
         editText.setLayoutParams(params1);
-        editText.setTextSize(1, 18);
         Util.setText(editText, context);
         editText.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
         editText.setSingleLine();
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         editText.setHintTextColor(Color.LTGRAY);
         editText.setTextColor(Color.DKGRAY);
-        editText.setInputType(InputType.TYPE_CLASS_PHONE);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -141,12 +141,20 @@ public class InitSign extends BaseInit {
 
             @Override
             public void afterTextChanged(Editable data) {
-                if (data.length() == 0) {
-                    editText.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
-                    editText.setTextSize(1, 18);
-                } else {
-                    editText.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-                    editText.setTextSize(1, 18);
+                switch (context.current_mode) {
+                    case NAME:
+                        editText.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+                        editText.setTextSize(1, 15);
+                        break;
+                    default:
+                        if (data.length() == 0) {
+                            editText.setGravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+                            editText.setTextSize(1, 18);
+                        } else {
+                            editText.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+                            editText.setTextSize(1, 18);
+                        }
+                        break;
                 }
             }
         });
@@ -173,22 +181,36 @@ public class InitSign extends BaseInit {
         editText.setText("");
         inputLayout.setHintEnabled(true);
         if (mode == Mode.NUMBER) {
+            editText.setTextSize(1, 18);
+            editText.setInputType(InputType.TYPE_CLASS_PHONE);
             editText.setHint("");
             inputLayout.setHint("شماره همراه را به صورت 0912xxxxxxx وارد کنید");
             text.setText("برای ورود یا ساخت حساب کاربری خود شماره تلفن همراه خود را وارد کنید.");
-        } else {
+        } else if (mode == Mode.VERIFY) {
+            editText.setTextSize(1, 18);
+            editText.setInputType(InputType.TYPE_CLASS_PHONE);
             editText.setHint("کد تایید");
             inputLayout.setHint("کد تایید حساب کاربری");
             text.setText("برای شما پیامکی حاوی کد تایید ارسال خواهد شد.");
+        } else {
+            editText.setTextSize(1, 15);
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+            editText.setHint("نام و نام خانوادگی");
+            inputLayout.setHint("نام و نام خانوادگی کامل خود را وارد کنید");
+            text.setText("این اطلاعات برای تعیین وقت و ثبت پرونده شما ذخیره خواهد شد.");
         }
     }
 
     public boolean onBackPressed() {
         if (context.current_mode == Mode.NUMBER) {
             return true;
+        } else if (context.current_mode == Mode.NAME) {
+            context.redirect();
+            return false;
+        } else {
+            setMode(Mode.NUMBER);
+            return false;
         }
-        setMode(Mode.NUMBER);
-        return false;
     }
 
     public void setError(String error) {
