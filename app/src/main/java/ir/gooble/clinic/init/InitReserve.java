@@ -104,7 +104,6 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         pager.setLayoutParams(params);
         pager.setBackgroundResource(R.color.white);
         pager.setAdapter(new PagerAdapter() {
-
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {
                 container.removeView((View) object);
@@ -128,6 +127,7 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
             }
         });
         pager.addOnPageChangeListener(this);
+        pager.setVisibility(View.INVISIBLE);
         return pager;
     }
 
@@ -363,6 +363,7 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
     }
 
     public void add(Reserve reserve) {
+        pager.setVisibility(View.VISIBLE);
         if (context.isValid(reserve)) {
             layout.addView(item(reserve));
         }
