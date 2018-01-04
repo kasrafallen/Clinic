@@ -11,6 +11,10 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -74,6 +78,7 @@ public class InitClinic extends BaseInit {
     private LinearLayout addressBox;
     private LinearLayout socialBox;
     private ImageView imageView;
+    private int counter;
     private int icon;
 
     public InitClinic(BaseActivity context) {
@@ -118,6 +123,7 @@ public class InitClinic extends BaseInit {
     private void setData() {
         imageView.setVisibility(View.VISIBLE);
         circleImageView.setVisibility(View.VISIBLE);
+        context.reveal(circleImageView);
         if (clinic.getPictureURL() != null) {
             Picasso.with(context).load(clinic.getPictureURL()).fit().centerCrop().into(imageView);
         }
@@ -125,29 +131,6 @@ public class InitClinic extends BaseInit {
             Picasso.with(context).load(clinic.getLogoURL()).fit().centerCrop().into(circleImageView);
         } else {
             circleImageView.setImageResource(R.mipmap.test_clinic_logo);
-        }
-        if (clinic.getAddresses() != null && clinic.getAddresses().length > 0) {
-            int counter = 0;
-            for (Address account : clinic.getAddresses()) {
-                addressBox.addView(contact(account));
-                counter++;
-                if (counter != clinic.getAddresses().length) {
-                    addressBox.addView(line());
-                }
-            }
-            cardViewHashMap.get(ADDRESS).setVisibility(View.VISIBLE);
-        }
-        if (clinic.getSocialAccounts() != null && clinic.getSocialAccounts().length > 0) {
-            for (SocialAccount account : clinic.getSocialAccounts()) {
-                socialBox.addView(contact(account));
-            }
-            cardViewHashMap.get(CONTACT).setVisibility(View.VISIBLE);
-        }
-        if (clinic.getPhoneNumbers() != null && clinic.getPhoneNumbers().length > 0) {
-            for (PhoneNumber account : clinic.getPhoneNumbers()) {
-                socialBox.addView(contact(account));
-            }
-            cardViewHashMap.get(CONTACT).setVisibility(View.VISIBLE);
         }
         for (int id : textViewHashMap.keySet()) {
             switch (id) {
@@ -159,7 +142,49 @@ public class InitClinic extends BaseInit {
                     break;
             }
             cardViewHashMap.get(DETAIL).setVisibility(View.VISIBLE);
+            animate(cardViewHashMap.get(DETAIL));
         }
+        boolean contactShown = false;
+        if (clinic.getSocialAccounts() != null && clinic.getSocialAccounts().length > 0) {
+            for (SocialAccount account : clinic.getSocialAccounts()) {
+                socialBox.addView(contact(account));
+            }
+            cardViewHashMap.get(CONTACT).setVisibility(View.VISIBLE);
+            animate(cardViewHashMap.get(CONTACT));
+            contactShown = true;
+        }
+        if (clinic.getPhoneNumbers() != null && clinic.getPhoneNumbers().length > 0) {
+            for (PhoneNumber account : clinic.getPhoneNumbers()) {
+                socialBox.addView(contact(account));
+            }
+            if (!contactShown) {
+                cardViewHashMap.get(CONTACT).setVisibility(View.VISIBLE);
+                animate(cardViewHashMap.get(CONTACT));
+            }
+        }
+        if (clinic.getAddresses() != null && clinic.getAddresses().length > 0) {
+            int counter = 0;
+            for (Address account : clinic.getAddresses()) {
+                addressBox.addView(contact(account));
+                counter++;
+                if (counter != clinic.getAddresses().length) {
+                    addressBox.addView(line());
+                }
+            }
+            cardViewHashMap.get(ADDRESS).setVisibility(View.VISIBLE);
+            animate(cardViewHashMap.get(ADDRESS));
+        }
+    }
+
+    private void animate(View view) {
+        ScaleAnimation animation = new ScaleAnimation(0, 1, 0, 1
+                , Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(200);
+        animation.setInterpolator(new OvershootInterpolator());
+        animation.setRepeatCount(0);
+        animation.setStartOffset(counter * 100);
+        view.startAnimation(animation);
+        counter++;
     }
 
     private View recycler() {

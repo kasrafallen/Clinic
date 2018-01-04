@@ -1,11 +1,9 @@
 package ir.gooble.clinic.init;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -14,8 +12,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Space;
+
+import java.util.HashMap;
 
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.SignActivity;
@@ -26,11 +27,11 @@ import ir.gooble.clinic.view.AppText;
 
 public class InitSign extends BaseInit {
 
+    private static final int TV = +64519;
     private SignActivity context;
     private int margin;
 
-    private TextInputLayout inputLayout;
-    private TextInputEditText editText;
+    private HashMap<Integer, TextInputLayout> map = new HashMap<>();
     private AppText text;
 
     public enum Mode {
@@ -49,8 +50,17 @@ public class InitSign extends BaseInit {
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
         layout.addView(message());
-        layout.addView(input());
+        layout.addView(inputLayout());
         layout.addView(function());
+        return layout;
+    }
+
+    private View inputLayout() {
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
+        layout.addView(input(1));
+        layout.addView(input(0));
         return layout;
     }
 
@@ -95,7 +105,12 @@ public class InitSign extends BaseInit {
                 if (isExit) {
                     context.onBackPressed();
                 } else {
-                    context.next(editText.getText().toString());
+                    if (context.current_mode == Mode.NAME) {
+                        context.next(new String[]{((EditText) map.get(0).findViewById(TV)).getText().toString()
+                                , ((EditText) map.get(1).findViewById(TV)).getText().toString()});
+                    } else {
+                        context.next(new String[]{((EditText) map.get(0).findViewById(TV)).getText().toString()});
+                    }
                 }
             }
         });
@@ -108,9 +123,9 @@ public class InitSign extends BaseInit {
         return space;
     }
 
-    private View input() {
-        inputLayout = new TextInputLayout(context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
+    private View input(int type) {
+        TextInputLayout inputLayout = new TextInputLayout(context);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2, 1f);
         params.topMargin = margin;
         params.bottomMargin = margin;
         params.leftMargin = margin;
@@ -118,7 +133,8 @@ public class InitSign extends BaseInit {
         inputLayout.setLayoutParams(params);
         Util.setText(inputLayout, context);
 
-        editText = new TextInputEditText(context);
+        final TextInputEditText editText = new TextInputEditText(context);
+        editText.setId(TV);
         TextInputLayout.LayoutParams params1 = new TextInputLayout.LayoutParams(-1, -2);
         params1.gravity = Gravity.CENTER_VERTICAL;
         editText.setLayoutParams(params1);
@@ -158,8 +174,11 @@ public class InitSign extends BaseInit {
                 }
             }
         });
-
         inputLayout.addView(editText);
+        if (type == 1) {
+            inputLayout.setVisibility(View.GONE);
+        }
+        map.put(type, inputLayout);
         return inputLayout;
     }
 
@@ -178,25 +197,40 @@ public class InitSign extends BaseInit {
 
     public void setMode(Mode mode) {
         context.current_mode = mode;
+        TextInputLayout inputLayout = map.get(0);
+        TextInputEditText editText = (TextInputEditText) inputLayout.findViewById(TV);
+
+        TextInputLayout inputLayout1 = map.get(1);
+        TextInputEditText editText1 = (TextInputEditText) inputLayout1.findViewById(TV);
+
         editText.setText("");
         inputLayout.setHintEnabled(true);
         if (mode == Mode.NUMBER) {
+            inputLayout1.setVisibility(View.GONE);
             editText.setTextSize(1, 18);
             editText.setInputType(InputType.TYPE_CLASS_PHONE);
             editText.setHint("");
             inputLayout.setHint("شماره همراه را به صورت 0912xxxxxxx وارد کنید");
             text.setText("برای ورود یا ساخت حساب کاربری خود شماره تلفن همراه خود را وارد کنید.");
         } else if (mode == Mode.VERIFY) {
+            inputLayout1.setVisibility(View.GONE);
             editText.setTextSize(1, 18);
             editText.setInputType(InputType.TYPE_CLASS_PHONE);
             editText.setHint("کد تایید");
             inputLayout.setHint("کد تایید حساب کاربری");
             text.setText("برای شما پیامکی حاوی کد تایید ارسال خواهد شد.");
         } else {
-            editText.setTextSize(1, 15);
+            inputLayout1.setVisibility(View.VISIBLE);
+            editText.setTextSize(1, 13);
             editText.setInputType(InputType.TYPE_CLASS_TEXT);
-            editText.setHint("نام و نام خانوادگی");
-            inputLayout.setHint("نام و نام خانوادگی کامل خود را وارد کنید");
+            editText.setHint("نام");
+//            inputLayout.setHint("نام کامل خود را وارد کنید");
+
+            editText1.setTextSize(1, 13);
+            editText1.setInputType(InputType.TYPE_CLASS_TEXT);
+            editText1.setHint("نام خانوادگی");
+//            inputLayout1.setHint("نام خانوادگی خود را وارد کنید");
+
             text.setText("این اطلاعات برای تعیین وقت و ثبت پرونده شما ذخیره خواهد شد.");
         }
     }
@@ -214,6 +248,7 @@ public class InitSign extends BaseInit {
     }
 
     public void setError(String error) {
+        TextInputLayout inputLayout = map.get(0);
         if (error == null) {
             inputLayout.setErrorEnabled(false);
             inputLayout.setError(null);

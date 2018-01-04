@@ -140,10 +140,12 @@ public class Rest implements Response.Listener<String>, Response.ErrorListener {
     public void onResponse(String response) {
         try {
             Status status = new Gson().fromJson(response, Status.class);
-            if (status != null && status.getStatus() != 0) {
-                Log.d(TAG + "onFailure", "returned(" + statusCode + "): " + response);
-                callBack.onError(status.getMessageFA());
-                return;
+            if (status != null) {
+                if (!status.getStatus().equals("0") && !status.getStatus().toUpperCase().equals("OK")) {
+                    Log.d(TAG + "onFailure", "returned(" + statusCode + "): " + response);
+                    callBack.onError(status.getMessageFA());
+                    return;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

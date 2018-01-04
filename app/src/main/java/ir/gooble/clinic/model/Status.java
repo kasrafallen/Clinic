@@ -4,7 +4,7 @@ public class Status {
 
     private String MessageEN;
     private String MessageFA;
-    private int Status;
+    private String Status;
 
     public String getMessageEN() {
         return MessageEN;
@@ -22,11 +22,11 @@ public class Status {
         MessageFA = messageFA;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return Status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         Status = status;
     }
 }

@@ -56,7 +56,6 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
     private int margin;
     private int image;
     private int detail;
-    private int time;
     private int timer;
 
     private boolean firstTime = true;
@@ -70,7 +69,6 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         this.margin = Util.toPx(10, context);
         this.detail = Util.toPx(80, context);
         this.image = Util.toPx(55, context);
-        this.time = Util.toPx(60, context);
         this.timer = Util.toPx(40, context);
     }
 

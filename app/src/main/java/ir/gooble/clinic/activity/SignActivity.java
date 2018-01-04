@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Window;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -71,7 +70,8 @@ public class SignActivity extends BaseActivity {
             super.onBackPressed();
     }
 
-    public void next(String var) {
+    public void next(String[] vars) {
+        String var = vars[0];
         if (current_mode == InitSign.Mode.NUMBER) {
             if (var.length() == 11 && var.trim().length() == 11 && var.startsWith("09")) {
                 sendRequest(new User(var));
@@ -86,16 +86,14 @@ public class SignActivity extends BaseActivity {
                 initSign.setError("کد تایید معتبر نیست");
             }
         } else {
-            if (var.length() > 3 && var.trim().length() > 3) {
-                if (var.contains(" ") && !var.endsWith(" ")) {
-                    sendEditRequest(var);
-                    initSign.setError(null);
-                } else {
-                    initSign.setError("نام خانوادگی را با فاصله جدا کنید");
+            for (String data : vars) {
+                if (data.length() <= 3 || data.trim().length() <= 3) {
+                    initSign.setError("نام یا نام خانوادگی صحیح نیست");
+                    return;
                 }
-            } else {
-                initSign.setError("نام و نام خانوادگی صحیح نیست");
             }
+            sendEditRequest(vars);
+            initSign.setError(null);
         }
     }
 
@@ -176,21 +174,14 @@ public class SignActivity extends BaseActivity {
         }, user);
     }
 
-    private void sendEditRequest(final String var) {
-        String[] names = var.split(" ");
-        if (names.length > 1) {
-            user.setPName(names[0]);
-            user.setPLastName(names[names.length - 1]);
-        } else {
-            user.setPName(names[0]);
-            user.setPLastName("");
-        }
+    private void sendEditRequest(final String var[]) {
+        user.setPName(var[0]);
+        user.setPLastName(var[1]);
         new Rest(this, Api.PROFILE_POST).connect(new CallBack() {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
                 UserInstance.setUser(SignActivity.this, user);
-                Toast.makeText(SignActivity.this, "تغییرات ثبت شد", Toast.LENGTH_SHORT).show();
                 redirect();
             }
 
