@@ -1,9 +1,5 @@
 package ir.gooble.clinic.model;
 
-import android.content.Context;
-
-import ir.gooble.clinic.instance.UserInstance;
-
 public class Reserve {
 
     private int DoctorID;
@@ -17,8 +13,8 @@ public class Reserve {
     private String PLastName;
     private String Mobile;
 
-    private Week[] Week;
-    private Day[] Days;
+    private WeekDay[] Week;
+    private ReserveDay[] Days;
 
     private Doctor Doctor;
 
@@ -30,19 +26,19 @@ public class Reserve {
         Duration = duration;
     }
 
-    public Week[] getWeek() {
+    public WeekDay[] getWeek() {
         return Week;
     }
 
-    public void setWeek(Week[] week) {
+    public void setWeek(WeekDay[] week) {
         Week = week;
     }
 
-    public Day[] getDays() {
+    public ReserveDay[] getDays() {
         return Days;
     }
 
-    public void setDays(Day[] days) {
+    public void setDays(ReserveDay[] days) {
         Days = days;
     }
 

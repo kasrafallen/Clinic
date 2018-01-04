@@ -12,6 +12,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 
 import java.util.concurrent.TimeUnit;
 
@@ -278,17 +281,25 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    private void updateUser() {
+        if (drawer != null && init != null && init.drawer != null) {
+            init.drawer.update();
+        }
+    }
+
+    public void reveal(View view) {
+        ScaleAnimation animation = new ScaleAnimation(0, 1, 0, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(800);
+        animation.setInterpolator(new OvershootInterpolator());
+        animation.setRepeatCount(0);
+        view.startAnimation(animation);
+    }
+
     public void share(Blog.Post tag) {
 
     }
 
     public void share() {
 
-    }
-
-    private void updateUser() {
-        if (drawer != null && init != null && init.drawer != null) {
-            init.drawer.update();
-        }
     }
 }

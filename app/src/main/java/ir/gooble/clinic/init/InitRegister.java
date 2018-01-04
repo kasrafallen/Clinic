@@ -184,7 +184,13 @@ public class InitRegister extends BaseInit {
         toolbar.setMaximize();
         toolbar.setLayoutParams(new LinearLayout.LayoutParams(-1, -1));
 
-        CircleImageView imageView = new CircleImageView(context);
+        CircleImageView imageView = new CircleImageView(context) {
+            @Override
+            protected void onAttachedToWindow() {
+                super.onAttachedToWindow();
+                context.reveal(this);
+            }
+        };
         imageView.setId(IMAGE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             imageView.setElevation(20);

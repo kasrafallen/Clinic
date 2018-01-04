@@ -18,11 +18,11 @@ import ir.gooble.clinic.instance.DoctorInstance;
 import ir.gooble.clinic.instance.InstanceResult;
 import ir.gooble.clinic.instance.TimeInstance;
 import ir.gooble.clinic.instance.UserInstance;
-import ir.gooble.clinic.model.Day;
+import ir.gooble.clinic.model.ReserveDay;
 import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.model.Reserve;
 import ir.gooble.clinic.model.User;
-import ir.gooble.clinic.model.Week;
+import ir.gooble.clinic.model.WeekDay;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;
 import ir.gooble.clinic.oracle.Rest;
@@ -218,37 +218,36 @@ public class ReserveActivity extends BaseActivity {
     }
 
     public String getStartTime(Calendar current_calendar) {
-        return current_calendar.get(Calendar.YEAR)
-                + "-" + (current_calendar.get(Calendar.MONTH) + 1)
-                + "-" + current_calendar.get(Calendar.DAY_OF_MONTH);
+        StringBuilder dateBuilder = new StringBuilder();
+        dateBuilder.append(current_calendar.get(Calendar.YEAR));
+        dateBuilder.append("-");
+        int month = (current_calendar.get(Calendar.MONTH) + 1);
+        int day = current_calendar.get(Calendar.DAY_OF_MONTH);
+        if (month < 10) {
+            dateBuilder.append("0");
+        }
+        dateBuilder.append(month);
+        dateBuilder.append("-");
+        if (day < 10) {
+            dateBuilder.append("0");
+        }
+        dateBuilder.append(day);
+        return dateBuilder.toString();
     }
 
-    public boolean isValid(Reserve reserve) {
-        if (reserve.getWeek() != null && reserve.getWeek().length > 0
-                && reserve.getDays() != null && reserve.getDays().length > 0) {
-            for (Week week : reserve.getWeek()) {
+    public WeekDay isValid(Reserve reserve) {
+        if (reserve.getWeek() != null && reserve.getWeek().length > 0) {
+            for (WeekDay week : reserve.getWeek()) {
                 if (week.isCurrentDay(CalendarUtil.get(current_calendar.get(Calendar.DAY_OF_WEEK)))) {
-                    return true;
+                    week.setDate(getStartTime(current_calendar));
+                    return week;
                 }
             }
         }
-        return false;
+        return null;
     }
 
-    public ArrayList<Day> getDays(Reserve reserve, String time) {
-        ArrayList<Day> days = new ArrayList<>();
-        if (reserve.getWeek() != null && reserve.getWeek().length > 0
-                && reserve.getDays() != null && reserve.getDays().length > 0) {
-            for (Day day : reserve.getDays()) {
-                if (day.isCurrentDate(time)) {
-                    days.add(day);
-                }
-            }
-        }
-        return days;
-    }
-
-    public void sendRequest(final Day day, final Reserve reserve) {
+    public void sendRequest(final ReserveDay day, final Reserve reserve) {
         User user = UserInstance.getUser(this);
         if (user == null || (user.getPLastName() == null && user.getPName() == null)) {
             SignActivity.start(new UserInstance.SignResult() {

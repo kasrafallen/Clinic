@@ -1,10 +1,19 @@
 package ir.gooble.clinic.model;
 
-public class Day {
+public class ReserveDay {
 
     private String Date;
-    private int index;
     private String Time;
+    private int index;
+
+    public ReserveDay() {
+    }
+
+    public ReserveDay(String date, String time, int index) {
+        Date = date;
+        Time = time;
+        this.index = index;
+    }
 
     public String getDate() {
         return Date;

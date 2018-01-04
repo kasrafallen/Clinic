@@ -9,6 +9,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.text.SpannableString;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,17 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.ReserveActivity;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
-import ir.gooble.clinic.model.Day;
+import ir.gooble.clinic.model.ReserveDay;
 import ir.gooble.clinic.model.Doctor;
 import ir.gooble.clinic.model.Reserve;
+import ir.gooble.clinic.model.WeekDay;
 import ir.gooble.clinic.util.CalendarUtil;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppButton;
@@ -205,7 +208,7 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         return toolbar;
     }
 
-    private View item(Reserve reserve) {
+    private View item(Reserve reserve, WeekDay week, ArrayList<ReserveDay> list) {
         LinearLayout layout = new LinearLayout(context);
         layout.setBackgroundResource(R.color.white);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -216,11 +219,11 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         layout.setLayoutParams(params);
 
         layout.addView(detail(reserve.getDoctor()));
-        layout.addView(time(reserve));
+        layout.addView(time(reserve, week, list));
         return layout;
     }
 
-    private View time(Reserve reserve) {
+    private View time(Reserve reserve, WeekDay week, ArrayList<ReserveDay> list) {
         RelativeLayout layout = new RelativeLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-1, -2);
         layout.setLayoutParams(layoutParams);
@@ -235,27 +238,40 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         LinearLayout box = new LinearLayout(context);
         box.setOrientation(LinearLayout.HORIZONTAL);
 
-        ArrayList<Day> days = context.getDays(reserve, context.getStartTime(context.current_calendar));
-        for (int i = 0; i < days.size(); i++) {
-            boolean flag = false;
-            if (i == days.size() - 1) {
-                flag = true;
+        int size = week.getSize(reserve.getDuration());
+        for (int i = 0; i < size; i++) {
+            boolean isLast = false;
+            boolean isFirst = false;
+            if (i == size - 1) {
+                isLast = true;
+            } else if (i == 0) {
+                isFirst = true;
             }
-            box.addView(time(days.get(i), i, flag, reserve));
+            boolean isEnable = true;
+            int hour = week.getHour(i, reserve.getDuration());
+            int minute = week.getMinute(i, reserve.getDuration());
+            int index = week.getIndex(i, reserve.getDuration());
+            for (ReserveDay reserveDay : list) {
+                if (reserveDay.getIndex() == index && reserveDay.getHour() == hour) {
+                    isEnable = false;
+                }
+            }
+            String dateFormat = week.format(hour) + ":" + week.format(minute);
+            box.addView(time(isFirst, isLast, isEnable, dateFormat, index, reserve));
         }
-
         view.addView(box);
         layout.addView(view);
         return layout;
     }
 
-    private View time(final Day day, int index, boolean isLast, final Reserve reserve) {
+    private View time(boolean isFirst, boolean isLast, final boolean isEnable
+            , final String time, final int index, final Reserve reserve) {
         Button text = new Button(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, timer);
         params.gravity = Gravity.CENTER_VERTICAL;
         params.bottomMargin = margin / 2;
         params.topMargin = margin / 2;
-        if (index == 0 || isLast) {
+        if (isFirst || isLast) {
             if (isLast) {
                 params.rightMargin = margin;
                 params.leftMargin = margin / 2;
@@ -274,16 +290,18 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         Util.setText(text, context);
         text.setBackgroundResource(R.drawable.timer_background);
 
-        int hour = day.getHour();
-        int min = day.getMinute();
-
-        text.setText(Day.config(hour, min, day.getIndex(), reserve.getDuration()));
+        text.setText(time);
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.sendRequest(day, reserve);
+                if (isEnable) {
+                    context.sendRequest(new ReserveDay("", time, index), reserve);
+                }
             }
         });
+        if (!isEnable) {
+            text.setAlpha(0.5f);
+        }
         return text;
     }
 
@@ -364,8 +382,17 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
 
     public void add(Reserve reserve) {
         pager.setVisibility(View.VISIBLE);
-        if (context.isValid(reserve)) {
-            layout.addView(item(reserve));
+        WeekDay week = null;
+        if ((week = context.isValid(reserve)) != null) {
+            ArrayList<ReserveDay> list = new ArrayList<>();
+            if (reserve.getDays() != null && reserve.getDays().length > 0) {
+                for (ReserveDay reserveDay : reserve.getDays()) {
+                    if (reserveDay.getDate() != null && reserveDay.getDate().equals(week.getDate())) {
+                        list.add(reserveDay);
+                    }
+                }
+            }
+            layout.addView(item(reserve, week, list));
         }
     }
 
