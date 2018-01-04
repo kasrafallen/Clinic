@@ -65,8 +65,8 @@ public class Reserve {
         Date = startDate;
         Index = index;
         Hour = hour;
-        PName = user.getName();
-        PLastName = user.getFamily_name();
+        PName = user.getPName();
+        PLastName = user.getPLastName();
         Mobile = user.getMobile_number();
     }
 

@@ -12,6 +12,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -36,6 +37,7 @@ import ir.gooble.clinic.adaptor.SpinAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
 import ir.gooble.clinic.instance.Attributes;
+import ir.gooble.clinic.model.User;
 import ir.gooble.clinic.util.DialogUtil;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppText;
@@ -57,6 +59,7 @@ public class InitRegister extends BaseInit {
 
     private static final int TOOLBAR = +481487;
     private static final int FUNCTION = +51482;
+    private static final int FAMILY_ID = +5418714;
 
     private RegisterActivity context;
 
@@ -73,6 +76,7 @@ public class InitRegister extends BaseInit {
 
     private LinearLayout function;
     private LinearLayout box;
+    private View addView;
 
     public InitRegister(BaseActivity context) {
         super(context);
@@ -198,7 +202,7 @@ public class InitRegister extends BaseInit {
             }
         });
 
-        View addView = new View(context);
+        addView = new View(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             addView.setElevation(21);
         }
@@ -209,6 +213,7 @@ public class InitRegister extends BaseInit {
         params1.rightMargin = small_margin;
         addView.setLayoutParams(params1);
         addView.setBackgroundResource(R.mipmap.y_add_image);
+        addView.setVisibility(View.GONE);
 
         layout.addView(toolbar);
         layout.addView(imageView);
@@ -246,8 +251,11 @@ public class InitRegister extends BaseInit {
         params.leftMargin = margin;
         layout.setLayoutParams(params);
         switch (type) {
+            case -1:
+                layout.addView(sex(RelativeLayout.CENTER_HORIZONTAL));
+                break;
             case 0:
-                layout.addView(sex(RelativeLayout.ALIGN_PARENT_LEFT));
+                layout.addView(edit(FAMILY_ID, RelativeLayout.ALIGN_PARENT_LEFT));
                 layout.addView(edit(NAME_ID, RelativeLayout.ALIGN_PARENT_RIGHT));
                 break;
             case 1:
@@ -281,7 +289,7 @@ public class InitRegister extends BaseInit {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                context.user.setInsurance_type(Attributes.SUPPORTED_INSURANCES[position]);
+                context.user.setInsuranceType(Attributes.SUPPORTED_INSURANCES[position]);
             }
 
             @Override
@@ -289,10 +297,10 @@ public class InitRegister extends BaseInit {
 
             }
         });
-        if (context.user.getInsurance_type() != null) {
+        if (context.user.getInsuranceType() != null) {
             int counter = 0;
             for (String type : Attributes.SUPPORTED_INSURANCES) {
-                if (type.equals(context.user.getInsurance_type())) {
+                if (type.equals(context.user.getInsuranceType())) {
                     spinner.setSelection(counter);
                 }
                 counter++;
@@ -316,7 +324,7 @@ public class InitRegister extends BaseInit {
     }
 
     private View edit(int id, int gravity) {
-        RelativeLayout layout = getField(gravity);
+        final RelativeLayout layout = getField(gravity);
 
         TextInputLayout inputLayout = new TextInputLayout(context);
         RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(-1, -2);
@@ -337,42 +345,46 @@ public class InitRegister extends BaseInit {
 
         String hint = null;
         switch (id) {
+            case FAMILY_ID:
+                hint = ("نام خانوادگی");
+                editText.setText(context.user.getPLastName());
+                break;
             case NAME_ID:
-                hint = ("نام و نام خانوادگی");
-                editText.setText(context.user.getName());
+                hint = ("نام");
+                editText.setText(context.user.getPName());
                 break;
             case FATHER_ID:
                 hint = ("نام پدر");
-                editText.setText(context.user.getFather_name());
+                editText.setText(context.user.getFatherName());
                 break;
             case CARD_ID:
             case PHONE_ID:
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 if (gravity == RelativeLayout.ALIGN_PARENT_RIGHT) {
                     hint = ("شماره ملی");
-                    editText.setText(context.user.getNational_number());
+                    editText.setText(context.user.getNationalNumber());
                 } else {
                     hint = ("تلفن همراه");
-                    editText.setText(context.user.getMobile_number());
+                    editText.setText(context.user.getPhoneNumber());
                 }
                 break;
             case ADDRESS_ID:
                 editText.setSingleLine(false);
                 editText.setMaxLines(4);
                 hint = ("آدرس محل سکونت");
-                editText.setText(context.user.getStreet());
+                editText.setText(context.user.getAddressString());
                 break;
             case INSURANCE_ID:
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 hint = ("شماره بیمه");
-                editText.setText(context.user.getInsurance_number());
+                editText.setText(context.user.getInsuranceNumber());
                 break;
             case BIRTHDAY_ID:
                 editText.setFocusableInTouchMode(false);
                 editText.setFocusable(false);
                 editText.setLongClickable(false);
                 hint = ("تاریخ تولد");
-                editText.setText(context.user.getBirthday());
+                editText.setText(context.user.getBirthDayDate());
                 editText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -381,7 +393,7 @@ public class InitRegister extends BaseInit {
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 String format = year + "/" + (monthOfYear + 1) + "/" + dayOfMonth;
                                 editText.setText(format);
-                                context.user.setBirthday(format);
+                                context.user.setBirthDayDate(format);
                             }
                         });
                     }
@@ -393,13 +405,31 @@ public class InitRegister extends BaseInit {
 
         inputLayout.addView(editText);
         layout.addView(inputLayout);
-        if (id != FATHER_ID && id != BIRTHDAY_ID && id != INSURANCE_ID) {
-            layout.addView(essential(false));
-        } else if (id == BIRTHDAY_ID) {
-            layout.addView(essential(true));
+        if (id == ADDRESS_ID
+                || id == INSURANCE_ID
+                || id == PHONE_ID) {
+            layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    layout.addView(filler(layout.getWidth(), layout.getHeight()));
+                }
+            });
         }
         setPadding(layout, gravity);
         return layout;
+    }
+
+    private View filler(int w, int h) {
+        View view = new View(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setElevation(10);
+        }
+        view.setClickable(true);
+        view.setBackgroundColor(Color.LTGRAY);
+        view.setAlpha(0.05f);
+        view.setLayoutParams(new RelativeLayout.LayoutParams(w, h));
+        return view;
     }
 
     private void setInspector(final AppCompatEditText editText, final int mode) {
@@ -439,22 +469,25 @@ public class InitRegister extends BaseInit {
         }
         switch (mode) {
             case NAME_ID:
-                context.user.setName(data);
+                context.user.setPName(data);
+                break;
+            case FAMILY_ID:
+                context.user.setPLastName(data);
                 break;
             case FATHER_ID:
-                context.user.setFather_name(data);
+                context.user.setFatherName(data);
                 break;
             case CARD_ID:
-                context.user.setNational_number(data);
+                context.user.setNationalNumber(data);
                 break;
             case PHONE_ID:
-                context.user.setMobile_number(data);
+                context.user.setPhoneNumber(data);
                 break;
             case ADDRESS_ID:
-                context.user.setStreet(data);
+                context.user.setAddress(new User().new Address(data));
                 break;
             case INSURANCE_ID:
-                context.user.setInsurance_number(data);
+                context.user.setInsuranceNumber(data);
                 break;
         }
     }
@@ -495,7 +528,8 @@ public class InitRegister extends BaseInit {
         RadioGroup group = new RadioGroup(context);
         group.setOrientation(LinearLayout.HORIZONTAL);
         RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(-2, -2);
-        params1.addRule(RelativeLayout.CENTER_IN_PARENT);
+        params1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        params1.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         group.setLayoutParams(params1);
 
         group.addView(groupButton(true));
@@ -525,7 +559,7 @@ public class InitRegister extends BaseInit {
         }
         if (context.user.isMen() && !isWoman) {
             button.setChecked(true);
-        } else if (context.user.isWomen() && isWoman) {
+        } else if (!context.user.isMen() && isWoman) {
             button.setChecked(true);
         } else {
             button.setChecked(false);
@@ -535,9 +569,9 @@ public class InitRegister extends BaseInit {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isWoman) {
-                    context.user.setWomen(isChecked);
+                    context.user.setSexuality(User.MEN);
                 } else {
-                    context.user.setMen(isChecked);
+                    context.user.setSexuality(User.WOMEN);
                 }
             }
         });
@@ -548,13 +582,15 @@ public class InitRegister extends BaseInit {
         if (context.user == null) {
             return;
         }
+        box.addView(field(-1));
         box.addView(field(0));
         box.addView(field(1));
         box.addView(field(2));
         box.addView(field(3));
-        box.addView(field(4));
+//        box.addView(field(4));
 
         updateImage();
+        addView.setVisibility(View.VISIBLE);
         function.setVisibility(View.VISIBLE);
     }
 

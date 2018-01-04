@@ -34,7 +34,7 @@ public class SignActivity extends BaseActivity {
         setup();
         initSign = (InitSign) setContentView(this);
         user = UserInstance.getUser(this);
-        if (user != null && user.getFamily_name() == null && user.getName() == null) {
+        if (user != null && user.getPLastName() == null && user.getPName() == null) {
             initSign.setMode(InitSign.Mode.NAME);
         } else {
             initSign.setMode(InitSign.Mode.NUMBER);
@@ -147,7 +147,7 @@ public class SignActivity extends BaseActivity {
                 prompt.hide();
                 User signed = new Gson().fromJson(response, User.class);
                 UserInstance.setUser(SignActivity.this, signed);
-                if (signed.getName() == null && signed.getFamily_name() == null) {
+                if (signed.getPName() == null && signed.getPLastName() == null) {
                     initSign.setMode(InitSign.Mode.NAME);
                     return;
                 }
@@ -179,11 +179,11 @@ public class SignActivity extends BaseActivity {
     private void sendEditRequest(final String var) {
         String[] names = var.split(" ");
         if (names.length > 1) {
-            user.setName(names[0]);
-            user.setFamily_name(names[names.length - 1]);
+            user.setPName(names[0]);
+            user.setPLastName(names[names.length - 1]);
         } else {
-            user.setName(names[0]);
-            user.setFamily_name("");
+            user.setPName(names[0]);
+            user.setPLastName("");
         }
         new Rest(this, Api.PROFILE_POST).connect(new CallBack() {
             @Override

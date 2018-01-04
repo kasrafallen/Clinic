@@ -70,7 +70,7 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".activity.FactActivity"
+            android:name=".activity.BlogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />

@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.squareup.picasso.Picasso;
+
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.DescriptionActivity;
 import ir.gooble.clinic.application.BaseActivity;
@@ -105,9 +107,9 @@ public class InitDescription extends BaseInit {
         text.setTextSize(1, 12);
         text.setTextColor(Color.DKGRAY);
 
-        String data = context.model.getTitle()
-                + SPACE + context.model.getDate()
-                + SPACE + "\n" + context.model.getDescription();
+        String data = context.model.getPostTitle()
+                + SPACE + context.model.getPostDate()
+                + SPACE + "\n" + context.model.getPostContent();
         SpannableString span = new SpannableString(data);
 
         span.setSpan(new ForegroundColorSpan(Color.BLACK), 0, data.indexOf(SPACE), 0);
@@ -143,7 +145,7 @@ public class InitDescription extends BaseInit {
         params2.setCollapseMode(CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX);
         imageView.setLayoutParams(params2);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(context.model.getResource());
+        Picasso.with(context).load(context.model.getPostPicture()).fit().centerCrop().into(imageView);
 
         AppToolbar toolbar = new AppToolbar(context, true, null, true);
         toolbar.setBackgroundResource(R.color.transparent);

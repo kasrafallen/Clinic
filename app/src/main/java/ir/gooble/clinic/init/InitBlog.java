@@ -5,26 +5,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
-import ir.gooble.clinic.activity.FactActivity;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import ir.gooble.clinic.activity.BlogActivity;
 import ir.gooble.clinic.adaptor.FactAdaptor;
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.application.BaseInit;
+import ir.gooble.clinic.model.Blog;
 import ir.gooble.clinic.view.AppRecyclerView;
 import ir.gooble.clinic.view.AppToolbar;
 
-public class InitFact extends BaseInit {
+public class InitBlog extends BaseInit {
     private static final int TOOLBAR_ID = +8248484;
 
-    private final FactAdaptor adaptor;
-    private FactActivity context;
+    private ArrayList<Blog.Post> blogList;
+    private FactAdaptor adaptor;
+    private BlogActivity context;
     private AppToolbar toolbar;
 
-    public AppRecyclerView recyclerView;
-
-    public InitFact(BaseActivity context) {
+    public InitBlog(BaseActivity context) {
         super(context);
-        this.context = (FactActivity) context;
-        this.adaptor = new FactAdaptor(context, dimen);
+        this.context = (BlogActivity) context;
+        this.blogList = new ArrayList<>();
+        this.adaptor = new FactAdaptor(context, dimen, blogList);
     }
 
     @Override
@@ -37,7 +41,7 @@ public class InitFact extends BaseInit {
     }
 
     private View recycler() {
-        recyclerView = new AppRecyclerView(context);
+        AppRecyclerView recyclerView = new AppRecyclerView(context);
         CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(-1, -2);
         params.topMargin = toolbar.getSize();
         recyclerView.setLayoutParams(params);
@@ -52,5 +56,11 @@ public class InitFact extends BaseInit {
         toolbar = new AppToolbar(context, true, "تازه های پزشکی", true);
         toolbar.setId(TOOLBAR_ID);
         return toolbar;
+    }
+
+    public void update(Blog.Post[] objects) {
+        blogList.clear();
+        Collections.addAll(blogList, objects);
+        adaptor.notifyDataSetChanged();
     }
 }

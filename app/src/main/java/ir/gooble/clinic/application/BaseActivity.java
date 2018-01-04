@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import ir.gooble.clinic.activity.ClinicActivity;
 import ir.gooble.clinic.activity.DoctorActivity;
-import ir.gooble.clinic.activity.FactActivity;
+import ir.gooble.clinic.activity.BlogActivity;
 import ir.gooble.clinic.activity.GalleryActivity;
 import ir.gooble.clinic.activity.LaunchActivity;
 import ir.gooble.clinic.activity.RegisterActivity;
@@ -27,7 +27,7 @@ import ir.gooble.clinic.init.InitDescription;
 import ir.gooble.clinic.init.InitDetail;
 import ir.gooble.clinic.init.InitDoctor;
 import ir.gooble.clinic.init.InitDrawer;
-import ir.gooble.clinic.init.InitFact;
+import ir.gooble.clinic.init.InitBlog;
 import ir.gooble.clinic.init.InitGallery;
 import ir.gooble.clinic.init.InitMain;
 import ir.gooble.clinic.init.InitRegister;
@@ -39,7 +39,7 @@ import ir.gooble.clinic.instance.DoctorInstance;
 import ir.gooble.clinic.instance.GalleryInstance;
 import ir.gooble.clinic.instance.UserInstance;
 import ir.gooble.clinic.model.Address;
-import ir.gooble.clinic.model.FactModel;
+import ir.gooble.clinic.model.Blog;
 import ir.gooble.clinic.util.PromptUtil;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppDrawerLayout;
@@ -108,8 +108,8 @@ public class BaseActivity extends AppCompatActivity {
                 return new InitDoctor((BaseActivity) object);
             case "DetailActivity":
                 return new InitDetail((BaseActivity) object);
-            case "FactActivity":
-                return new InitFact((BaseActivity) object);
+            case "BlogActivity":
+                return new InitBlog((BaseActivity) object);
             case "DescriptionActivity":
                 return new InitDescription((BaseActivity) object);
             case "RegisterActivity":
@@ -176,11 +176,11 @@ public class BaseActivity extends AppCompatActivity {
                 start(intent, view, data);
                 break;
             case Attributes.FIELD_NEW_FACTS:
-                if (context instanceof FactActivity) {
+                if (context instanceof BlogActivity) {
                     drawer.closeDrawer(Gravity.RIGHT);
                     return;
                 }
-                intent = new Intent(context, FactActivity.class);
+                intent = new Intent(context, BlogActivity.class);
                 start(intent, view, data);
                 break;
             case Attributes.FIELD_REGISTER:
@@ -278,7 +278,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void share(FactModel tag) {
+    public void share(Blog.Post tag) {
 
     }
 

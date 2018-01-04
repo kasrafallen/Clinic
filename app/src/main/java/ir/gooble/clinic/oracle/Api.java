@@ -32,10 +32,16 @@ public enum Api {
             return "/Doctors";
         }
     },
-    PROFILE_INFO(Method.GET) {
+    PROFILE_INFO(Method.POST) {
         @Override
         public String toString() {
-            return "/patientinfo";
+            return "/GetOnePAtient";
+        }
+    },
+    BLOG_INFO(Method.POST) {
+        @Override
+        public String toString() {
+            return "/GetPosts";
         }
     },
     RESERVE_INFO(Method.POST) {
@@ -53,7 +59,7 @@ public enum Api {
     PROFILE_POST(Method.POST) {
         @Override
         public String toString() {
-            return "/fillprofile";
+            return "/SetPatientFile";
         }
     },
     GET_TIME(Method.POST) {

@@ -44,6 +44,18 @@ public class UserInstance {
     }
 
     public static void setUser(Context context, User user) {
+        if (user != null) {
+            if (user.getPhoneNumber() != null && user.getMobile_number() == null) {
+                user.setMobile_number(user.getPhoneNumber());
+            } else if (user.getMobile_number() != null && user.getPhoneNumber() == null) {
+                user.setPhoneNumber(user.getMobile_number());
+            }
+            if (user.getPID() != null && user.getUID() == null) {
+                user.setUID(user.getPID());
+            } else if (user.getUID() != null && user.getPID() == null) {
+                user.setPID(user.getUID());
+            }
+        }
         Util.get(context).edit().putString(UserInstance.class.getSimpleName(), new Gson().toJson(user)).apply();
     }
 

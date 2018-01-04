@@ -1,6 +1,5 @@
 package ir.gooble.clinic.adaptor;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -13,14 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import ir.gooble.clinic.R;
 import ir.gooble.clinic.activity.DescriptionActivity;
-import ir.gooble.clinic.activity.DetailActivity;
 import ir.gooble.clinic.application.BaseActivity;
-import ir.gooble.clinic.model.FactModel;
+import ir.gooble.clinic.model.Blog;
 import ir.gooble.clinic.util.Util;
 import ir.gooble.clinic.view.AppButton;
 import ir.gooble.clinic.view.AppText;
@@ -33,8 +32,7 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
     private static final int SHARE_ID = +25489633;
     private static final int DESCRIPTION_ID = +32165848;
 
-    private final ArrayList<FactModel> DEFAULT_LIST = new ArrayList<>();
-
+    private ArrayList<Blog.Post> DEFAULT_LIST;
     private BaseActivity context;
     private float[] dimen;
 
@@ -78,7 +76,7 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
         return DEFAULT_LIST.size();
     }
 
-    public FactAdaptor(BaseActivity context, float[] dimen) {
+    public FactAdaptor(BaseActivity context, float[] dimen, ArrayList<Blog.Post> blogList) {
         this.context = context;
         this.dimen = dimen;
         this.radius = Util.toPx(4, context);
@@ -88,12 +86,7 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
         this.image = Util.toPx(130, context);
         this.shared = Util.getToolbarSize(context);
 
-        FactModel model = new FactModel();
-        model.setResource(R.mipmap.test_fact);
-        model.setDate("1 روز قبل");
-        model.setTitle("دانستنی های جالب در مورد چشم");
-        model.setDescription("آیا می دانید که اشک انسان از چه چیزی درست شده است؟ در حقیقت اشک انسان از ترکیب ۳ ماده آب، چربی و مخاط تشکیل شده است و همچنین دارای مواد ضد عفونی کننده نیز است. در صورتی که بدن انسان هر کدام از این ۳ ماده را کم داشته باشد، بدن ناچار است با فشار به سایر بخش ها این مواد را تولید کرده و اشک که محصول نهایی ترکیب آنها است را تولید کند. در غیر این صورت چشم انسان خشک شده و از بین می رود.");
-        DEFAULT_LIST.add(model);
+        this.DEFAULT_LIST = blogList;
     }
 
     @Override
@@ -176,8 +169,8 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getTag() != null && v.getTag() instanceof FactModel) {
-                    shareFact((FactModel) v.getTag());
+                if (v.getTag() != null && v.getTag() instanceof Blog.Post) {
+                    shareFact((Blog.Post) v.getTag());
                 }
             }
         });
@@ -195,11 +188,13 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
         next.setText("ادامه مطلب");
         next.setTextColor(Color.WHITE);
         next.setBackgroundResource(R.drawable.oval_background);
+        next.setScaleY(0.9f);
+        next.setScaleX(0.9f);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getTag() != null && v.getTag() instanceof FactModel) {
-                    openFact((FactModel) v.getTag());
+                if (v.getTag() != null && v.getTag() instanceof Blog.Post) {
+                    openFact((Blog.Post) v.getTag());
                 }
             }
         });
@@ -232,21 +227,21 @@ public class FactAdaptor extends RecyclerView.Adapter<FactAdaptor.Holder> {
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        FactModel model = DEFAULT_LIST.get(position);
+        Blog.Post model = DEFAULT_LIST.get(position);
 
         holder.share.setTag(model);
         holder.next.setTag(model);
-        holder.text.setText(model.getTitle());
-        holder.description.setText(model.getDescription());
-        holder.date.setText(model.getDate());
-        holder.imageView.setImageResource(model.getResource());
+        holder.text.setText(model.getPostTitle());
+        holder.description.setText(model.getPostContent());
+        holder.date.setText(model.getPostDate());
+        Picasso.with(context).load(model.getPostPicture()).fit().centerCrop().into(holder.imageView);
     }
 
-    private void shareFact(FactModel tag) {
+    private void shareFact(Blog.Post tag) {
         context.share(tag);
     }
 
-    private void openFact(FactModel tag) {
-        context.redirect(DescriptionActivity.class,new Gson().toJson(tag));
+    private void openFact(Blog.Post tag) {
+        context.redirect(DescriptionActivity.class, new Gson().toJson(tag));
     }
 }

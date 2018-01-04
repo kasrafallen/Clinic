@@ -7,9 +7,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.init.InitRegister;
 import ir.gooble.clinic.instance.UserInstance;
+import ir.gooble.clinic.model.Patient;
 import ir.gooble.clinic.model.User;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;
@@ -107,10 +110,17 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void getRequest() {
+        Patient patient = new Patient();
+        patient.setPID(UserInstance.getUser(this).getUID());
         new Rest(this, Api.PROFILE_INFO).connect(new CallBack() {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
+                Patient data = new Gson().fromJson(response, Patient.class);
+                if (data != null && data.getPatients() != null && data.getPatients().length > 0) {
+                    user = data.getPatients()[0];
+                    UserInstance.setUser(RegisterActivity.this, data.getPatients()[0]);
+                }
                 fetch();
             }
 
@@ -135,7 +145,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             public void onClick() {
                 getRequest();
             }
-        });
+        }, patient);
     }
 
     private void postRequest() {

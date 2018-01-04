@@ -2,14 +2,164 @@ package ir.gooble.clinic.model;
 
 public class User {
 
+    public static final String MEN = "men";
+    public static final String WOMEN = "women";
+
     private String mobile_number;
     private String Token;
     private String UID;
+    private String PID;
     private String sms_code;
 
     private String imagePath;
     private String fcm_token;
-    private String name;
+
+    private Address Address;
+    private String BirthDayDate;
+    private String FatherName;
+    private String ImagePatient;
+    private String InsuranceNumber;
+    private String InsuranceType;
+    private String NationalNumber;
+    private String PLastName;
+    private String PName;
+    private String PhoneNumber;
+    private String Sexuality;
+
+    public User(String mobile_number) {
+        this.mobile_number = mobile_number;
+    }
+
+    public User() {
+    }
+
+    public String getPID() {
+        return PID;
+    }
+
+    public void setPID(String PID) {
+        this.PID = PID;
+    }
+
+    public Address getAddress() {
+        return Address;
+    }
+
+    public void setAddress(Address address) {
+        Address = address;
+    }
+
+    public String getBirthDayDate() {
+        return BirthDayDate;
+    }
+
+    public void setBirthDayDate(String birthDayDate) {
+        BirthDayDate = birthDayDate;
+    }
+
+    public String getFatherName() {
+        return FatherName;
+    }
+
+    public void setFatherName(String fatherName) {
+        FatherName = fatherName;
+    }
+
+    public String getImagePatient() {
+        return ImagePatient;
+    }
+
+    public void setImagePatient(String imagePatient) {
+        ImagePatient = imagePatient;
+    }
+
+    public String getInsuranceNumber() {
+        return InsuranceNumber;
+    }
+
+    public void setInsuranceNumber(String insuranceNumber) {
+        InsuranceNumber = insuranceNumber;
+    }
+
+    public String getInsuranceType() {
+        return InsuranceType;
+    }
+
+    public void setInsuranceType(String insuranceType) {
+        InsuranceType = insuranceType;
+    }
+
+    public String getNationalNumber() {
+        return NationalNumber;
+    }
+
+    public void setNationalNumber(String nationalNumber) {
+        NationalNumber = nationalNumber;
+    }
+
+    public String getPLastName() {
+        return PLastName;
+    }
+
+    public void setPLastName(String PLastName) {
+        this.PLastName = PLastName;
+    }
+
+    public String getPName() {
+        return PName;
+    }
+
+    public void setPName(String PName) {
+        this.PName = PName;
+    }
+
+    public String getPhoneNumber() {
+        return PhoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        PhoneNumber = phoneNumber;
+    }
+
+    public String getSexuality() {
+        return Sexuality;
+    }
+
+    public void setSexuality(String sexuality) {
+        Sexuality = sexuality;
+    }
+
+    public String getSms_code() {
+        return sms_code;
+    }
+
+    public void setSms_code(String sms_code) {
+        this.sms_code = sms_code;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getMobile_number() {
+        return mobile_number;
+    }
+
+    public void setMobile_number(String mobile_number) {
+        this.mobile_number = mobile_number;
+    }
+
+    public String getFcm_token() {
+        return fcm_token;
+    }
+
+    public void setFcm_token(String fcm_token) {
+        this.fcm_token = fcm_token;
+    }
 
     public String getToken() {
         return Token;
@@ -27,194 +177,99 @@ public class User {
         this.UID = UID;
     }
 
-    private String birthday;
-    private String national_number;
-    private String father_name;
-    private String street;
-    private String insurance_number;
-    private String insurance_type;
-
-    private String trading_method = "-";
-    private String description = "-";
-    private String family_name = "-";
-    private String fix_number = "-";
-    private String alley = "-";
-    private String plaque = "-";
-    private String unit = "-";
-
-    private boolean men;
-    private boolean women;
-    private String deviceID;
-
-    public String getSms_code() {
-        return sms_code;
-    }
-
-    public void setSms_code(String sms_code) {
-        this.sms_code = sms_code;
-    }
-
-    public String getTrading_method() {
-        return trading_method;
-    }
-
-    public void setTrading_method(String trading_method) {
-        this.trading_method = trading_method;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getFamily_name() {
-        return family_name;
-    }
-
-    public void setFamily_name(String family_name) {
-        this.family_name = family_name;
-    }
-
-    public String getAlley() {
-        return alley;
-    }
-
-    public void setAlley(String alley) {
-        this.alley = alley;
-    }
-
-    public String getPlaque() {
-        return plaque;
-    }
-
-    public void setPlaque(String plaque) {
-        this.plaque = plaque;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public String getInsurance_type() {
-        return insurance_type;
-    }
-
-    public void setInsurance_type(String insurance_type) {
-        this.insurance_type = insurance_type;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getNational_number() {
-        return national_number;
-    }
-
-    public void setNational_number(String national_number) {
-        this.national_number = national_number;
-    }
-
-    public String getFather_name() {
-        return father_name;
-    }
-
-    public void setFather_name(String father_name) {
-        this.father_name = father_name;
-    }
-
-    public String getFix_number() {
-        return fix_number;
-    }
-
-    public void setFix_number(String fix_number) {
-        this.fix_number = fix_number;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getInsurance_number() {
-        return insurance_number;
-    }
-
-    public void setInsurance_number(String insurance_number) {
-        this.insurance_number = insurance_number;
-    }
-
-    public User(String mobile_number) {
-        this.mobile_number = mobile_number;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    public String getDeviceID() {
-        return deviceID;
-    }
-
-    public void setDeviceID(String deviceID) {
-        this.deviceID = deviceID;
+    public String getAddressString() {
+        if (getAddress() != null) {
+            StringBuilder builder = new StringBuilder();
+            if (getAddress().getStreet() != null) {
+                builder.append(getAddress().getStreet()).append(" ");
+            }
+            if (getAddress().getAlley() != null) {
+                builder.append(getAddress().getAlley()).append(" ");
+            }
+            if (getAddress().getHouseNumber() != null) {
+                builder.append(getAddress().getHouseNumber()).append(" ");
+            }
+            if (getAddress().getUnit() != null) {
+                builder.append(getAddress().getUnit()).append(" ");
+            }
+            if (builder.length() > 0) {
+                return builder.toString();
+            }
+        }
+        return "-";
     }
 
     public String getName() {
-        return name;
+        StringBuilder builder = new StringBuilder();
+        if (getPName() != null) {
+            builder.append(getPName());
+        }
+        if (getPLastName() != null) {
+            if (builder.length() > 0) {
+                builder.append(" ");
+            }
+            builder.append(getPLastName());
+        }
+        return builder.toString();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public class Address {
+
+        public Address(String unFormatted) {
+            UnFormatted = unFormatted;
+        }
+
+        private String alley;
+        private String HouseNumber;
+        private String Street;
+        private String Unit;
+        private String UnFormatted;
+
+        public String getUnFormatted() {
+            return UnFormatted;
+        }
+
+        public void setUnFormatted(String unFormatted) {
+            UnFormatted = unFormatted;
+        }
+
+        public String getAlley() {
+            return alley;
+        }
+
+        public void setAlley(String alley) {
+            this.alley = alley;
+        }
+
+        public String getHouseNumber() {
+            return HouseNumber;
+        }
+
+        public void setHouseNumber(String houseNumber) {
+            HouseNumber = houseNumber;
+        }
+
+        public String getStreet() {
+            return Street;
+        }
+
+        public void setStreet(String street) {
+            Street = street;
+        }
+
+        public String getUnit() {
+            return Unit;
+        }
+
+        public void setUnit(String unit) {
+            Unit = unit;
+        }
     }
 
     public boolean isMen() {
-        return men;
-    }
-
-    public boolean isWomen() {
-        return women;
-    }
-
-    public void setMen(boolean men) {
-        this.men = men;
-    }
-
-    public void setWomen(boolean women) {
-        this.women = women;
-    }
-
-    public String getMobile_number() {
-        return mobile_number;
-    }
-
-    public void setMobile_number(String mobile_number) {
-        this.mobile_number = mobile_number;
-    }
-
-    public String getFcm_token() {
-        return fcm_token;
-    }
-
-    public void setFcm_token(String fcm_token) {
-        this.fcm_token = fcm_token;
+        if (Sexuality != null && Sexuality.equals(WOMEN)) {
+            return false;
+        }
+        return true;
     }
 }
