@@ -256,8 +256,7 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
                     isEnable = false;
                 }
             }
-            String dateFormat = week.format(hour) + ":" + week.format(minute);
-            box.addView(time(isFirst, isLast, isEnable, dateFormat, index, reserve));
+            box.addView(time(isFirst, isLast, isEnable, hour, minute, index, reserve, week));
         }
         view.addView(box);
         layout.addView(view);
@@ -265,7 +264,8 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
     }
 
     private View time(boolean isFirst, boolean isLast, final boolean isEnable
-            , final String time, final int index, final Reserve reserve) {
+            , final int hour, final int minute, final int index
+            , final Reserve reserve, final WeekDay weekDay) {
         Button text = new Button(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-2, timer);
         params.gravity = Gravity.CENTER_VERTICAL;
@@ -289,13 +289,14 @@ public class InitReserve extends BaseInit implements ViewPager.OnPageChangeListe
         text.setTextSize(1, 15);
         Util.setText(text, context);
         text.setBackgroundResource(R.drawable.timer_background);
-
-        text.setText(time);
+        String dateFormat = weekDay.format(hour) + ":" + weekDay.format(minute);
+        text.setText(dateFormat);
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isEnable) {
-                    context.sendRequest(new ReserveDay("", time, index), reserve);
+                if (v.getAlpha() == 1) {
+                    context.sendRequest(new ReserveDay(weekDay.getDate()
+                            , weekDay.format(hour) + ":00", index), reserve, v);
                 }
             }
         });

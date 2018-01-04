@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -247,7 +249,7 @@ public class ReserveActivity extends BaseActivity {
         return null;
     }
 
-    public void sendRequest(final ReserveDay day, final Reserve reserve) {
+    public void sendRequest(final ReserveDay day, final Reserve reserve, final View view) {
         User user = UserInstance.getUser(this);
         if (user == null || (user.getPLastName() == null && user.getPName() == null)) {
             SignActivity.start(new UserInstance.SignResult() {
@@ -267,6 +269,8 @@ public class ReserveActivity extends BaseActivity {
             @Override
             public void onResponse(String response) {
                 prompt.hide();
+                view.setAlpha(0.5f);
+                Toast.makeText(ReserveActivity.this, "زمان شما ثبت گردید", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -286,7 +290,7 @@ public class ReserveActivity extends BaseActivity {
 
             @Override
             public void onClick() {
-                sendRequest(day, reserve);
+                sendRequest(day, reserve,view);
             }
         }, new Reserve(reserve.getDoctorID(), day.getDate(), day.getIndex(), day.getTime(), user));
     }

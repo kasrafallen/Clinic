@@ -4,7 +4,7 @@ public class ReserveDay {
 
     private String Date;
     private String Time;
-    private int index;
+    private int Index;
 
     public ReserveDay() {
     }
@@ -12,7 +12,7 @@ public class ReserveDay {
     public ReserveDay(String date, String time, int index) {
         Date = date;
         Time = time;
-        this.index = index;
+        this.Index = index;
     }
 
     public String getDate() {
@@ -24,11 +24,11 @@ public class ReserveDay {
     }
 
     public int getIndex() {
-        return index;
+        return Index;
     }
 
     public void setIndex(int index) {
-        this.index = index;
+        this.Index = index;
     }
 
     public String getTime() {
