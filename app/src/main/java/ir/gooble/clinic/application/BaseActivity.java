@@ -50,7 +50,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class BaseActivity extends AppCompatActivity {
 
-    public static final long UPDATE_RATE = TimeUnit.DAYS.toMillis(0);
+    public static final long UPDATE_RATE = TimeUnit.DAYS.toMillis(1);
 
     private static final String EXIT = "BaseActivity.EXIT";
     public static final String UPDATE = "BaseActivity.UPDATE";

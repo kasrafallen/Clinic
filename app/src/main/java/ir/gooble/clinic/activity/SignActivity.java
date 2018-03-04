@@ -177,34 +177,8 @@ public class SignActivity extends BaseActivity {
     private void sendEditRequest(final String var[]) {
         user.setPName(var[0]);
         user.setPLastName(var[1]);
-        new Rest(this, Api.PROFILE_POST).connect(new CallBack() {
-            @Override
-            public void onResponse(String response) {
-                prompt.hide();
-                UserInstance.setUser(SignActivity.this, user);
-                redirect();
-            }
-
-            @Override
-            public void onError(String error) {
-                prompt.error(this, error);
-            }
-
-            @Override
-            public void onInternet() {
-                prompt.internet(this);
-            }
-
-            @Override
-            public void onBefore() {
-                prompt.progress();
-            }
-
-            @Override
-            public void onClick() {
-                sendEditRequest(var);
-            }
-        }, user);
+        UserInstance.setUser(SignActivity.this, user);
+        redirect();
     }
 
     private void notifyCode(String smsCode) {
