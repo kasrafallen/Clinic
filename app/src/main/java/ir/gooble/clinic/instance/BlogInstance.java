@@ -9,7 +9,6 @@ import java.util.Calendar;
 
 import ir.gooble.clinic.application.BaseActivity;
 import ir.gooble.clinic.model.Blog;
-import ir.gooble.clinic.model.Gallery;
 import ir.gooble.clinic.oracle.Api;
 import ir.gooble.clinic.oracle.CallBack;
 import ir.gooble.clinic.oracle.Rest;
