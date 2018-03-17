@@ -1,7 +1,6 @@
 package ir.gooble.clinic.adaptor;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -75,7 +74,6 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.Holder> 
     @Override
     public void onBindViewHolder(GalleryAdaptor.Holder holder, int position) {
         String path = data[position].getAddress();
-        Log.d("FUCKKKK", "onBindViewHolder() returned: " + path);
         holder.imageView.setImageResource(R.color.transparent);
         if (path != null) {
             Picasso picasso = Picasso.with(context);
