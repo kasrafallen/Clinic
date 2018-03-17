@@ -1,6 +1,7 @@
 package ir.gooble.clinic.adaptor;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -65,6 +66,7 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.Holder> 
         param.addRule(RelativeLayout.CENTER_IN_PARENT);
         imageView.setLayoutParams(param);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setMinimumHeight(Util.toPx(250, context));
 
         layout.addView(imageView);
         return layout;
@@ -73,9 +75,14 @@ public class GalleryAdaptor extends RecyclerView.Adapter<GalleryAdaptor.Holder> 
     @Override
     public void onBindViewHolder(GalleryAdaptor.Holder holder, int position) {
         String path = data[position].getAddress();
+        Log.d("FUCKKKK", "onBindViewHolder() returned: " + path);
         holder.imageView.setImageResource(R.color.transparent);
         if (path != null) {
-            Picasso.with(context).load(path).fit().centerCrop().into(holder.imageView);
+            Picasso picasso = Picasso.with(context);
+            picasso.setDebugging(true);
+            picasso.setIndicatorsEnabled(true);
+            picasso.setLoggingEnabled(true);
+            picasso.load(path).fit().centerCrop().into(holder.imageView);
         }
     }
 

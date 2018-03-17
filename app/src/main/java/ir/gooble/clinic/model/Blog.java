@@ -29,7 +29,7 @@ public class Blog {
         }
 
         public String getPostContent() {
-            return PostContent;
+            return decompile(PostContent);
         }
 
         public void setPostContent(String postContent) {
@@ -53,11 +53,28 @@ public class Blog {
         }
 
         public String getPostTitle() {
-            return PostTitle;
+            return decompile(PostTitle);
         }
 
         public void setPostTitle(String postTitle) {
             PostTitle = postTitle;
+        }
+
+        private String decompile(String text) {
+            StringBuilder builder = new StringBuilder();
+            boolean filter = false;
+            for (char character : text.toCharArray()) {
+                if (character == '<') {
+                    filter = true;
+                } else if (character == '>') {
+                    filter = false;
+                } else {
+                    if (!filter) {
+                        builder.append(character);
+                    }
+                }
+            }
+            return builder.toString();
         }
     }
 }

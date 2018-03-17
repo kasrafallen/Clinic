@@ -2,6 +2,7 @@ package ir.gooble.clinic.instance;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 

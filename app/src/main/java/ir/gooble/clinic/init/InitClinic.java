@@ -9,9 +9,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -253,9 +252,8 @@ public class InitClinic extends BaseInit {
 
     private View item(int id) {
         RelativeLayout layout = new RelativeLayout(context);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         layout.setId(id);
-
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, -2);
         params.setMargins(margin, 0, margin, 0);
         layout.setLayoutParams(params);
 
@@ -378,7 +376,6 @@ public class InitClinic extends BaseInit {
                 layout.addView(text(socialAccount));
             }
         }
-        layout.setGravity(Gravity.CENTER_VERTICAL);
         layout.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
         Util.setBackground(layout, context);
         layout.setOnClickListener(new View.OnClickListener() {
@@ -418,14 +415,17 @@ public class InitClinic extends BaseInit {
         if (input.equals("NAME")) {
             textViewHashMap.put(NAME, appText);
             params.topMargin = (int) (2f * logo / 3f);
+            params.leftMargin = small_margin;
+            params.rightMargin = small_margin;
         } else {
             params.topMargin = small_margin;
         }
         appText.setLayoutParams(params);
-        appText.setGravity(Gravity.CENTER_HORIZONTAL);
+        appText.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.RIGHT);
         appText.setTextColor(Color.DKGRAY);
         appText.setTextSize(1, 14);
-        appText.setSingleLine();
+        appText.setMaxLines(5);
+        appText.setEllipsize(TextUtils.TruncateAt.END);
         appText.setShadowLayer(1, line, line, Color.LTGRAY);
         return appText;
     }
@@ -455,12 +455,13 @@ public class InitClinic extends BaseInit {
                 text.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
                 text.setTextColor(Color.GRAY);
                 text.setTextSize(1, 11);
+                text.setMaxLines(7);
                 textViewHashMap.put(DESCRIPTION, text);
                 break;
             default:
                 params.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
                 text.setGravity(Gravity.RIGHT);
-                text.setSingleLine();
+                text.setMaxLines(7);
                 text.setTextColor(Color.DKGRAY);
                 if (address != null) {
                     params.width = -1;

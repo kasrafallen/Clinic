@@ -183,7 +183,7 @@ public class SignActivity extends BaseActivity {
 
     private void notifyCode(String smsCode) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setContentText("سلام، خوش آمدید\nکد ورود: " + smsCode);
+        builder.setContentText("سلام، کد ورود: " + smsCode);
         builder.setAutoCancel(true);
         builder.setVibrate(new long[]{500, 300, 100});
         builder.setSmallIcon(R.mipmap.ic_launcher);
