@@ -45,18 +45,24 @@ public class UserInstance {
 
     public static void setUser(Context context, User user) {
         if (user != null) {
-            if (user.getPhoneNumber() != null && user.getMobile_number() == null) {
+            if (!isEmpty(user.getPhoneNumber()) && isEmpty(user.getMobile_number())) {
                 user.setMobile_number(user.getPhoneNumber());
-            } else if (user.getMobile_number() != null && user.getPhoneNumber() == null) {
+            }
+            if (!isEmpty(user.getMobile_number()) && isEmpty(user.getPhoneNumber())) {
                 user.setPhoneNumber(user.getMobile_number());
             }
-            if (user.getPID() != null && user.getUID() == null) {
+            if (!isEmpty(user.getPID()) && isEmpty(user.getUID())) {
                 user.setUID(user.getPID());
-            } else if (user.getUID() != null && user.getPID() == null) {
+            }
+            if (!isEmpty(user.getUID()) && isEmpty(user.getPID())) {
                 user.setPID(user.getUID());
             }
         }
         Util.get(context).edit().putString(UserInstance.class.getSimpleName(), new Gson().toJson(user)).apply();
+    }
+
+    private static boolean isEmpty(String data) {
+        return data == null || data.equals("");
     }
 
     public static boolean isEmpty(Context context) {

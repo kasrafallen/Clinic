@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -118,8 +119,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 prompt.hide();
                 Patient data = new Gson().fromJson(response, Patient.class);
                 if (data != null && data.getPatients() != null && data.getPatients().length > 0) {
-                    user = data.getPatients()[0];
-                    UserInstance.setUser(RegisterActivity.this, data.getPatients()[0]);
+                    User user = data.getPatients()[0];
+                    if (user != null && (user.getPID() != null || user.getUID() != null)) {
+                        RegisterActivity.this.user = user;
+                        UserInstance.setUser(RegisterActivity.this, data.getPatients()[0]);
+                    }
                 }
                 fetch();
             }

@@ -5,32 +5,87 @@ public class User {
     public static final String MEN = "men";
     public static final String WOMEN = "women";
 
-    private String mobile_number;
-    private String Token;
-    private String UID;
-    private String PID;
-    private String sms_code;
+    private String mobile_number = "";
+    private String Token = "";
+    private String UID = "";
+    private String PID = "";
+    private String sms_code = "";
 
-    private String imagePath;
-    private String fcm_token;
+    private String imagePath = "";
+    private String fcm_token = "";
 
-    private Address Address;
-    private String BirthDayDate;
-    private String FatherName;
-    private String ImagePatient;
-    private String InsuranceNumber;
-    private String InsuranceType;
-    private String NationalNumber;
-    private String PLastName;
-    private String PName;
-    private String PhoneNumber;
-    private String Sexuality;
+    private Address Address = new Address();
+
+    private String PName = "";
+    private String PLastName = "";
+    private String BirthDayDate = "";
+    private String NationalNumber = "";
+    private String Sexuality = "";
+    private String FatherName = "";
+    private String PhoneNumber = "";
+    private String PMobile = "";
+    private String InsuranceNumber = "";
+    private String InsuranceType = "";
+    private String ImagePatient = "";
+    private String ImageInsurance = "";
+    private String Familiarity = "";
+    private String Description = "";
+    private String TimeRegister = "";
+    private String DateRegister = "";
+
+    public String getTimeRegister() {
+        return TimeRegister;
+    }
+
+    public void setTimeRegister(String timeRegister) {
+        TimeRegister = timeRegister;
+    }
+
+    public String getDateRegister() {
+        return DateRegister;
+    }
+
+    public void setDateRegister(String dateRegister) {
+        DateRegister = dateRegister;
+    }
+
+    public String getImageInsurance() {
+        return ImageInsurance;
+    }
+
+    public void setImageInsurance(String imageInsurance) {
+        ImageInsurance = imageInsurance;
+    }
 
     public User(String mobile_number) {
         this.mobile_number = mobile_number;
     }
 
     public User() {
+    }
+
+    public String getPMobile() {
+        return PMobile;
+    }
+
+    public void setPMobile(String PMobile) {
+        this.PMobile = PMobile;
+    }
+
+    public String getFamiliarity() {
+        return Familiarity;
+    }
+
+    public void setFamiliarity(String familiarity) {
+        Familiarity = familiarity;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
     }
 
     public String getPID() {
@@ -180,16 +235,16 @@ public class User {
     public String getAddressString() {
         if (getAddress() != null) {
             StringBuilder builder = new StringBuilder();
-            if (getAddress().getStreet() != null) {
+            if (getAddress().getStreet() != null && !getAddress().getStreet().equals("")) {
                 builder.append(getAddress().getStreet()).append(" ");
             }
-            if (getAddress().getAlley() != null) {
+            if (getAddress().getAlley() != null && !getAddress().getAlley().equals("")) {
                 builder.append(getAddress().getAlley()).append(" ");
             }
-            if (getAddress().getHouseNumber() != null) {
+            if (getAddress().getHouseNumber() != null && !getAddress().getHouseNumber().equals("")) {
                 builder.append(getAddress().getHouseNumber()).append(" ");
             }
-            if (getAddress().getUnit() != null) {
+            if (getAddress().getUnit() != null && !getAddress().getUnit().equals("")) {
                 builder.append(getAddress().getUnit()).append(" ");
             }
             if (builder.length() > 0) {
@@ -201,10 +256,10 @@ public class User {
 
     public String getName() {
         StringBuilder builder = new StringBuilder();
-        if (getPName() != null) {
+        if (getPName() != null && !getPName().equals("")) {
             builder.append(getPName());
         }
-        if (getPLastName() != null) {
+        if (getPLastName() != null && !getPLastName().equals("")) {
             if (builder.length() > 0) {
                 builder.append(" ");
             }
@@ -215,15 +270,18 @@ public class User {
 
     public class Address {
 
+        private String alley = "";
+        private String HouseNumber = "";
+        private String Street = "";
+        private String Unit = "";
+        private String UnFormatted = "";
+
+        public Address() {
+        }
+
         public Address(String unFormatted) {
             UnFormatted = unFormatted;
         }
-
-        private String alley;
-        private String HouseNumber;
-        private String Street;
-        private String Unit;
-        private String UnFormatted;
 
         public String getUnFormatted() {
             return UnFormatted;
@@ -267,9 +325,6 @@ public class User {
     }
 
     public boolean isMen() {
-        if (Sexuality != null && Sexuality.equals(WOMEN)) {
-            return false;
-        }
-        return true;
+        return !(Sexuality != null && Sexuality.equals(WOMEN));
     }
 }
