@@ -156,6 +156,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         if (user == null) {
             return;
         }
+        user.fillUser();
         new Rest(this, Api.PROFILE_POST).connect(new CallBack() {
             @Override
             public void onResponse(String response) {

@@ -327,4 +327,73 @@ public class User {
     public boolean isMen() {
         return !(Sexuality != null && Sexuality.equals(WOMEN));
     }
+
+    public void fillUser() {
+        if (PName == null) {
+            PName = "";
+        }
+        if (PLastName == null) {
+            PLastName = "";
+        }
+        if (BirthDayDate == null) {
+            BirthDayDate = "";
+        }
+        if (NationalNumber == null) {
+            NationalNumber = "";
+        }
+        if (Sexuality == null) {
+            Sexuality = "";
+        }
+        if (FatherName == null) {
+            FatherName = "";
+        }
+        if (PhoneNumber == null) {
+            PhoneNumber = "";
+        }
+        if (PMobile == null) {
+            PMobile = "";
+        }
+        if (InsuranceNumber == null) {
+            InsuranceNumber = "";
+        }
+        if (InsuranceType == null) {
+            InsuranceType = "";
+        }
+        if (ImagePatient == null) {
+            ImagePatient = "";
+        }
+        if (ImageInsurance == null) {
+            ImageInsurance = "";
+        }
+        if (Familiarity == null) {
+            Familiarity = "";
+        }
+        if (Description == null) {
+            Description = "";
+        }
+        if (TimeRegister == null) {
+            TimeRegister = "";
+        }
+        if (DateRegister == null) {
+            DateRegister = "";
+        }
+        if (Address == null) {
+            Address = new Address();
+        }
+        if (Address.getAlley() == null) {
+            Address.setAlley("");
+        }
+        if (Address.getHouseNumber() == null) {
+            Address.setHouseNumber("");
+        }
+        if (Address.getStreet() == null) {
+            Address.setStreet("");
+        }
+        if (Address.getUnit() == null) {
+            Address.setUnit("");
+        }
+        if (Address.getUnFormatted() == null) {
+            Address.setUnFormatted("");
+        }
+    }
 }
